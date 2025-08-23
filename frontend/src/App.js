@@ -627,6 +627,7 @@ const AddHydrantDialog = ({ onAdd }) => {
   const [lng, setLng] = useState('');
   const [status, setStatus] = useState('working');
   const [notes, setNotes] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleAdd = () => {
     if (lat && lng) {
@@ -634,6 +635,7 @@ const AddHydrantDialog = ({ onAdd }) => {
       setLat('');
       setLng('');
       setNotes('');
+      setOpen(false);
     }
   };
 
