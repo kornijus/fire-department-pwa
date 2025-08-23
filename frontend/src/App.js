@@ -369,13 +369,15 @@ const Dashboard = () => {
     }
   };
 
-  const pingUser = (targetUserId) => {
-    if (socket && user) {
-      socket.emit('ping_user', {
-        target_user_id: targetUserId,
-        from_user_id: user.id
-      });
-    }
+  // Helper function to check if user has management permissions
+  const hasManagementPermission = (userRole) => {
+    const managementRoles = [
+      "zapovjednik", 
+      "zamjenik_zapovjednika", 
+      "zapovjednistvo",
+      "predsjednik"
+    ];
+    return managementRoles.includes(userRole);
   };
 
   const addHydrant = async (lat, lng, status, notes) => {
