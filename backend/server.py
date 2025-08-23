@@ -269,7 +269,7 @@ async def get_hydrants():
 
 @api_router.post("/hydrants", response_model=Hydrant)
 async def create_hydrant(hydrant: HydrantCreate, current_user: User = Depends(get_current_user)):
-    if current_user.role not in ["operative", "admin"]:
+    if not has_hydrant_management_permission(current_user.role):
         raise HTTPException(status_code=403, detail="Access denied")
     
     hydrant_obj = Hydrant(**hydrant.dict(), checked_by=current_user.id)
