@@ -347,7 +347,8 @@ def main():
     # Test sequence
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
-        ("User Registration", tester.test_register_user),
+        ("User Registration (Zapovjednik)", tester.test_register_user_zapovjednik),
+        ("User Registration (Member)", tester.test_register_user_member),
         ("User Login", tester.test_login),
         ("Get User Profile", tester.test_get_me),
         ("Get All Users", tester.test_get_users),
@@ -357,6 +358,7 @@ def main():
         ("Update Hydrant", tester.test_update_hydrant),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Role Restrictions", tester.test_member_role_restrictions),
+        ("All Departments and Roles", tester.test_all_departments_and_roles),
     ]
     
     failed_tests = []
