@@ -582,7 +582,7 @@ const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">Ažuriraj</Button>
       </DialogTrigger>
