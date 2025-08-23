@@ -574,9 +574,11 @@ const Dashboard = () => {
 const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
   const [status, setStatus] = useState(hydrant.status);
   const [notes, setNotes] = useState(hydrant.notes || '');
+  const [open, setOpen] = useState(false);
 
   const handleUpdate = () => {
     onUpdate(hydrant.id, status, notes);
+    setOpen(false);
   };
 
   return (
