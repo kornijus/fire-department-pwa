@@ -397,6 +397,17 @@ const Dashboard = () => {
     return roleNames[role] || role;
   };
 
+  // Helper function to check if user has management permissions
+  const hasManagementPermission = (userRole) => {
+    const managementRoles = [
+      "zapovjednik", 
+      "zamjenik_zapovjednika", 
+      "zapovjednistvo",
+      "predsjednik"
+    ];
+    return managementRoles.includes(userRole);
+  };
+
   const pingUser = (targetUserId) => {
     if (socket && user) {
       socket.emit('ping_user', {
