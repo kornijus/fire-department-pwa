@@ -640,7 +640,7 @@ const AddHydrantDialog = ({ onAdd }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Dodaj Hidrant</Button>
       </DialogTrigger>
