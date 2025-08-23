@@ -9,6 +9,8 @@ class FirefighterAPITester:
         self.api_url = f"{base_url}/api"
         self.token = None
         self.user_data = None
+        self.member_data = None
+        self.member_token = None
         self.tests_run = 0
         self.tests_passed = 0
         self.created_hydrant_id = None
