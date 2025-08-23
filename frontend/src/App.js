@@ -369,15 +369,32 @@ const Dashboard = () => {
     }
   };
 
-  // Helper function to check if user has management permissions
-  const hasManagementPermission = (userRole) => {
-    const managementRoles = [
-      "zapovjednik", 
-      "zamjenik_zapovjednika", 
-      "zapovjednistvo",
-      "predsjednik"
-    ];
-    return managementRoles.includes(userRole);
+  // Helper function to format department name
+  const formatDepartmentName = (department) => {
+    const departmentNames = {
+      'DVD_Kneginec_Gornji': 'DVD Kneginec Gornji',
+      'DVD_Donji_Kneginec': 'DVD Donji Kneginec', 
+      'DVD_Varazdinbreg': 'DVD Varaždinbreg',
+      'DVD_Luzan_Biskupecki': 'DVD Lužan Biškupečki'
+    };
+    return departmentNames[department] || department;
+  };
+
+  // Helper function to format role name
+  const formatRoleName = (role) => {
+    const roleNames = {
+      'clan_bez_funkcije': 'Član bez funkcije',
+      'predsjednik': 'Predsjednik',
+      'tajnik': 'Tajnik',
+      'zapovjednik': 'Zapovjednik',
+      'zamjenik_zapovjednika': 'Zamjenik zapovjednika',
+      'spremistar': 'Spremistar',
+      'blagajnik': 'Blagajnik',
+      'upravni_odbor': 'Upravni odbor',
+      'nadzorni_odbor': 'Nadzorni odbor',
+      'zapovjednistvo': 'Zapovjedništvo'
+    };
+    return roleNames[role] || role;
   };
 
   const pingUser = (targetUserId) => {
