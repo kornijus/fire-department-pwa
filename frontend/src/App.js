@@ -221,9 +221,16 @@ const LoginPage = () => {
                       <SelectValue placeholder="Uloga" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="member">Član</SelectItem>
-                      <SelectItem value="operative">Operativni član</SelectItem>
-                      <SelectItem value="admin">Administrator</SelectItem>
+                      <SelectItem value="clan_bez_funkcije">Član bez funkcije</SelectItem>
+                      <SelectItem value="predsjednik">Predsjednik</SelectItem>
+                      <SelectItem value="tajnik">Tajnik</SelectItem>
+                      <SelectItem value="zapovjednik">Zapovjednik</SelectItem>
+                      <SelectItem value="zamjenik_zapovjednika">Zamjenik zapovjednika</SelectItem>
+                      <SelectItem value="spremistar">Spremistar</SelectItem>
+                      <SelectItem value="blagajnik">Blagajnik</SelectItem>
+                      <SelectItem value="upravni_odbor">Upravni odbor</SelectItem>
+                      <SelectItem value="nadzorni_odbor">Nadzorni odbor</SelectItem>
+                      <SelectItem value="zapovjednistvo">Zapovjedništvo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
