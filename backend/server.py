@@ -112,6 +112,16 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+# Helper function to check if user has management permissions
+def has_hydrant_management_permission(role: str) -> bool:
+    management_roles = [
+        "zapovjednik", 
+        "zamjenik_zapovjednika", 
+        "zapovjednistvo",
+        "predsjednik"
+    ]
+    return role in management_roles
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
