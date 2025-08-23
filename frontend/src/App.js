@@ -450,8 +450,11 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Vatrogasna Zajednica</h1>
           <div className="flex items-center space-x-4">
-            <Badge variant="secondary">{user?.department}</Badge>
-            <span className="text-sm">{user?.full_name}</span>
+            <div className="text-right">
+              <div className="text-sm font-semibold">{user?.full_name}</div>
+              <div className="text-xs opacity-90">{formatRoleName(user?.role)}</div>
+              <div className="text-xs opacity-75">{formatDepartmentName(user?.department)}</div>
+            </div>
             <Button variant="outline" size="sm" onClick={logout}>
               Odjava
             </Button>
