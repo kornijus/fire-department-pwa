@@ -223,15 +223,120 @@ class FirefighterAPITester:
         return success
 
     def test_member_role_restrictions(self):
-        """Test that member role cannot access operative features"""
-        # This would require creating a member user, but for now we'll test with current user
-        # In a real scenario, we'd create a member user and test restrictions
-        print("🔍 Testing Member Role Restrictions...")
-        print("   ℹ️  Note: This test requires a separate member user for full validation")
-        print("   ✅ PASSED - Role restrictions are implemented in the code")
-        self.tests_run += 1
-        self.tests_passed += 1
-        return True
+        """Test that member role cannot access management features"""
+        if not hasattr(self, 'member_data') or not self.member_data:
+            print("❌ No member data available for role restriction test")
+            return False
+            
+        # Login as member
+        login_data = {
+            "username": self.member_data["username"],
+            "password": self.member_data["password"]
+        }
+        
+        success, response = self.run_test(
+            "Member Login",
+            "POST",
+            "login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            # Store current management token
+            temp_token = self.token
+            self.member_token = response['access_token']
+            self.token = self.member_token
+            
+            # Test that member cannot access users endpoint
+            success_users, _ = self.run_test(
+                "Member Access to Users (Should Fail)",
+                "GET",
+                "users",
+                403  # Should return 403 Forbidden
+            )
+            
+            # Test that member cannot create hydrant
+            hydrant_data = {
+                "latitude": 45.123456,
+                "longitude": 15.654321,
+                "status": "working",
+                "notes": "Test hydrant by member (should fail)"
+            }
+            
+            success_hydrant, _ = self.run_test(
+                "Member Create Hydrant (Should Fail)",
+                "POST",
+                "hydrants",
+                403,  # Should return 403 Forbidden
+                data=hydrant_data
+            )
+            
+            # Restore management token
+            self.token = temp_token
+            
+            return success_users and success_hydrant
+        
+        return False
+
+    def test_all_departments_and_roles(self):
+        """Test registration with all departments and roles"""
+        departments = [
+            "DVD_Kneginec_Gornji",
+            "DVD_Donji_Kneginec", 
+            "DVD_Varazdinbreg",
+            "DVD_Luzan_Biskupecki"
+        ]
+        
+        roles = [
+            "clan_bez_funkcije",
+            "predsjednik", 
+            "tajnik",
+            "zapovjednik",
+            "zamjenik_zapovjednika",
+            "spremistar",
+            "blagajnik",
+            "upravni_odbor",
+            "nadzorni_odbor",
+            "zapovjednistvo"
+        ]
+        
+        print("🔍 Testing All Departments and Roles...")
+        print(f"   Departments: {len(departments)}")
+        print(f"   Roles: {len(roles)}")
+        
+        # Test a few combinations to verify structure
+        test_combinations = [
+            ("DVD_Kneginec_Gornji", "zapovjednik"),
+            ("DVD_Donji_Kneginec", "clan_bez_funkcije"),
+            ("DVD_Varazdinbreg", "predsjednik"),
+            ("DVD_Luzan_Biskupecki", "tajnik")
+        ]
+        
+        all_passed = True
+        for dept, role in test_combinations:
+            timestamp = datetime.now().strftime('%H%M%S%f')[:10]  # More unique timestamp
+            test_data = {
+                "username": f"test_{role}_{timestamp}",
+                "email": f"test_{role}_{timestamp}@vatrogasci.hr",
+                "password": "TestPass123!",
+                "full_name": f"Test {role}",
+                "department": dept,
+                "role": role
+            }
+            
+            success, _ = self.run_test(
+                f"Register {role} at {dept}",
+                "POST",
+                "register",
+                200,
+                data=test_data
+            )
+            
+            if not success:
+                all_passed = False
+        
+        return all_passed
 
 def main():
     print("🚒 Starting Firefighter Community API Tests")
