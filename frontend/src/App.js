@@ -208,10 +208,10 @@ const LoginPage = () => {
                       <SelectValue placeholder="Vatrogasno društvo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="DVD1">DVD 1</SelectItem>
-                      <SelectItem value="DVD2">DVD 2</SelectItem>
-                      <SelectItem value="DVD3">DVD 3</SelectItem>
-                      <SelectItem value="DVD4">DVD 4</SelectItem>
+                      <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                      <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                      <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                      <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
