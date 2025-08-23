@@ -214,6 +214,18 @@ const LoginPage = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Uloga" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="member">Član</SelectItem>
+                      <SelectItem value="operative">Operativni član</SelectItem>
+                      <SelectItem value="admin">Administrator</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </>
             )}
             
