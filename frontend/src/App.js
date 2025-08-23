@@ -380,6 +380,15 @@ const Dashboard = () => {
     return managementRoles.includes(userRole);
   };
 
+  const pingUser = (targetUserId) => {
+    if (socket && user) {
+      socket.emit('ping_user', {
+        target_user_id: targetUserId,
+        from_user_id: user.id
+      });
+    }
+  };
+
   const addHydrant = async (lat, lng, status, notes) => {
     try {
       await axios.post(`${API}/hydrants`, {
