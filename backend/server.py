@@ -278,7 +278,7 @@ async def create_hydrant(hydrant: HydrantCreate, current_user: User = Depends(ge
 
 @api_router.put("/hydrants/{hydrant_id}")
 async def update_hydrant(hydrant_id: str, hydrant_update: HydrantUpdate, current_user: User = Depends(get_current_user)):
-    if current_user.role not in ["operative", "admin"]:
+    if not has_hydrant_management_permission(current_user.role):
         raise HTTPException(status_code=403, detail="Access denied")
     
     update_data = {k: v for k, v in hydrant_update.dict().items() if v is not None}
