@@ -563,7 +563,7 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Hidrantska Mreža</CardTitle>
-                  {(user?.role === 'operative' || user?.role === 'admin') && (
+                  {hasManagementPermission(user?.role) && (
                     <AddHydrantDialog onAdd={addHydrant} />
                   )}
                 </div>
