@@ -68,20 +68,20 @@ class FirefighterAPITester:
         """Test the root API endpoint"""
         return self.run_test("Root API Endpoint", "GET", "", 200)
 
-    def test_register_user(self):
-        """Test user registration with operative role"""
+    def test_register_user_zapovjednik(self):
+        """Test user registration with zapovjednik role from DVD_Kneginec_Gornji"""
         timestamp = datetime.now().strftime('%H%M%S')
         user_data = {
-            "username": f"testvatrogasac{timestamp}",
-            "email": f"test{timestamp}@vatrogasci.hr",
+            "username": f"zapovjednik{timestamp}",
+            "email": f"zapovjednik{timestamp}@vatrogasci.hr",
             "password": "TestPass123!",
-            "full_name": "Test Vatrogasac",
-            "department": "DVD1",
-            "role": "operative"
+            "full_name": "Test Zapovjednik",
+            "department": "DVD_Kneginec_Gornji",
+            "role": "zapovjednik"
         }
         
         success, response = self.run_test(
-            "User Registration (Operative)",
+            "User Registration (Zapovjednik from DVD_Kneginec_Gornji)",
             "POST",
             "register",
             200,
@@ -90,7 +90,33 @@ class FirefighterAPITester:
         
         if success:
             self.user_data = user_data
-            print(f"   ✅ User registered: {user_data['username']}")
+            print(f"   ✅ User registered: {user_data['username']} - {user_data['role']} at {user_data['department']}")
+        
+        return success
+
+    def test_register_user_member(self):
+        """Test user registration with clan_bez_funkcije role"""
+        timestamp = datetime.now().strftime('%H%M%S')
+        member_data = {
+            "username": f"member{timestamp}",
+            "email": f"member{timestamp}@vatrogasci.hr",
+            "password": "TestPass123!",
+            "full_name": "Test Member",
+            "department": "DVD_Donji_Kneginec",
+            "role": "clan_bez_funkcije"
+        }
+        
+        success, response = self.run_test(
+            "User Registration (Member without function)",
+            "POST",
+            "register",
+            200,
+            data=member_data
+        )
+        
+        if success:
+            self.member_data = member_data
+            print(f"   ✅ Member registered: {member_data['username']} - {member_data['role']} at {member_data['department']}")
         
         return success
 
