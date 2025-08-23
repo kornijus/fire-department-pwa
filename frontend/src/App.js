@@ -127,7 +127,8 @@ const LoginPage = () => {
     password: '',
     email: '',
     full_name: '',
-    department: ''
+    department: '',
+    role: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
