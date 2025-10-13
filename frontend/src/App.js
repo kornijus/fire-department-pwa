@@ -572,7 +572,17 @@ const Dashboard = () => {
       {/* Header */}
       <header className="bg-red-600 text-white p-4 shadow-lg">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Vatrogasna Zajednica Gornji Kneginec</h1>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png" 
+              alt="VZO Gornji Kneginec" 
+              className="w-12 h-12 object-contain bg-white rounded-full p-1"
+            />
+            <div>
+              <h1 className="text-xl font-bold">Vatrogasna Zajednica Općine</h1>
+              <p className="text-sm opacity-90">Gornji Kneginec</p>
+            </div>
+          </div>
           <div className="flex items-center space-x-4">
             <div className="text-right">
               <div className="text-sm font-semibold">{user?.full_name}</div>
