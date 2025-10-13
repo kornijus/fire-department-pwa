@@ -762,11 +762,30 @@ const Dashboard = () => {
 // Hydrant Update Dialog
 const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
   const [status, setStatus] = useState(hydrant.status);
+  const [tipHidranta, setTipHidranta] = useState(hydrant.tip_hidranta || 'nadzemni');
   const [notes, setNotes] = useState(hydrant.notes || '');
+  const [images, setImages] = useState(hydrant.images || []);
   const [open, setOpen] = useState(false);
 
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUrl = e.target.result;
+        setImages(prev => [...prev, imageDataUrl]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleUpdate = () => {
-    onUpdate(hydrant.id, status, notes);
+    onUpdate(hydrant.id, status, tipHidranta, notes, images);
     setOpen(false);
   };
 
