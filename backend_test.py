@@ -506,16 +506,20 @@ def main():
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
         ("User Registration (Zapovjednik)", tester.test_register_user_zapovjednik),
+        ("VZO User Registration", tester.test_register_vzo_user),
         ("User Registration (Member)", tester.test_register_user_member),
         ("User Login", tester.test_login),
         ("Get User Profile", tester.test_get_me),
         ("Get All Users", tester.test_get_users),
         ("Get Active Locations", tester.test_get_active_locations),
         ("Get Hydrants", tester.test_get_hydrants),
-        ("Create Hydrant", tester.test_create_hydrant),
+        ("Create Nadzemni Hydrant", tester.test_create_hydrant_nadzemni),
+        ("Create Podzemni Hydrant", tester.test_create_hydrant_podzemni),
         ("Update Hydrant", tester.test_update_hydrant),
+        ("VZO Permissions", tester.test_vzo_permissions),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Role Restrictions", tester.test_member_role_restrictions),
+        ("All VZO Roles", tester.test_all_vzo_roles),
         ("All Departments and Roles", tester.test_all_departments_and_roles),
     ]
     
