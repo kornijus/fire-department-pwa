@@ -128,7 +128,8 @@ const LoginPage = () => {
     email: '',
     full_name: '',
     department: '',
-    role: ''
+    role: '',
+    is_vzo_member: false  // NEW: VZO membership flag
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
