@@ -570,15 +570,33 @@ const Dashboard = () => {
             <Card>
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle>Live Mapa</CardTitle>
-                  <div className="flex items-center space-x-2">
-                    <label className="text-sm">GPS Praćenje:</label>
-                    <Switch
-                      checked={gpsEnabled}
-                      onCheckedChange={setGpsEnabled}
-                    />
+                  <CardTitle>Live Mapa Hidrantske Mreže</CardTitle>
+                  <div className="flex items-center space-x-4">
+                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                      <>
+                        <Button
+                          onClick={() => setIsAddingHydrant(!isAddingHydrant)}
+                          className={isAddingHydrant ? 'bg-green-600' : 'bg-blue-600'}
+                        >
+                          {isAddingHydrant ? 'Odustani' : 'Dodaj Hidrant'}
+                        </Button>
+                        <AddHydrantDialog onAdd={addHydrant} />
+                      </>
+                    )}
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm">GPS Praćenje:</label>
+                      <Switch
+                        checked={gpsEnabled}
+                        onCheckedChange={setGpsEnabled}
+                      />
+                    </div>
                   </div>
                 </div>
+                {isAddingHydrant && (
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <AlertDescription>Kliknite na kartu za dodavanje novog hidranta</AlertDescription>
+                  </Alert>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="h-96 rounded-lg overflow-hidden border">
