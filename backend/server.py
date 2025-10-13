@@ -404,7 +404,7 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user: User 
 
 # NEW: DVD Stations endpoints
 @api_router.get("/dvd-stations", response_model=List[DVDStation])
-async def get_dvd_stations():
+async def get_dvd_stations(current_user: User = Depends(get_current_user)):
     stations = await db.dvd_stations.find().to_list(100)
     return [DVDStation(**station) for station in stations]
 
