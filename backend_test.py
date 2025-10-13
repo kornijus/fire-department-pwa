@@ -79,7 +79,8 @@ class FirefighterAPITester:
             "password": "TestPass123!",
             "full_name": "Test Zapovjednik",
             "department": "DVD_Kneginec_Gornji",
-            "role": "zapovjednik"
+            "role": "zapovjednik",
+            "is_vzo_member": False
         }
         
         success, response = self.run_test(
@@ -93,6 +94,33 @@ class FirefighterAPITester:
         if success:
             self.user_data = user_data
             print(f"   ✅ User registered: {user_data['username']} - {user_data['role']} at {user_data['department']}")
+        
+        return success
+
+    def test_register_vzo_user(self):
+        """Test VZO user registration with predsjednik_vzo role"""
+        timestamp = datetime.now().strftime('%H%M%S')
+        vzo_user_data = {
+            "username": f"vzo_predsjednik{timestamp}",
+            "email": f"vzo_predsjednik{timestamp}@vatrogasci.hr",
+            "password": "TestPass123!",
+            "full_name": "Test VZO Predsjednik",
+            "department": "VZO",
+            "role": "predsjednik_vzo",
+            "is_vzo_member": True
+        }
+        
+        success, response = self.run_test(
+            "VZO User Registration (Predsjednik VZO)",
+            "POST",
+            "register",
+            200,
+            data=vzo_user_data
+        )
+        
+        if success:
+            self.vzo_user_data = vzo_user_data
+            print(f"   ✅ VZO User registered: {vzo_user_data['username']} - {vzo_user_data['role']} at {vzo_user_data['department']}")
         
         return success
 
