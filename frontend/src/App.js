@@ -922,6 +922,96 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="vehicles">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Vozila</CardTitle>
+                  <Button onClick={fetchVehicles}>
+                    Osvježi popis vozila
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {vehicles.length === 0 ? (
+                    <p className="text-gray-500">Nema vozila za prikaz</p>
+                  ) : (
+                    vehicles.map((vehicle) => (
+                      <div key={vehicle.id} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-bold text-lg">{vehicle.name}</h3>
+                            <p><strong>Tip:</strong> {vehicle.type}</p>
+                            <p><strong>Registracija:</strong> {vehicle.license_plate}</p>
+                            <p><strong>Društvo:</strong> {formatDepartmentName(vehicle.department)}</p>
+                            {vehicle.year && <p><strong>Godina:</strong> {vehicle.year}</p>}
+                            <p><strong>Status:</strong> 
+                              <Badge className={vehicle.status === 'active' ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
+                                {vehicle.status}
+                              </Badge>
+                            </p>
+                            {vehicle.technical_inspection_valid_until && (
+                              <p><strong>Tehnički do:</strong> {new Date(vehicle.technical_inspection_valid_until).toLocaleDateString()}</p>
+                            )}
+                            {vehicle.next_service_due && (
+                              <p><strong>Sljedeći servis:</strong> {new Date(vehicle.next_service_due).toLocaleDateString()}</p>
+                            )}
+                            {vehicle.notes && <p><strong>Napomene:</strong> {vehicle.notes}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="equipment">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Oprema</CardTitle>
+                  <Button onClick={fetchEquipment}>
+                    Osvježi popis opreme
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {equipment.length === 0 ? (
+                    <p className="text-gray-500">Nema opreme za prikaz</p>
+                  ) : (
+                    equipment.map((item) => (
+                      <div key={item.id} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-bold text-lg">{item.name}</h3>
+                            <p><strong>Tip:</strong> {item.type}</p>
+                            {item.serial_number && <p><strong>Serijski broj:</strong> {item.serial_number}</p>}
+                            <p><strong>Društvo:</strong> {formatDepartmentName(item.department)}</p>
+                            <p><strong>Lokacija:</strong> {item.location}</p>
+                            <p><strong>Stanje:</strong> 
+                              <Badge className={item.condition === 'good' ? 'bg-green-500 ml-2' : 'bg-orange-500 ml-2'}>
+                                {item.condition}
+                              </Badge>
+                            </p>
+                            {item.next_inspection_due && (
+                              <p><strong>Sljedeća provjera:</strong> {new Date(item.next_inspection_due).toLocaleDateString()}</p>
+                            )}
+                            {item.assigned_to_user && <p><strong>Dodijeljeno korisniku:</strong> {item.assigned_to_user}</p>}
+                            {item.notes && <p><strong>Napomene:</strong> {item.notes}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
             <TabsContent value="admin">
               <Card>
