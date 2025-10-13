@@ -402,6 +402,54 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user: User 
     
     return {"message": "User updated successfully"}
 
+# NEW: DVD Stations endpoints
+@api_router.get("/dvd-stations", response_model=List[DVDStation])
+async def get_dvd_stations():
+    stations = await db.dvd_stations.find().to_list(100)
+    return [DVDStation(**station) for station in stations]
+
+@api_router.post("/dvd-stations", response_model=DVDStation)
+async def create_dvd_station(station: DVDStation, current_user: User = Depends(get_current_user)):
+    if not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    await db.dvd_stations.insert_one(station.dict())
+    return station
+
+# NEW: Vehicles endpoints
+@api_router.get("/vehicles", response_model=List[Vehicle])
+async def get_vehicles(current_user: User = Depends(get_current_user)):
+    if has_vzo_full_access(current_user):
+        vehicles = await db.vehicles.find().to_list(1000)
+    else:
+        vehicles = await db.vehicles.find({"department": current_user.department}).to_list(1000)
+    return [Vehicle(**vehicle) for vehicle in vehicles]
+
+@api_router.post("/vehicles", response_model=Vehicle)
+async def create_vehicle(vehicle: Vehicle, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    await db.vehicles.insert_one(vehicle.dict())
+    return vehicle
+
+# NEW: Equipment endpoints
+@api_router.get("/equipment", response_model=List[Equipment])
+async def get_equipment(current_user: User = Depends(get_current_user)):
+    if has_vzo_full_access(current_user):
+        equipment = await db.equipment.find().to_list(1000)
+    else:
+        equipment = await db.equipment.find({"department": current_user.department}).to_list(1000)
+    return [Equipment(**eq) for eq in equipment]
+
+@api_router.post("/equipment", response_model=Equipment)
+async def create_equipment(equipment: Equipment, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    await db.equipment.insert_one(equipment.dict())
+    return equipment
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
