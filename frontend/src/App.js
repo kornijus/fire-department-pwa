@@ -706,6 +706,7 @@ const Dashboard = () => {
                       >
                         <Popup>
                           <div className="p-2">
+                            {hydrant.address && <p><strong>Adresa:</strong> {hydrant.address}</p>}
                             <p><strong>Tip:</strong> 
                               <Badge className={hydrant.tip_hidranta === 'podzemni' ? 'bg-red-500' : 'bg-blue-500'}>
                                 {hydrant.tip_hidranta === 'podzemni' ? '🔴 Podzemni' : '🔵 Nadzemni'}
