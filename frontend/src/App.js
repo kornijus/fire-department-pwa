@@ -956,24 +956,39 @@ const AddHydrantDialog = ({ onAdd }) => {
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Geografska širina</label>
-            <Input
-              type="number"
-              step="any"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
-              placeholder="46.161100"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Geografska dužina</label>
-            <Input
-              type="number"
-              step="any"
-              value={lng}
-              onChange={(e) => setLng(e.target.value)}
-              placeholder="16.241900"
-            />
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium">Koordinate</label>
+              <Button 
+                type="button"
+                variant="outline" 
+                size="sm"
+                onClick={useMyLocation}
+              >
+                📍 Koristi moju lokaciju
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs text-gray-500">Geografska širina</label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
+                  placeholder="46.161100"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">Geografska dužina</label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lng}
+                  onChange={(e) => setLng(e.target.value)}
+                  placeholder="16.241900"
+                />
+              </div>
+            </div>
           </div>
           <div>
             <label className="text-sm font-medium">Tip hidranta</label>
