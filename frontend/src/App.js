@@ -592,6 +592,9 @@ const Dashboard = () => {
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     
+                    {/* Map click handler for adding hydrants */}
+                    <MapClickHandler onMapClick={handleMapClick} />
+                    
                     {/* Active Users */}
                     {activeUsers.map((activeUser, index) => (
                       <Marker
