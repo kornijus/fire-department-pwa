@@ -509,11 +509,13 @@ const Dashboard = () => {
     }
   };
 
-  const updateHydrant = async (hydrantId, status, notes) => {
+  const updateHydrant = async (hydrantId, status, tip_hidranta, notes, images) => {
     try {
       await axios.put(`${API}/hydrants/${hydrantId}`, {
         status,
-        notes
+        tip_hidranta,
+        notes,
+        images
       });
       fetchHydrants();
     } catch (error) {
