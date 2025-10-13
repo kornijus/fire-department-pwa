@@ -827,7 +827,16 @@ const Dashboard = () => {
                           )}
                         </div>
                         {hasManagementPermission(user?.role, user?.is_vzo_member) && (
-                          <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
+                          <div className="flex space-x-2">
+                            <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => deleteHydrant(hydrant.id)}
+                            >
+                              Obriši
+                            </Button>
+                          </div>
                         )}
                       </div>
                     </div>
