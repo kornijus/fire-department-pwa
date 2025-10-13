@@ -929,7 +929,7 @@ const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
   };
 
   const handleUpdate = () => {
-    onUpdate(hydrant.id, status, tipHidranta, notes, images);
+    onUpdate(hydrant.id, status, tipHidranta, address, notes, images);
     setOpen(false);
   };
 
