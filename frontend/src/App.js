@@ -1130,6 +1130,137 @@ const AddHydrantDialog = ({ onAdd }) => {
   );
 };
 
+// User Update Dialog
+const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
+  const [role, setRole] = useState(adminUser.role);
+  const [department, setDepartment] = useState(adminUser.department);
+  const [isActive, setIsActive] = useState(adminUser.is_active);
+  const [isVzoMember, setIsVzoMember] = useState(adminUser.is_vzo_member);
+  const [open, setOpen] = useState(false);
+
+  const handleUpdate = () => {
+    const updates = {
+      role,
+      department,
+      is_active: isActive,
+      is_vzo_member: isVzoMember
+    };
+    onUpdate(adminUser.id, updates);
+    setOpen(false);
+  };
+
+  const getAvailableRoles = () => {
+    if (isVzoMember) {
+      return [
+        { value: 'predsjednik_vzo', label: 'Predsjednik VZO-a' },
+        { value: 'zamjenik_predsjednika_vzo', label: 'Zamjenik predsjednika VZO-a' },
+        { value: 'tajnik_vzo', label: 'Tajnik VZO-a' },
+        { value: 'zapovjednik_vzo', label: 'Zapovjednik VZO-a' },
+        { value: 'zamjenik_zapovjednika_vzo', label: 'Zamjenik zapovjednika VZO-a' }
+      ];
+    } else {
+      return [
+        { value: 'clan_bez_funkcije', label: 'Član bez funkcije' },
+        { value: 'predsjednik', label: 'Predsjednik' },
+        { value: 'tajnik', label: 'Tajnik' },
+        { value: 'zapovjednik', label: 'Zapovjednik' },
+        { value: 'zamjenik_zapovjednika', label: 'Zamjenik zapovjednika' },
+        { value: 'spremistar', label: 'Spremistar' },
+        { value: 'blagajnik', label: 'Blagajnik' },
+        { value: 'upravni_odbor', label: 'Upravni odbor' },
+        { value: 'nadzorni_odbor', label: 'Nadzorni odbor' },
+        { value: 'zapovjednistvo', label: 'Zapovjedništvo' }
+      ];
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline">Uredi</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Uređivanje korisnika: {adminUser.full_name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="vzo_member_edit"
+              checked={isVzoMember}
+              onCheckedChange={(checked) => {
+                setIsVzoMember(checked);
+                setDepartment(checked ? 'VZO' : '');
+                setRole('');
+              }}
+            />
+            <label htmlFor="vzo_member_edit" className="text-sm font-medium">
+              VZO član
+            </label>
+          </div>
+
+          {!isVzoMember && (
+            <div>
+              <label className="text-sm font-medium">Društvo</label>
+              <Select value={department} onValueChange={setDepartment}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div>
+            <label className="text-sm font-medium">Uloga</label>
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {getAvailableRoles().map((roleOption) => (
+                  <SelectItem key={roleOption.value} value={roleOption.value}>
+                    {roleOption.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="is_active_edit"
+              checked={isActive}
+              onCheckedChange={setIsActive}
+            />
+            <label htmlFor="is_active_edit" className="text-sm font-medium">
+              Korisnik je aktivan
+            </label>
+          </div>
+
+          <div className="flex space-x-2">
+            <Button onClick={handleUpdate} className="flex-1">
+              Spremi promjene
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setOpen(false)}
+              className="flex-1"
+            >
+              Odustani
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
