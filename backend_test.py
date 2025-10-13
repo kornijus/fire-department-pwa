@@ -560,20 +560,22 @@ def main():
     
     tester = FirefighterAPITester()
     
-    # Test sequence
+    # Test sequence - UPDATED for specific review request
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
-        ("User Registration (Zapovjednik)", tester.test_register_user_zapovjednik),
-        ("VZO User Registration", tester.test_register_vzo_user),
-        ("User Registration (Member)", tester.test_register_user_member),
-        ("User Login", tester.test_login),
+        ("Login Specific User (test_zapovjednik_final)", tester.test_login_specific_user),
         ("Get User Profile", tester.test_get_me),
-        ("Get All Users", tester.test_get_users),
-        ("Get Active Locations", tester.test_get_active_locations),
         ("Get Hydrants", tester.test_get_hydrants),
         ("Create Nadzemni Hydrant", tester.test_create_hydrant_nadzemni),
         ("Create Podzemni Hydrant", tester.test_create_hydrant_podzemni),
         ("Update Hydrant", tester.test_update_hydrant),
+        ("Delete Hydrant (NEW FUNCTIONALITY)", tester.test_delete_hydrant),
+        ("User Registration (Zapovjednik)", tester.test_register_user_zapovjednik),
+        ("VZO User Registration", tester.test_register_vzo_user),
+        ("User Registration (Member)", tester.test_register_user_member),
+        ("User Login", tester.test_login),
+        ("Get All Users", tester.test_get_users),
+        ("Get Active Locations", tester.test_get_active_locations),
         ("VZO Permissions", tester.test_vzo_permissions),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Role Restrictions", tester.test_member_role_restrictions),
