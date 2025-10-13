@@ -159,7 +159,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
 # Base location for geofencing (center of operations)
-BASE_LOCATION = (46.1611, 16.2419)  # Gornji Kneginec coordinates
+BASE_LOCATION = (46.2508, 16.3755)  # Gornji Kneginec coordinates (corrected)
 GEOFENCE_RADIUS_KM = 10
 
 def is_within_geofence(lat: float, lon: float) -> bool:
