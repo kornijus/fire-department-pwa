@@ -906,6 +906,7 @@ const Dashboard = () => {
 const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
   const [status, setStatus] = useState(hydrant.status);
   const [tipHidranta, setTipHidranta] = useState(hydrant.tip_hidranta || 'nadzemni');
+  const [address, setAddress] = useState(hydrant.address || '');
   const [notes, setNotes] = useState(hydrant.notes || '');
   const [images, setImages] = useState(hydrant.images || []);
   const [open, setOpen] = useState(false);
