@@ -733,11 +733,11 @@ const Dashboard = () => {
                             <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
                           )}
                           {hydrant.images && hydrant.images.length > 0 && (
-                            <div className=\"mt-2\">
+                            <div className="mt-2">
                               <p><strong>Slike:</strong></p>
-                              <div className=\"flex space-x-2 mt-1\">
+                              <div className="flex space-x-2 mt-1">
                                 {hydrant.images.map((image, idx) => (
-                                  <img key={idx} src={image} alt=\"Hidrant\" className=\"w-20 h-20 object-cover rounded\" />
+                                  <img key={idx} src={image} alt="Hidrant" className="w-20 h-20 object-cover rounded" />
                                 ))}
                               </div>
                             </div>
