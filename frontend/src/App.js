@@ -793,6 +793,55 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
+            <TabsContent value="admin">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Administracija Korisnika</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Button onClick={fetchAllUsers} className="mb-4">
+                      Osvježi popis korisnika
+                    </Button>
+                    
+                    {allUsers.length === 0 ? (
+                      <p className="text-gray-500">Nema korisnika za prikaz</p>
+                    ) : (
+                      <div className="grid gap-4">
+                        {allUsers.map((adminUser) => (
+                          <div key={adminUser.id} className="p-4 border rounded-lg">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p><strong>Ime:</strong> {adminUser.full_name}</p>
+                                <p><strong>Korisničko ime:</strong> {adminUser.username}</p>
+                                <p><strong>Email:</strong> {adminUser.email}</p>
+                                <p><strong>Društvo:</strong> {formatDepartmentName(adminUser.department)}</p>
+                                <p><strong>Uloga:</strong> {formatRoleName(adminUser.role)}</p>
+                                <p><strong>VZO član:</strong> 
+                                  <Badge className={adminUser.is_vzo_member ? 'bg-yellow-500 ml-2' : 'bg-gray-500 ml-2'}>
+                                    {adminUser.is_vzo_member ? 'Da' : 'Ne'}
+                                  </Badge>
+                                </p>
+                                <p><strong>Status:</strong> 
+                                  <Badge className={adminUser.is_active ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
+                                    {adminUser.is_active ? 'Aktivan' : 'Neaktivan'}
+                                  </Badge>
+                                </p>
+                                <p><strong>Registriran:</strong> {new Date(adminUser.created_at).toLocaleDateString()}</p>
+                              </div>
+                              <UserUpdateDialog user={adminUser} onUpdate={updateUser} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
