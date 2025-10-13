@@ -307,6 +307,16 @@ const LoginPage = () => {
   );
 };
 
+// NEW: Map click handler component
+const MapClickHandler = ({ onMapClick }) => {
+  useMapEvents({
+    click: (e) => {
+      onMapClick(e.latlng);
+    },
+  });
+  return null;
+};
+
 // Main Dashboard Component
 const Dashboard = () => {
   const { user, logout } = useAuth();
