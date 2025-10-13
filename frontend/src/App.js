@@ -1043,7 +1043,7 @@ const AddHydrantDialog = ({ onAdd }) => {
       <DialogTrigger asChild>
         <Button>Dodaj Hidrant</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md z-50">
         <DialogHeader>
           <DialogTitle>Dodaj Novi Hidrant</DialogTitle>
         </DialogHeader>
