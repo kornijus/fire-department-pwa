@@ -1062,9 +1062,10 @@ const AddHydrantDialog = ({ onAdd }) => {
 
   const handleAdd = () => {
     if (lat && lng) {
-      onAdd(parseFloat(lat), parseFloat(lng), status, tipHidranta, notes, images);
+      onAdd(parseFloat(lat), parseFloat(lng), status, tipHidranta, address, notes, images);
       setLat('');
       setLng('');
+      setAddress('');
       setNotes('');
       setImages([]);
       setOpen(false);
