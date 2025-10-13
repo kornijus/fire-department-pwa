@@ -290,11 +290,103 @@ async def get_users(current_user: User = Depends(get_current_user)):
     else:
         raise HTTPException(status_code=403, detail="Access denied")
 
+# NEW: DVD Station model
+class DVDStation(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    address: str
+    latitude: float
+    longitude: float
+    contact_phone: Optional[str] = None
+    contact_email: Optional[str] = None
+    established_year: Optional[int] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# NEW: Extended User model with additional fields
+class UserExtended(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    username: str
+    email: str
+    full_name: str
+    department: str
+    role: str = "clan_bez_funkcije"
+    is_vzo_member: bool = False
+    is_active: bool = True
+    
+    # NEW: Additional personal data
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    date_of_birth: Optional[datetime] = None
+    
+    # NEW: Medical data
+    medical_exam_date: Optional[datetime] = None
+    medical_exam_valid_until: Optional[datetime] = None
+    medical_restrictions: Optional[str] = None
+    
+    # NEW: Equipment assignments
+    assigned_equipment: List[str] = []
+    
+    # NEW: Certifications
+    certifications: List[str] = []
+    
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# NEW: Vehicle model
+class Vehicle(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    type: str  # cisterna, kombi, vatrogasno vozilo
+    license_plate: str
+    department: str
+    year: Optional[int] = None
+    
+    # Technical inspection
+    technical_inspection_date: Optional[datetime] = None
+    technical_inspection_valid_until: Optional[datetime] = None
+    
+    # Service
+    last_service_date: Optional[datetime] = None
+    next_service_due: Optional[datetime] = None
+    service_km: Optional[int] = None
+    current_km: Optional[int] = None
+    
+    # Status
+    status: str = "active"  # active, maintenance, out_of_service
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# NEW: Equipment model
+class Equipment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    type: str  # helmet, suit, tank, hose, etc.
+    serial_number: Optional[str] = None
+    department: str
+    location: str  # vehicle_id or station location
+    
+    # Maintenance
+    last_inspection_date: Optional[datetime] = None
+    next_inspection_due: Optional[datetime] = None
+    condition: str = "good"  # good, needs_maintenance, damaged
+    
+    # Assignment
+    assigned_to_user: Optional[str] = None
+    assigned_to_vehicle: Optional[str] = None
+    
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class UserUpdate(BaseModel):
     role: Optional[str] = None
     department: Optional[str] = None
     is_active: Optional[bool] = None
     is_vzo_member: Optional[bool] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    medical_exam_date: Optional[datetime] = None
+    medical_exam_valid_until: Optional[datetime] = None
+    assigned_equipment: Optional[List[str]] = None
+    certifications: Optional[List[str]] = None
 
 @api_router.put("/users/{user_id}")
 async def update_user(user_id: str, user_update: UserUpdate, current_user: User = Depends(get_current_user)):
