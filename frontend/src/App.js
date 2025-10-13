@@ -937,6 +937,18 @@ const AddHydrantDialog = ({ onAdd }) => {
             />
           </div>
           <div>
+            <label className="text-sm font-medium">Tip hidranta</label>
+            <Select value={tipHidranta} onValueChange={setTipHidranta}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nadzemni">🔵 Nadzemni</SelectItem>
+                <SelectItem value="podzemni">🔴 Podzemni</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
             <label className="text-sm font-medium">Status</label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger>
