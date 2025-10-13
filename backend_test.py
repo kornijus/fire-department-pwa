@@ -266,6 +266,64 @@ class FirefighterAPITester:
             data=update_data
         )
 
+    def test_delete_hydrant(self):
+        """Test deleting a hydrant (NEW: Main fix to test)"""
+        if not self.created_podzemni_id:
+            print("❌ No podzemni hydrant ID available for delete test")
+            return False
+            
+        success = self.run_test(
+            "Delete Hydrant (NEW FUNCTIONALITY)",
+            "DELETE",
+            f"hydrants/{self.created_podzemni_id}",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Hydrant {self.created_podzemni_id} successfully deleted")
+            # Verify hydrant is actually deleted by trying to get all hydrants
+            success_verify, response = self.run_test(
+                "Verify Hydrant Deletion",
+                "GET",
+                "hydrants",
+                200
+            )
+            if success_verify:
+                hydrant_ids = [h.get('id') for h in response if isinstance(response, list)]
+                if self.created_podzemni_id not in hydrant_ids:
+                    print(f"   ✅ Confirmed: Deleted hydrant {self.created_podzemni_id} not in hydrant list")
+                    return True
+                else:
+                    print(f"   ❌ Error: Deleted hydrant {self.created_podzemni_id} still appears in hydrant list")
+                    return False
+        
+        return success
+
+    def test_login_specific_user(self):
+        """Test login with specific user from review request: test_zapovjednik_final"""
+        login_data = {
+            "username": "test_zapovjednik_final",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login Specific User (test_zapovjednik_final)",
+            "POST",
+            "login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.user_data = response.get('user', {})
+            print(f"   ✅ Specific user logged in: {login_data['username']}")
+            print(f"   ✅ User role: {self.user_data.get('role', 'Unknown')}")
+            print(f"   ✅ User department: {self.user_data.get('department', 'Unknown')}")
+            print(f"   ✅ VZO member: {self.user_data.get('is_vzo_member', False)}")
+            return True
+        return False
+
     def test_unauthorized_access(self):
         """Test accessing protected endpoints without token"""
         # Temporarily remove token
