@@ -133,7 +133,8 @@ class FirefighterAPITester:
             "password": "TestPass123!",
             "full_name": "Test Member",
             "department": "DVD_Donji_Kneginec",
-            "role": "clan_bez_funkcije"
+            "role": "clan_bez_funkcije",
+            "is_vzo_member": False
         }
         
         success, response = self.run_test(
