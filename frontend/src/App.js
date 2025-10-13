@@ -51,7 +51,7 @@ const nadzemniHydrantIcon = new L.Icon({
 });
 
 const podzemniHydrantIcon = new L.Icon({
-  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+  iconUrl: 'data:image/svg+xml;base64=' + btoa(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#dc2626">
       <circle cx="12" cy="12" r="10" stroke="#991b1b" stroke-width="2"/>
       <circle cx="12" cy="12" r="6" fill="#f87171"/>
@@ -61,6 +61,24 @@ const podzemniHydrantIcon = new L.Icon({
   iconSize: [24, 24], 
   iconAnchor: [12, 24],
   popupAnchor: [0, -24]
+});
+
+// NEW: DVD Station icon
+const dvdStationIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64=' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#dc2626">
+      <rect x="3" y="8" width="18" height="12" rx="2" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
+      <rect x="5" y="10" width="3" height="2" fill="white"/>
+      <rect x="9" y="10" width="3" height="2" fill="white"/>
+      <rect x="13" y="10" width="3" height="2" fill="white"/>
+      <rect x="16" y="10" width="3" height="2" fill="white"/>
+      <polygon points="12,2 6,8 18,8" fill="#991b1b"/>
+      <circle cx="12" cy="5" r="1" fill="white"/>
+    </svg>
+  `),
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
 });
 
 // Auth Context
