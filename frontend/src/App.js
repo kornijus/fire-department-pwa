@@ -488,7 +488,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="bg-red-600 text-white p-4 shadow-lg">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Vatrogasna Zajednica</h1>
+          <h1 className="text-xl font-bold">Vatrogasna Zajednica Gornji Kneginec</h1>
           <div className="flex items-center space-x-4">
             <div className="text-right">
               <div className="text-sm font-semibold">{user?.full_name}</div>
