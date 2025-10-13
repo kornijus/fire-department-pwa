@@ -537,6 +537,24 @@ const Dashboard = () => {
     }
   };
 
+  const fetchAllUsers = async () => {
+    try {
+      const response = await axios.get(`${API}/users`);
+      setAllUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  const updateUser = async (userId, updates) => {
+    try {
+      await axios.put(`${API}/users/${userId}`, updates);
+      fetchAllUsers();
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
