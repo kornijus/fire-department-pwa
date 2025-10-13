@@ -969,6 +969,33 @@ const AddHydrantDialog = ({ onAdd }) => {
               placeholder="Dodatne informacije..."
             />
           </div>
+          <div>
+            <label className="text-sm font-medium">Slike</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="mb-2"
+            />
+            {images.length > 0 && (
+              <div className="grid grid-cols-3 gap-2">
+                {images.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img src={image} alt="Hidrant" className="w-full h-16 object-cover rounded" />
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute -top-1 -right-1 w-4 h-4 p-0"
+                      onClick={() => removeImage(index)}
+                    >
+                      ×
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <Button onClick={handleAdd} className="w-full">
             Dodaj Hidrant
           </Button>
