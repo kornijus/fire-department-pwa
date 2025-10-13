@@ -204,35 +204,63 @@ const LoginPage = () => {
                     required
                   />
                 </div>
-                <div>
-                  <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Vatrogasno društvo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
-                      <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
-                      <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
-                      <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="vzo_member"
+                    checked={formData.is_vzo_member}
+                    onCheckedChange={(checked) => {
+                      setFormData({ ...formData, is_vzo_member: checked, role: '', department: checked ? 'VZO' : '' });
+                    }}
+                  />
+                  <label htmlFor="vzo_member" className="text-sm font-medium">
+                    Član VZO-a
+                  </label>
                 </div>
+                
+                {!formData.is_vzo_member && (
+                  <div>
+                    <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vatrogasno društvo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                        <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                        <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                        <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                
                 <div>
                   <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Uloga" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="clan_bez_funkcije">Član bez funkcije</SelectItem>
-                      <SelectItem value="predsjednik">Predsjednik</SelectItem>
-                      <SelectItem value="tajnik">Tajnik</SelectItem>
-                      <SelectItem value="zapovjednik">Zapovjednik</SelectItem>
-                      <SelectItem value="zamjenik_zapovjednika">Zamjenik zapovjednika</SelectItem>
-                      <SelectItem value="spremistar">Spremistar</SelectItem>
-                      <SelectItem value="blagajnik">Blagajnik</SelectItem>
-                      <SelectItem value="upravni_odbor">Upravni odbor</SelectItem>
-                      <SelectItem value="nadzorni_odbor">Nadzorni odbor</SelectItem>
-                      <SelectItem value="zapovjednistvo">Zapovjedništvo</SelectItem>
+                      {formData.is_vzo_member ? (
+                        <>
+                          <SelectItem value="predsjednik_vzo">Predsjednik VZO-a</SelectItem>
+                          <SelectItem value="zamjenik_predsjednika_vzo">Zamjenik predsjednika VZO-a</SelectItem>
+                          <SelectItem value="tajnik_vzo">Tajnik VZO-a</SelectItem>
+                          <SelectItem value="zapovjednik_vzo">Zapovjednik VZO-a</SelectItem>
+                          <SelectItem value="zamjenik_zapovjednika_vzo">Zamjenik zapovjednika VZO-a</SelectItem>
+                        </>
+                      ) : (
+                        <>
+                          <SelectItem value="clan_bez_funkcije">Član bez funkcije</SelectItem>
+                          <SelectItem value="predsjednik">Predsjednik</SelectItem>
+                          <SelectItem value="tajnik">Tajnik</SelectItem>
+                          <SelectItem value="zapovjednik">Zapovjednik</SelectItem>
+                          <SelectItem value="zamjenik_zapovjednika">Zamjenik zapovjednika</SelectItem>
+                          <SelectItem value="spremistar">Spremistar</SelectItem>
+                          <SelectItem value="blagajnik">Blagajnik</SelectItem>
+                          <SelectItem value="upravni_odbor">Upravni odbor</SelectItem>
+                          <SelectItem value="nadzorni_odbor">Nadzorni odbor</SelectItem>
+                          <SelectItem value="zapovjednistvo">Zapovjedništvo</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
