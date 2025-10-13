@@ -243,18 +243,20 @@ class FirefighterAPITester:
         return success
 
     def test_update_hydrant(self):
-        """Test updating hydrant status"""
+        """Test updating hydrant status and type"""
         if not self.created_hydrant_id:
             print("❌ No hydrant ID available for update test")
             return False
             
         update_data = {
             "status": "maintenance",
-            "notes": "Updated by automated test - maintenance required"
+            "tip_hidranta": "podzemni",
+            "notes": "Updated by automated test - maintenance required, changed to podzemni",
+            "images": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="]
         }
         
         return self.run_test(
-            "Update Hydrant",
+            "Update Hydrant (Status, Type, Images)",
             "PUT",
             f"hydrants/{self.created_hydrant_id}",
             200,
