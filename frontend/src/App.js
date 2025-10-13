@@ -422,7 +422,13 @@ const Dashboard = () => {
       'blagajnik': 'Blagajnik',
       'upravni_odbor': 'Upravni odbor',
       'nadzorni_odbor': 'Nadzorni odbor',
-      'zapovjednistvo': 'Zapovjedništvo'
+      'zapovjednistvo': 'Zapovjedništvo',
+      // VZO roles
+      'predsjednik_vzo': 'Predsjednik VZO-a',
+      'zamjenik_predsjednika_vzo': 'Zamjenik predsjednika VZO-a',
+      'tajnik_vzo': 'Tajnik VZO-a',
+      'zapovjednik_vzo': 'Zapovjednik VZO-a',
+      'zamjenik_zapovjednika_vzo': 'Zamjenik zapovjednika VZO-a'
     };
     return roleNames[role] || role;
   };
