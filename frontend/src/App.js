@@ -325,6 +325,7 @@ const Dashboard = () => {
   const [gpsEnabled, setGpsEnabled] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [isAddingHydrant, setIsAddingHydrant] = useState(false);
   const watchId = useRef(null);
 
   useEffect(() => {
