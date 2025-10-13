@@ -956,6 +956,15 @@ const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
             </Select>
           </div>
           <div>
+            <label className="text-sm font-medium">Adresa</label>
+            <Input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Ulica i broj, Gornji Kneginec"
+            />
+          </div>
+          <div>
             <label className="text-sm font-medium">Status</label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger>
