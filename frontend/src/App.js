@@ -1596,6 +1596,121 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
   );
 };
 
+// Member Detail Dialog
+const MemberDetailDialog = ({ member, onUpdate }) => {
+  const [phone, setPhone] = useState(member.phone || '');
+  const [address, setAddress] = useState(member.address || '');
+  const [medicalExamDate, setMedicalExamDate] = useState(
+    member.medical_exam_date ? new Date(member.medical_exam_date).toISOString().split('T')[0] : ''
+  );
+  const [medicalValidUntil, setMedicalValidUntil] = useState(
+    member.medical_exam_valid_until ? new Date(member.medical_exam_valid_until).toISOString().split('T')[0] : ''
+  );
+  const [assignedEquipment, setAssignedEquipment] = useState(member.assigned_equipment?.join(', ') || '');
+  const [certifications, setCertifications] = useState(member.certifications?.join(', ') || '');
+  const [open, setOpen] = useState(false);
+
+  const handleUpdate = () => {
+    const updates = {
+      phone: phone || null,
+      address: address || null,
+      medical_exam_date: medicalExamDate ? new Date(medicalExamDate).toISOString() : null,
+      medical_exam_valid_until: medicalValidUntil ? new Date(medicalValidUntil).toISOString() : null,
+      assigned_equipment: assignedEquipment ? assignedEquipment.split(',').map(item => item.trim()) : [],
+      certifications: certifications ? certifications.split(',').map(item => item.trim()) : []
+    };
+    onUpdate(member.id, updates);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Detalji</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl z-50">
+        <DialogHeader>
+          <DialogTitle>Detalji člana: {member.full_name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Telefon</label>
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+385 42 123 456"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Adresa</label>
+              <Input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Ulica i broj, grad"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Datum liječničkog pregleda</label>
+              <Input
+                type="date"
+                value={medicalExamDate}
+                onChange={(e) => setMedicalExamDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Liječnički vrijedi do</label>
+              <Input
+                type="date"
+                value={medicalValidUntil}
+                onChange={(e) => setMedicalValidUntil(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Zadužena oprema (odvojeno zarezom)</label>
+            <Textarea
+              value={assignedEquipment}
+              onChange={(e) => setAssignedEquipment(e.target.value)}
+              placeholder="Kaciga, Odijelo, Boce za zrak, Crijevo..."
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Certifikati (odvojeno zarezom)</label>
+            <Textarea
+              value={certifications}
+              onChange={(e) => setCertifications(e.target.value)}
+              placeholder="Osnovni vatrogasni tečaj, Prva pomoć, Vozač..."
+              rows={3}
+            />
+          </div>
+
+          <div className="flex space-x-2 pt-4">
+            <Button onClick={handleUpdate} className="flex-1">
+              Spremi promjene
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setOpen(false)}
+              className="flex-1"
+            >
+              Odustani
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
