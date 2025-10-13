@@ -718,6 +718,11 @@ const Dashboard = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <p><strong>Pozicija:</strong> {hydrant.latitude.toFixed(6)}, {hydrant.longitude.toFixed(6)}</p>
+                          <p><strong>Tip:</strong> 
+                            <Badge className={hydrant.tip_hidranta === 'podzemni' ? 'bg-red-500 ml-2' : 'bg-blue-500 ml-2'}>
+                              {hydrant.tip_hidranta === 'podzemni' ? '🔴 Podzemni' : '🔵 Nadzemni'}
+                            </Badge>
+                          </p>
                           <p><strong>Status:</strong> 
                             <Badge className={hydrant.status === 'working' ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
                               {hydrant.status === 'working' ? 'Ispravan' : 'Neispravan'}
@@ -726,6 +731,16 @@ const Dashboard = () => {
                           {hydrant.notes && <p><strong>Napomene:</strong> {hydrant.notes}</p>}
                           {hydrant.last_check && (
                             <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
+                          )}
+                          {hydrant.images && hydrant.images.length > 0 && (
+                            <div className=\"mt-2\">
+                              <p><strong>Slike:</strong></p>
+                              <div className=\"flex space-x-2 mt-1\">
+                                {hydrant.images.map((image, idx) => (
+                                  <img key={idx} src={image} alt=\"Hidrant\" className=\"w-20 h-20 object-cover rounded\" />
+                                ))}
+                              </div>
+                            </div>
                           )}
                         </div>
                         {hasManagementPermission(user?.role, user?.is_vzo_member) && (
