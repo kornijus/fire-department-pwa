@@ -468,6 +468,31 @@ const Dashboard = () => {
     }
   };
 
+  // NEW: Handle map click for adding hydrants
+  const handleMapClick = (latlng) => {
+    if (isAddingHydrant && hasManagementPermission(user?.role, user?.is_vzo_member)) {
+      const confirmed = window.confirm(
+        `Dodati hidrant na poziciju:\nŠirina: ${latlng.lat.toFixed(6)}\nDužina: ${latlng.lng.toFixed(6)}?`
+      );
+      
+      if (confirmed) {
+        // Open add hydrant dialog with coordinates
+        addHydrantFromMap(latlng.lat, latlng.lng);
+      }
+      setIsAddingHydrant(false);
+    }
+  };
+
+  const addHydrantFromMap = async (lat, lng) => {
+    const tip = prompt('Tip hidranta (podzemni/nadzemni):', 'nadzemni');
+    const status = prompt('Status (working/broken/maintenance):', 'working');
+    const notes = prompt('Napomene (opcionalno):');
+    
+    if (tip && status) {
+      await addHydrant(lat, lng, status, tip, notes || '');
+    }
+  };
+
   const addHydrant = async (lat, lng, status, notes) => {
     try {
       await axios.post(`${API}/hydrants`, {
