@@ -689,6 +689,224 @@ const Dashboard = () => {
             )}
           </TabsList>
 
+          <TabsContent value="dashboard" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              
+              {/* Quick Stats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Brzi pregled</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span>Ukupno članova:</span>
+                      <Badge>{allUsers.length}</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Aktivnih hidranta:</span>
+                      <Badge className="bg-green-500">
+                        {hydrants.filter(h => h.status === 'working').length}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Vozila:</span>
+                      <Badge className="bg-blue-500">{vehicles.length}</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Oprema:</span>
+                      <Badge className="bg-purple-500">{equipment.length}</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Due Medical Exams */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg text-orange-600">⚠️ Liječnički pregledi</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {allUsers
+                      .filter(member => {
+                        if (!member.medical_exam_valid_until) return false;
+                        const validUntil = new Date(member.medical_exam_valid_until);
+                        const now = new Date();
+                        const monthFromNow = new Date();
+                        monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+                        return validUntil <= monthFromNow;
+                      })
+                      .slice(0, 5)
+                      .map(member => (
+                        <div key={member.id} className="flex justify-between items-center text-sm">
+                          <span className="truncate">{member.full_name}</span>
+                          <Badge className={
+                            new Date(member.medical_exam_valid_until) < new Date() 
+                              ? 'bg-red-500' 
+                              : 'bg-orange-500'
+                          }>
+                            {new Date(member.medical_exam_valid_until).toLocaleDateString()}
+                          </Badge>
+                        </div>
+                      ))}
+                    {allUsers.filter(m => m.medical_exam_valid_until).length === 0 && (
+                      <p className="text-gray-500 text-sm">Nema podataka o liječničkim pregledima</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Vehicle Maintenance */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg text-blue-600">🚗 Vozila - servis/tehnički</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {vehicles
+                      .filter(vehicle => {
+                        if (!vehicle.next_service_due && !vehicle.technical_inspection_valid_until) return false;
+                        const now = new Date();
+                        const monthFromNow = new Date();
+                        monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+                        
+                        const serviceDue = vehicle.next_service_due ? new Date(vehicle.next_service_due) <= monthFromNow : false;
+                        const techDue = vehicle.technical_inspection_valid_until ? new Date(vehicle.technical_inspection_valid_until) <= monthFromNow : false;
+                        
+                        return serviceDue || techDue;
+                      })
+                      .slice(0, 5)
+                      .map(vehicle => (
+                        <div key={vehicle.id} className="space-y-1 text-sm">
+                          <div className="font-medium">{vehicle.name}</div>
+                          {vehicle.next_service_due && new Date(vehicle.next_service_due) <= new Date(Date.now() + 30*24*60*60*1000) && (
+                            <div className="flex justify-between">
+                              <span>Servis:</span>
+                              <Badge className="bg-orange-500">
+                                {new Date(vehicle.next_service_due).toLocaleDateString()}
+                              </Badge>
+                            </div>
+                          )}
+                          {vehicle.technical_inspection_valid_until && new Date(vehicle.technical_inspection_valid_until) <= new Date(Date.now() + 30*24*60*60*1000) && (
+                            <div className="flex justify-between">
+                              <span>Tehnički:</span>
+                              <Badge className="bg-red-500">
+                                {new Date(vehicle.technical_inspection_valid_until).toLocaleDateString()}
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    {vehicles.length === 0 && (
+                      <p className="text-gray-500 text-sm">Nema podataka o vozilima</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Broken Hydrants */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg text-red-600">🚨 Neispravni hidranti</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {hydrants
+                      .filter(hydrant => hydrant.status !== 'working')
+                      .slice(0, 5)
+                      .map(hydrant => (
+                        <div key={hydrant.id} className="flex justify-between items-center text-sm">
+                          <div>
+                            <div className="font-medium">
+                              {hydrant.address || `${hydrant.latitude.toFixed(4)}, ${hydrant.longitude.toFixed(4)}`}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {hydrant.tip_hidranta === 'podzemni' ? '🔴 Podzemni' : '🔵 Nadzemni'}
+                            </div>
+                          </div>
+                          <Badge className="bg-red-500">
+                            {hydrant.status}
+                          </Badge>
+                        </div>
+                      ))}
+                    {hydrants.filter(h => h.status !== 'working').length === 0 && (
+                      <p className="text-green-600 text-sm">✅ Svi hidranti su ispravni</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Equipment Due for Inspection */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg text-purple-600">🛡️ Oprema - provjere</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {equipment
+                      .filter(item => {
+                        if (!item.next_inspection_due) return false;
+                        const inspectionDue = new Date(item.next_inspection_due);
+                        const now = new Date();
+                        const monthFromNow = new Date();
+                        monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+                        return inspectionDue <= monthFromNow;
+                      })
+                      .slice(0, 5)
+                      .map(item => (
+                        <div key={item.id} className="flex justify-between items-center text-sm">
+                          <div>
+                            <div className="font-medium">{item.name}</div>
+                            <div className="text-xs text-gray-500">{item.type}</div>
+                          </div>
+                          <Badge className={
+                            new Date(item.next_inspection_due) < new Date() 
+                              ? 'bg-red-500' 
+                              : 'bg-orange-500'
+                          }>
+                            {new Date(item.next_inspection_due).toLocaleDateString()}
+                          </Badge>
+                        </div>
+                      ))}
+                    {equipment.filter(e => e.next_inspection_due).length === 0 && (
+                      <p className="text-gray-500 text-sm">Nema podataka o provjeri opreme</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-600">📊 Nedavne aktivnosti</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Zadnji dodani hidrant:</span>
+                      <span className="text-gray-600">
+                        {hydrants.length > 0 
+                          ? new Date(Math.max(...hydrants.map(h => new Date(h.created_at)))).toLocaleDateString()
+                          : 'N/A'
+                        }
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Aktivnih GPS članova:</span>
+                      <Badge className="bg-green-500">{activeUsers.length}</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ukupno članova registriranih:</span>
+                      <span className="text-gray-600">{allUsers.length}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+            </div>
+          </TabsContent>
+
           <TabsContent value="map" className="space-y-4">
             <Card>
               <CardHeader>
