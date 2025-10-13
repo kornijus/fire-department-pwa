@@ -97,6 +97,7 @@ class Hydrant(BaseModel):
 class HydrantCreate(BaseModel):
     latitude: float
     longitude: float
+    address: Optional[str] = None  # NEW: Address field
     status: str = "working"
     tip_hidranta: str = "nadzemni"  # NEW
     notes: Optional[str] = None
