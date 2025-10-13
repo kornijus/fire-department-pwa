@@ -36,16 +36,29 @@ const firefighterIcon = new L.Icon({
   popupAnchor: [0, -32]
 });
 
-const hydrantIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/2652/2652218.png',
+// NEW: Different hydrant icons based on type (Blue for nadzemni, Red for podzemni)
+const nadzemniHydrantIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6">
+      <circle cx="12" cy="12" r="10" stroke="#1e40af" stroke-width="2"/>
+      <circle cx="12" cy="12" r="6" fill="#60a5fa"/>
+      <text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">H</text>
+    </svg>
+  `),
   iconSize: [24, 24],
   iconAnchor: [12, 24],
   popupAnchor: [0, -24]
 });
 
-const brokenHydrantIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/1828/1828843.png',
-  iconSize: [24, 24],
+const podzemniHydrantIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#dc2626">
+      <circle cx="12" cy="12" r="10" stroke="#991b1b" stroke-width="2"/>
+      <circle cx="12" cy="12" r="6" fill="#f87171"/>
+      <text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">H</text>
+    </svg>
+  `),
+  iconSize: [24, 24], 
   iconAnchor: [12, 24],
   popupAnchor: [0, -24]
 });
