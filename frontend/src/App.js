@@ -838,37 +838,121 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="members">
-            <Card>
-              <CardHeader>
-                <CardTitle>Aktivni Članovi</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {activeUsers.length === 0 ? (
-                    <p className="text-gray-500">Nema aktivnih članova</p>
-                  ) : (
-                    activeUsers.map((activeUser, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
-                        <div>
-                          <p className="font-semibold">Član ID: {activeUser.user_id}</p>
-                          <p className="text-sm text-gray-600">
-                            Zadnje ažuriranje: {new Date(activeUser.timestamp).toLocaleString()}
-                          </p>
+            <Tabs defaultValue="active" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="active">Aktivni Članovi</TabsTrigger>
+                <TabsTrigger value="all">Svi Članovi</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="active">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Aktivni Članovi (GPS Tracking)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {activeUsers.length === 0 ? (
+                        <p className="text-gray-500">Nema aktivnih članova s GPS-om</p>
+                      ) : (
+                        activeUsers.map((activeUser, index) => (
+                          <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
+                            <div>
+                              <p className="font-semibold">Član ID: {activeUser.user_id}</p>
+                              <p className="text-sm text-gray-600">
+                                Zadnje ažuriranje: {new Date(activeUser.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge className={activeUser.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
+                                {activeUser.status === 'active' ? 'Aktivan' : 'Neaktivan'}
+                              </Badge>
+                              <Button size="sm" onClick={() => pingUser(activeUser.user_id)}>
+                                Ping
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="all">
+                <Card>
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <CardTitle>Svi Članovi Zajednice</CardTitle>
+                      <Button onClick={fetchAllUsers}>
+                        Osvježi popis
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {allUsers.length === 0 ? (
+                        <p className="text-gray-500">Nema članova za prikaz</p>
+                      ) : (
+                        <div className="grid gap-4">
+                          {allUsers.map((member) => (
+                            <div key={member.id} className="p-4 border rounded-lg">
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                  <h3 className="font-bold text-lg">{member.full_name}</h3>
+                                  <p className="text-sm text-gray-600 mb-2">{member.email}</p>
+                                  
+                                  <div className="grid grid-cols-2 gap-4 mb-3">
+                                    <div>
+                                      <p><strong>Društvo:</strong> {formatDepartmentName(member.department)}</p>
+                                      <p><strong>Funkcija:</strong> {formatRoleName(member.role)}</p>
+                                      {member.phone && <p><strong>Telefon:</strong> {member.phone}</p>}
+                                      {member.address && <p><strong>Adresa:</strong> {member.address}</p>}
+                                    </div>
+                                    <div>
+                                      {member.medical_exam_valid_until && (
+                                        <p><strong>Liječnički do:</strong> 
+                                          <Badge className={new Date(member.medical_exam_valid_until) > new Date() ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
+                                            {new Date(member.medical_exam_valid_until).toLocaleDateString()}
+                                          </Badge>
+                                        </p>
+                                      )}
+                                      {member.assigned_equipment && member.assigned_equipment.length > 0 && (
+                                        <p><strong>Zadužena oprema:</strong> {member.assigned_equipment.join(', ')}</p>
+                                      )}
+                                      {member.certifications && member.certifications.length > 0 && (
+                                        <p><strong>Certifikat:</strong> {member.certifications.join(', ')}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="flex space-x-2">
+                                    <Badge className={member.is_active ? 'bg-green-500' : 'bg-red-500'}>
+                                      {member.is_active ? 'Aktivan' : 'Neaktivan'}
+                                    </Badge>
+                                    {member.is_vzo_member && (
+                                      <Badge className="bg-yellow-500 text-black">VZO</Badge>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                                  <div className="flex flex-col space-y-2">
+                                    <MemberDetailDialog member={member} onUpdate={updateUser} />
+                                    <Button size="sm" variant="outline" onClick={() => pingUser(member.id)}>
+                                      Ping
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className={activeUser.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                            {activeUser.status === 'active' ? 'Aktivan' : 'Neaktivan'}
-                          </Badge>
-                          <Button size="sm" onClick={() => pingUser(activeUser.user_id)}>
-                            Ping
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="hydrants">
