@@ -905,7 +905,7 @@ const HydrantUpdateDialog = ({ hydrant, onUpdate }) => {
       <DialogTrigger asChild>
         <Button size="sm">Ažuriraj</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md z-50">
         <DialogHeader>
           <DialogTitle>Ažuriranje Hidranta</DialogTitle>
         </DialogHeader>
