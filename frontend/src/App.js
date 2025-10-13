@@ -66,19 +66,20 @@ const podzemniHydrantIcon = new L.Icon({
 // NEW: DVD Station icon
 const dvdStationIcon = new L.Icon({
   iconUrl: 'data:image/svg+xml;base64=' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#dc2626">
-      <rect x="3" y="8" width="18" height="12" rx="2" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
-      <rect x="5" y="10" width="3" height="2" fill="white"/>
-      <rect x="9" y="10" width="3" height="2" fill="white"/>
-      <rect x="13" y="10" width="3" height="2" fill="white"/>
-      <rect x="16" y="10" width="3" height="2" fill="white"/>
-      <polygon points="12,2 6,8 18,8" fill="#991b1b"/>
-      <circle cx="12" cy="5" r="1" fill="white"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="#dc2626">
+      <rect x="5" y="15" width="30" height="20" rx="2" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+      <rect x="8" y="18" width="4" height="3" fill="white"/>
+      <rect x="14" y="18" width="4" height="3" fill="white"/>
+      <rect x="20" y="18" width="4" height="3" fill="white"/>
+      <rect x="26" y="18" width="4" height="3" fill="white"/>
+      <polygon points="20,5 10,15 30,15" fill="#991b1b"/>
+      <circle cx="20" cy="10" r="2" fill="white"/>
+      <text x="20" y="30" text-anchor="middle" fill="white" font-size="8" font-weight="bold">DVD</text>
     </svg>
   `),
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40]
 });
 
 // Auth Context
