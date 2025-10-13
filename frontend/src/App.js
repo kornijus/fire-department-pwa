@@ -616,7 +616,9 @@ const Dashboard = () => {
 
   const fetchDvdStations = async () => {
     try {
+      console.log('Fetching DVD stations...');
       const response = await axios.get(`${API}/dvd-stations`);
+      console.log('DVD stations received:', response.data);
       setDvdStations(response.data);
     } catch (error) {
       console.error('Error fetching DVD stations:', error);
