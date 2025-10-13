@@ -567,6 +567,18 @@ const Dashboard = () => {
     }
   };
 
+  const deleteHydrant = async (hydrantId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovaj hidrant?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/hydrants/${hydrantId}`);
+        fetchHydrants();
+      } catch (error) {
+        console.error('Error deleting hydrant:', error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
