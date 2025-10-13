@@ -632,6 +632,11 @@ const Dashboard = () => {
                       >
                         <Popup>
                           <div className="p-2">
+                            <p><strong>Tip:</strong> 
+                              <Badge className={hydrant.tip_hidranta === 'podzemni' ? 'bg-red-500' : 'bg-blue-500'}>
+                                {hydrant.tip_hidranta === 'podzemni' ? '🔴 Podzemni' : '🔵 Nadzemni'}
+                              </Badge>
+                            </p>
                             <p><strong>Status:</strong> 
                               <Badge className={hydrant.status === 'working' ? 'bg-green-500' : 'bg-red-500'}>
                                 {hydrant.status === 'working' ? 'Ispravan' : 'Neispravan'}
@@ -641,9 +646,17 @@ const Dashboard = () => {
                             {hydrant.last_check && (
                               <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
                             )}
-                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
-                            <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
-                          )}
+                            {hydrant.images && hydrant.images.length > 0 && (
+                              <div className="mt-2">
+                                <p><strong>Slike:</strong></p>
+                                {hydrant.images.map((image, idx) => (
+                                  <img key={idx} src={image} alt="Hidrant" className="w-16 h-16 object-cover rounded mt-1" />
+                                ))}
+                              </div>
+                            )}
+                            {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                              <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
+                            )}
                           </div>
                         </Popup>
                       </Marker>
