@@ -801,6 +801,7 @@ const Dashboard = () => {
                     <div key={hydrant.id} className="p-4 border rounded-lg">
                       <div className="flex justify-between items-start">
                         <div>
+                          {hydrant.address && <p><strong>Adresa:</strong> {hydrant.address}</p>}
                           <p><strong>Pozicija:</strong> {hydrant.latitude.toFixed(6)}, {hydrant.longitude.toFixed(6)}</p>
                           <p><strong>Tip:</strong> 
                             <Badge className={hydrant.tip_hidranta === 'podzemni' ? 'bg-red-500 ml-2' : 'bg-blue-500 ml-2'}>
