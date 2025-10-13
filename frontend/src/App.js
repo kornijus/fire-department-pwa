@@ -370,8 +370,9 @@ const Dashboard = () => {
       alert(`Ping od ${data.from_user_id}: ${data.message}`);
     });
 
-    // Fetch hydrants
+    // Fetch hydrants and DVD stations
     fetchHydrants();
+    fetchDvdStations();
 
     return () => {
       if (watchId.current) {
