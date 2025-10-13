@@ -510,12 +510,13 @@ const Dashboard = () => {
   };
 
   const addHydrantFromMap = async (lat, lng) => {
+    const address = prompt('Adresa hidranta:', '');
     const tip = prompt('Tip hidranta (podzemni/nadzemni):', 'nadzemni');
     const status = prompt('Status (working/broken/maintenance):', 'working');
     const notes = prompt('Napomene (opcionalno):');
     
     if (tip && status) {
-      await addHydrant(lat, lng, status, tip, notes || '');
+      await addHydrant(lat, lng, status, tip, address || '', notes || '');
     }
   };
 
