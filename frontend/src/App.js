@@ -1017,6 +1017,7 @@ const AddHydrantDialog = ({ onAdd }) => {
   const [lng, setLng] = useState('');
   const [status, setStatus] = useState('working');
   const [tipHidranta, setTipHidranta] = useState('nadzemni');
+  const [address, setAddress] = useState('');
   const [notes, setNotes] = useState('');
   const [images, setImages] = useState([]);
   const [open, setOpen] = useState(false);
