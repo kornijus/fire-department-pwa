@@ -106,6 +106,7 @@ class HydrantCreate(BaseModel):
 class HydrantUpdate(BaseModel):
     status: Optional[str] = None
     tip_hidranta: Optional[str] = None  # NEW
+    address: Optional[str] = None  # NEW: Address field
     notes: Optional[str] = None
     images: Optional[List[str]] = None
 
