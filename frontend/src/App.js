@@ -933,7 +933,7 @@ const AddHydrantDialog = ({ onAdd }) => {
               step="any"
               value={lng}
               onChange={(e) => setLng(e.target.value)}
-              placeholder="15.123456"
+              placeholder="16.241900"
             />
           </div>
           <div>
