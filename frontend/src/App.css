@@ -62,6 +62,16 @@
 .leaflet-container {
   background: #f1f5f9;
   border-radius: 12px;
+  z-index: 1;
+}
+
+/* Fix modal z-index issues */
+.modal-overlay {
+  z-index: 9999 !important;
+}
+
+.modal-content {
+  z-index: 10000 !important;
 }
 
 /* Custom badge styles */
