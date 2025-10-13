@@ -340,6 +340,103 @@ class FirefighterAPITester:
         
         return False
 
+    def test_vzo_permissions(self):
+        """Test VZO user permissions and access"""
+        if not hasattr(self, 'vzo_user_data') or not self.vzo_user_data:
+            print("❌ No VZO user data available for permission test")
+            return False
+            
+        # Login as VZO user
+        login_data = {
+            "username": self.vzo_user_data["username"],
+            "password": self.vzo_user_data["password"]
+        }
+        
+        success, response = self.run_test(
+            "VZO User Login",
+            "POST",
+            "login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            # Store current token
+            temp_token = self.token
+            self.vzo_token = response['access_token']
+            self.token = self.vzo_token
+            
+            # Test that VZO user can access all users
+            success_users, _ = self.run_test(
+                "VZO Access to All Users",
+                "GET",
+                "users",
+                200
+            )
+            
+            # Test that VZO user can create hydrant
+            hydrant_data = {
+                "latitude": 45.987654,
+                "longitude": 15.123456,
+                "status": "working",
+                "tip_hidranta": "nadzemni",
+                "notes": "Test hydrant by VZO user"
+            }
+            
+            success_hydrant, response_hydrant = self.run_test(
+                "VZO Create Hydrant",
+                "POST",
+                "hydrants",
+                200,
+                data=hydrant_data
+            )
+            
+            # Restore original token
+            self.token = temp_token
+            
+            return success_users and success_hydrant
+        
+        return False
+
+    def test_all_vzo_roles(self):
+        """Test registration with all VZO roles"""
+        vzo_roles = [
+            "predsjednik_vzo",
+            "zamjenik_predsjednika_vzo", 
+            "tajnik_vzo",
+            "zapovjednik_vzo",
+            "zamjenik_zapovjednika_vzo"
+        ]
+        
+        print("🔍 Testing All VZO Roles...")
+        print(f"   VZO Roles: {len(vzo_roles)}")
+        
+        all_passed = True
+        for role in vzo_roles:
+            timestamp = datetime.now().strftime('%H%M%S%f')[:10]
+            test_data = {
+                "username": f"vzo_{role}_{timestamp}",
+                "email": f"vzo_{role}_{timestamp}@vatrogasci.hr",
+                "password": "TestPass123!",
+                "full_name": f"Test VZO {role}",
+                "department": "VZO",
+                "role": role,
+                "is_vzo_member": True
+            }
+            
+            success, _ = self.run_test(
+                f"Register VZO {role}",
+                "POST",
+                "register",
+                200,
+                data=test_data
+            )
+            
+            if not success:
+                all_passed = False
+        
+        return all_passed
+
     def test_all_departments_and_roles(self):
         """Test registration with all departments and roles"""
         departments = [
