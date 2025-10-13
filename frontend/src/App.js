@@ -923,7 +923,7 @@ const AddHydrantDialog = ({ onAdd }) => {
               step="any"
               value={lat}
               onChange={(e) => setLat(e.target.value)}
-              placeholder="45.123456"
+              placeholder="46.161100"
             />
           </div>
           <div>
