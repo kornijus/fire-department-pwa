@@ -1201,7 +1201,7 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">Uredi</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md z-50">
         <DialogHeader>
           <DialogTitle>Uređivanje korisnika: {adminUser.full_name}</DialogTitle>
         </DialogHeader>
