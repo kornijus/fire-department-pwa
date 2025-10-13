@@ -85,6 +85,7 @@ class Hydrant(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     latitude: float
     longitude: float
+    address: Optional[str] = None  # NEW: Address field
     status: str = "working"  # working, broken, maintenance
     tip_hidranta: str = "nadzemni"  # NEW: podzemni, nadzemni
     last_check: Optional[datetime] = None
