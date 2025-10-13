@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, File, UploadFile
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -16,6 +16,7 @@ import socketio
 import json
 import asyncio
 from geopy.distance import geodesic
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -52,8 +53,9 @@ class User(BaseModel):
     username: str
     email: str
     full_name: str
-    department: str  # Vatrogasno društvo (1-4)
-    role: str = "member"  # member, operative, admin
+    department: str  # DVD society or VZO
+    role: str = "clan_bez_funkcije"
+    is_vzo_member: bool = False  # NEW: VZO membership flag
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -63,7 +65,8 @@ class UserCreate(BaseModel):
     password: str
     full_name: str
     department: str
-    role: str = "member"
+    role: str = "clan_bez_funkcije"
+    is_vzo_member: bool = False  # NEW: VZO membership
 
 class UserLogin(BaseModel):
     username: str
@@ -83,9 +86,10 @@ class Hydrant(BaseModel):
     latitude: float
     longitude: float
     status: str = "working"  # working, broken, maintenance
+    tip_hidranta: str = "nadzemni"  # NEW: podzemni, nadzemni
     last_check: Optional[datetime] = None
     notes: Optional[str] = None
-    images: List[str] = []
+    images: List[str] = []  # NEW: List of image URLs/base64
     checked_by: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -93,10 +97,13 @@ class HydrantCreate(BaseModel):
     latitude: float
     longitude: float
     status: str = "working"
+    tip_hidranta: str = "nadzemni"  # NEW
     notes: Optional[str] = None
+    images: Optional[List[str]] = []  # NEW: Images as base64 strings
 
 class HydrantUpdate(BaseModel):
     status: Optional[str] = None
+    tip_hidranta: Optional[str] = None  # NEW
     notes: Optional[str] = None
     images: Optional[List[str]] = None
 
@@ -112,15 +119,30 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-# Helper function to check if user has management permissions
-def has_hydrant_management_permission(role: str) -> bool:
-    management_roles = [
-        "zapovjednik", 
-        "zamjenik_zapovjednika", 
-        "zapovjednistvo",
-        "predsjednik"
+# NEW: VZO permission system
+def has_vzo_full_access(user: User) -> bool:
+    """VZO members with full access to everything"""
+    if not user.is_vzo_member:
+        return False
+    vzo_full_roles = ["predsjednik_vzo", "tajnik_vzo", "zapovjednik_vzo", "zamjenik_zapovjednika_vzo"]
+    return user.role in vzo_full_roles
+
+def has_dvd_management_access(user: User) -> bool:
+    """DVD presidents and commanders - access to their own DVD only"""
+    dvd_management_roles = ["predsjednik", "zapovjednik", "zamjenik_zapovjednika"]
+    return user.role in dvd_management_roles and not user.is_vzo_member
+
+def has_hydrant_management_permission(user: User) -> bool:
+    """All operational members can manage hydrants"""
+    if has_vzo_full_access(user) or has_dvd_management_access(user):
+        return True
+    
+    # All operational roles can manage hydrants
+    operational_roles = [
+        "zapovjednik", "zamjenik_zapovjednika", "zapovjednistvo", "predsjednik",
+        "tajnik", "spremistar", "blagajnik", "upravni_odbor", "nadzorni_odbor"
     ]
-    return role in management_roles
+    return user.role in operational_roles
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
@@ -137,7 +159,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
 # Base location for geofencing (center of operations)
-BASE_LOCATION = (45.1, 15.2)  # Replace with actual coordinates
+BASE_LOCATION = (46.1611, 16.2419)  # Gornji Kneginec coordinates
 GEOFENCE_RADIUS_KM = 10
 
 def is_within_geofence(lat: float, lon: float) -> bool:
@@ -252,24 +274,31 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 @api_router.get("/users")
 async def get_users(current_user: User = Depends(get_current_user)):
-    if not has_hydrant_management_permission(current_user.role):
-        raise HTTPException(status_code=403, detail="Access denied")
+    # VZO members with full access can see all users
+    if has_vzo_full_access(current_user):
+        users = await db.users.find().to_list(1000)
+        return [User(**user).dict() for user in users]
     
-    users = await db.users.find().to_list(1000)
-    return [User(**user).dict() for user in users]
+    # DVD management can see only their department
+    elif has_dvd_management_access(current_user):
+        users = await db.users.find({"department": current_user.department}).to_list(1000)
+        return [User(**user).dict() for user in users]
+    
+    else:
+        raise HTTPException(status_code=403, detail="Access denied")
 
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
 
 @api_router.get("/hydrants", response_model=List[Hydrant])
-async def get_hydrants():
+async def get_hydrants(current_user: User = Depends(get_current_user)):
     hydrants = await db.hydrants.find().to_list(1000)
     return [Hydrant(**hydrant) for hydrant in hydrants]
 
 @api_router.post("/hydrants", response_model=Hydrant)
 async def create_hydrant(hydrant: HydrantCreate, current_user: User = Depends(get_current_user)):
-    if not has_hydrant_management_permission(current_user.role):
+    if not has_hydrant_management_permission(current_user):
         raise HTTPException(status_code=403, detail="Access denied")
     
     hydrant_obj = Hydrant(**hydrant.dict(), checked_by=current_user.id)
@@ -278,7 +307,7 @@ async def create_hydrant(hydrant: HydrantCreate, current_user: User = Depends(ge
 
 @api_router.put("/hydrants/{hydrant_id}")
 async def update_hydrant(hydrant_id: str, hydrant_update: HydrantUpdate, current_user: User = Depends(get_current_user)):
-    if not has_hydrant_management_permission(current_user.role):
+    if not has_hydrant_management_permission(current_user):
         raise HTTPException(status_code=403, detail="Access denied")
     
     update_data = {k: v for k, v in hydrant_update.dict().items() if v is not None}
