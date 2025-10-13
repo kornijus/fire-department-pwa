@@ -435,12 +435,15 @@ const Dashboard = () => {
   };
 
   // Helper function to check if user has management permissions
-  const hasManagementPermission = (userRole) => {
+  const hasManagementPermission = (userRole, isVzoMember) => {
+    if (isVzoMember) {
+      const vzoRoles = ["predsjednik_vzo", "tajnik_vzo", "zapovjednik_vzo", "zamjenik_zapovjednika_vzo"];
+      return vzoRoles.includes(userRole);
+    }
+    
     const managementRoles = [
-      "zapovjednik", 
-      "zamjenik_zapovjednika", 
-      "zapovjednistvo",
-      "predsjednik"
+      "zapovjednik", "zamjenik_zapovjednika", "zapovjednistvo", "predsjednik",
+      "tajnik", "spremistar", "blagajnik", "upravni_odbor", "nadzorni_odbor"
     ];
     return managementRoles.includes(userRole);
   };
