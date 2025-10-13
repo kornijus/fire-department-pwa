@@ -585,6 +585,33 @@ const Dashboard = () => {
     }
   };
 
+  const fetchDvdStations = async () => {
+    try {
+      const response = await axios.get(`${API}/dvd-stations`);
+      setDvdStations(response.data);
+    } catch (error) {
+      console.error('Error fetching DVD stations:', error);
+    }
+  };
+
+  const fetchVehicles = async () => {
+    try {
+      const response = await axios.get(`${API}/vehicles`);
+      setVehicles(response.data);
+    } catch (error) {
+      console.error('Error fetching vehicles:', error);
+    }
+  };
+
+  const fetchEquipment = async () => {
+    try {
+      const response = await axios.get(`${API}/equipment`);
+      setEquipment(response.data);
+    } catch (error) {
+      console.error('Error fetching equipment:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
