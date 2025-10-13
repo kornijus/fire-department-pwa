@@ -401,6 +401,7 @@ const Dashboard = () => {
 
   // Helper function to format department name
   const formatDepartmentName = (department) => {
+    if (department === 'VZO') return 'VZO Gornji Kneginec';
     const departmentNames = {
       'DVD_Kneginec_Gornji': 'DVD Kneginec Gornji',
       'DVD_Donji_Kneginec': 'DVD Donji Kneginec', 
