@@ -287,6 +287,26 @@ async def get_users(current_user: User = Depends(get_current_user)):
     else:
         raise HTTPException(status_code=403, detail="Access denied")
 
+class UserUpdate(BaseModel):
+    role: Optional[str] = None
+    department: Optional[str] = None
+    is_active: Optional[bool] = None
+    is_vzo_member: Optional[bool] = None
+
+@api_router.put("/users/{user_id}")
+async def update_user(user_id: str, user_update: UserUpdate, current_user: User = Depends(get_current_user)):
+    # Only VZO members with full access can update users
+    if not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    update_data = {k: v for k, v in user_update.dict().items() if v is not None}
+    
+    result = await db.users.update_one({"id": user_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "User updated successfully"}
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
