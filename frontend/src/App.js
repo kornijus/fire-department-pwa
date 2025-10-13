@@ -408,6 +408,15 @@ const Dashboard = () => {
     }
   }, [gpsEnabled, user]);
 
+  // Fetch data when user logs in
+  useEffect(() => {
+    if (user) {
+      fetchDvdStations();
+      fetchVehicles();
+      fetchEquipment();
+    }
+  }, [user]);
+
   const fetchHydrants = async () => {
     try {
       const response = await axios.get(`${API}/hydrants`);
