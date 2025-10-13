@@ -340,6 +340,17 @@ async def update_hydrant(hydrant_id: str, hydrant_update: HydrantUpdate, current
     
     return {"message": "Hydrant updated successfully"}
 
+@api_router.delete("/hydrants/{hydrant_id}")
+async def delete_hydrant(hydrant_id: str, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.hydrants.delete_one({"id": hydrant_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Hydrant not found")
+    
+    return {"message": "Hydrant deleted successfully"}
+
 @api_router.get("/")
 async def root():
     return {"message": "Vatrogasna zajednica API"}
