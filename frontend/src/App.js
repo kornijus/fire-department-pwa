@@ -723,6 +723,26 @@ const Dashboard = () => {
                     {/* Map click handler for adding hydrants */}
                     <MapClickHandler onMapClick={handleMapClick} />
                     
+                    {/* DVD Stations */}
+                    {dvdStations.map((station) => (
+                      <Marker
+                        key={station.id}
+                        position={[station.latitude, station.longitude]}
+                        icon={dvdStationIcon}
+                      >
+                        <Popup>
+                          <div className="p-2">
+                            <h3 className="font-bold text-lg text-red-700">{station.name}</h3>
+                            <p><strong>Adresa:</strong> {station.address}</p>
+                            <p><strong>Telefon:</strong> {station.contact_phone}</p>
+                            {station.contact_email && <p><strong>Email:</strong> {station.contact_email}</p>}
+                            <p><strong>Osnovano:</strong> {station.established_year}</p>
+                            <Badge className="bg-red-600 mt-2">DVD Stanica</Badge>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    ))}
+                    
                     {/* Active Users */}
                     {activeUsers.map((activeUser, index) => (
                       <Marker
