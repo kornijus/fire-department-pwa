@@ -181,7 +181,19 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-100">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold text-red-700">
+          <div className="flex flex-col items-center space-y-4">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png" 
+              alt="Vatrogasna zajednica općine Gornji Kneginec" 
+              className="w-20 h-20 object-contain"
+            />
+            <div className="text-center">
+              <h1 className="text-lg font-bold text-red-700">Vatrogasna zajednica općine</h1>
+              <h2 className="text-xl font-bold text-red-800">GORNJI KNEGINEC</h2>
+              <p className="text-sm text-gray-600 mt-2">Osnovana 1993.</p>
+            </div>
+          </div>
+          <CardTitle className="text-center text-xl font-bold text-red-700 mt-4">
             {isLogin ? 'Prijava' : 'Registracija'}
           </CardTitle>
         </CardHeader>
