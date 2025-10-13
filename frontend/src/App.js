@@ -352,6 +352,9 @@ const Dashboard = () => {
   const [socket, setSocket] = useState(null);
   const [isAddingHydrant, setIsAddingHydrant] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
+  const [dvdStations, setDvdStations] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [equipment, setEquipment] = useState([]);
   const watchId = useRef(null);
 
   useEffect(() => {
