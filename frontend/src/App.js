@@ -1118,6 +1118,15 @@ const AddHydrantDialog = ({ onAdd }) => {
             </div>
           </div>
           <div>
+            <label className="text-sm font-medium">Adresa</label>
+            <Input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Ulica i broj, Gornji Kneginec"
+            />
+          </div>
+          <div>
             <label className="text-sm font-medium">Tip hidranta</label>
             <Select value={tipHidranta} onValueChange={setTipHidranta}>
               <SelectTrigger>
