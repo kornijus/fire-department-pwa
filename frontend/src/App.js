@@ -676,7 +676,7 @@ const Dashboard = () => {
       </header>
 
       <div className="container mx-auto p-4">
-        <Tabs defaultValue="map" className="w-full">
+        <Tabs defaultValue="dashboard" className="w-full">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">Pregled</TabsTrigger>
             <TabsTrigger value="map">Karta</TabsTrigger>
