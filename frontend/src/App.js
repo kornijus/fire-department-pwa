@@ -625,7 +625,7 @@ const Dashboard = () => {
                       <Marker
                         key={hydrant.id}
                         position={[hydrant.latitude, hydrant.longitude]}
-                        icon={hydrant.status === 'working' ? hydrantIcon : brokenHydrantIcon}
+                        icon={hydrant.tip_hidranta === 'nadzemni' ? nadzemniHydrantIcon : podzemniHydrantIcon}
                       >
                         <Popup>
                           <div className="p-2">
