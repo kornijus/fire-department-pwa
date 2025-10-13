@@ -192,17 +192,19 @@ class FirefighterAPITester:
         """Test getting all hydrants (public access)"""
         return self.run_test("Get All Hydrants", "GET", "hydrants", 200)
 
-    def test_create_hydrant(self):
-        """Test creating a new hydrant (operative/admin only)"""
+    def test_create_hydrant_nadzemni(self):
+        """Test creating a new nadzemni (above-ground) hydrant"""
         hydrant_data = {
             "latitude": 45.123456,
             "longitude": 15.654321,
             "status": "working",
-            "notes": "Test hydrant created by automated test"
+            "tip_hidranta": "nadzemni",
+            "notes": "Test nadzemni hydrant created by automated test",
+            "images": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="]
         }
         
         success, response = self.run_test(
-            "Create Hydrant",
+            "Create Nadzemni Hydrant",
             "POST",
             "hydrants",
             200,
@@ -211,7 +213,32 @@ class FirefighterAPITester:
         
         if success and 'id' in response:
             self.created_hydrant_id = response['id']
-            print(f"   ✅ Hydrant created with ID: {self.created_hydrant_id}")
+            print(f"   ✅ Nadzemni Hydrant created with ID: {self.created_hydrant_id}")
+        
+        return success
+
+    def test_create_hydrant_podzemni(self):
+        """Test creating a new podzemni (underground) hydrant"""
+        hydrant_data = {
+            "latitude": 45.123789,
+            "longitude": 15.654987,
+            "status": "working",
+            "tip_hidranta": "podzemni",
+            "notes": "Test podzemni hydrant created by automated test",
+            "images": []
+        }
+        
+        success, response = self.run_test(
+            "Create Podzemni Hydrant",
+            "POST",
+            "hydrants",
+            200,
+            data=hydrant_data
+        )
+        
+        if success and 'id' in response:
+            self.created_podzemni_id = response['id']
+            print(f"   ✅ Podzemni Hydrant created with ID: {self.created_podzemni_id}")
         
         return success
 
