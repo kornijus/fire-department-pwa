@@ -519,13 +519,14 @@ const Dashboard = () => {
     }
   };
 
-  const addHydrant = async (lat, lng, status, tip_hidranta, notes, images = []) => {
+  const addHydrant = async (lat, lng, status, tip_hidranta, address, notes, images = []) => {
     try {
       await axios.post(`${API}/hydrants`, {
         latitude: lat,
         longitude: lng,
         status,
         tip_hidranta,
+        address,
         notes,
         images
       });
