@@ -896,6 +896,27 @@ const AddHydrantDialog = ({ onAdd }) => {
   const [images, setImages] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const useMyLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLat(position.coords.latitude.toFixed(6));
+          setLng(position.coords.longitude.toFixed(6));
+        },
+        (error) => {
+          alert('Greška pri dohvaćanju GPS pozicije: ' + error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    } else {
+      alert('GPS nije podržan u vašem pregledniku');
+    }
+  };
+
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     
