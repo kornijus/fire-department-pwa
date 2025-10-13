@@ -616,10 +616,12 @@ const Dashboard = () => {
 
       <div className="container mx-auto p-4">
         <Tabs defaultValue="map" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="map">Karta</TabsTrigger>
             <TabsTrigger value="members">Članovi</TabsTrigger>
             <TabsTrigger value="hydrants">Hidranti</TabsTrigger>
+            <TabsTrigger value="vehicles">Vozila</TabsTrigger>
+            <TabsTrigger value="equipment">Oprema</TabsTrigger>
             {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
               <TabsTrigger value="admin">Administracija</TabsTrigger>
             )}
