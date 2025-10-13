@@ -659,7 +659,7 @@ const Dashboard = () => {
                             <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
                           )}
                         </div>
-                        {hasManagementPermission(user?.role) && (
+                        {hasManagementPermission(user?.role, user?.is_vzo_member) && (
                           <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
                         )}
                       </div>
