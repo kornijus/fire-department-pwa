@@ -645,8 +645,8 @@ const Dashboard = () => {
               <CardContent>
                 <div className="h-96 rounded-lg overflow-hidden border">
                   <MapContainer
-                    center={[45.1, 15.2]}
-                    zoom={13}
+                    center={[46.2508, 16.3755]}  // Gornji Kneginec coordinates (corrected)
+                    zoom={14}
                     style={{ height: '100%', width: '100%' }}
                   >
                     <TileLayer
