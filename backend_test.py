@@ -10,10 +10,13 @@ class FirefighterAPITester:
         self.token = None
         self.user_data = None
         self.member_data = None
+        self.vzo_user_data = None
         self.member_token = None
+        self.vzo_token = None
         self.tests_run = 0
         self.tests_passed = 0
         self.created_hydrant_id = None
+        self.created_podzemni_id = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
