@@ -873,15 +873,35 @@ const AddHydrantDialog = ({ onAdd }) => {
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
   const [status, setStatus] = useState('working');
+  const [tipHidranta, setTipHidranta] = useState('nadzemni');
   const [notes, setNotes] = useState('');
+  const [images, setImages] = useState([]);
   const [open, setOpen] = useState(false);
+
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUrl = e.target.result;
+        setImages(prev => [...prev, imageDataUrl]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleAdd = () => {
     if (lat && lng) {
-      onAdd(parseFloat(lat), parseFloat(lng), status, notes);
+      onAdd(parseFloat(lat), parseFloat(lng), status, tipHidranta, notes, images);
       setLat('');
       setLng('');
       setNotes('');
+      setImages([]);
       setOpen(false);
     }
   };
