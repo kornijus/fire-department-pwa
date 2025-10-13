@@ -491,6 +491,9 @@ const Dashboard = () => {
               <div className="text-sm font-semibold">{user?.full_name}</div>
               <div className="text-xs opacity-90">{formatRoleName(user?.role)}</div>
               <div className="text-xs opacity-75">{formatDepartmentName(user?.department)}</div>
+              {user?.is_vzo_member && (
+                <Badge className="bg-yellow-500 text-black text-xs mt-1">VZO</Badge>
+              )}
             </div>
             <Button variant="outline" size="sm" onClick={logout}>
               Odjava
