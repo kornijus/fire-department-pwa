@@ -197,14 +197,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Vehicle CRUD endpoints"
-    - "Equipment CRUD endpoints"
     - "Vehicle Management Dialogs"
     - "Equipment Management Dialogs"
     - "Vehicle/Equipment CRUD Operations"
     - "UI Integration"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
