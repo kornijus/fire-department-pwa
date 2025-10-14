@@ -376,6 +376,31 @@ class Equipment(BaseModel):
     notes: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# NEW: Event model (for training, insurance checks, inspections, etc.)
+class Event(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    event_type: str  # training, insurance, medical_check, equipment_check, drill
+    date: datetime
+    department: str  # which DVD or VZO
+    participants: List[str] = []  # list of user IDs
+    description: Optional[str] = None
+    location: Optional[str] = None
+    created_by: str  # user ID who created the event
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# NEW: Message model (for group communication)
+class Message(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    message_type: str  # alert, general, drill, event
+    title: str
+    content: str
+    sent_by: str  # user ID
+    sent_by_name: str  # user full name
+    sent_to_departments: List[str] = []  # list of departments or "all"
+    priority: str = "normal"  # urgent, normal, low
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class UserUpdate(BaseModel):
     role: Optional[str] = None
     department: Optional[str] = None
