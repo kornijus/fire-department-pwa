@@ -423,6 +423,7 @@ const Dashboard = () => {
       fetchDvdStations();
       fetchVehicles();
       fetchEquipment();
+      fetchAllUsers(); // Fetch users for equipment assignment
     }
   }, [user]);
 
