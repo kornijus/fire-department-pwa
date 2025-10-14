@@ -1576,6 +1576,119 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="events">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Događaji (Školovanja, Osiguranja, Provjere)</CardTitle>
+                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    <AddEventDialog onAdd={addEvent} userDepartment={user?.department} allUsers={allUsers} />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {events.length === 0 ? (
+                    <p className="text-gray-500">Nema događaja za prikaz</p>
+                  ) : (
+                    events.map((event) => (
+                      <div key={event.id} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">{event.title}</h3>
+                            <p><strong>Tip:</strong> {event.event_type}</p>
+                            <p><strong>Datum:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                            <p><strong>Društvo:</strong> {formatDepartmentName(event.department)}</p>
+                            {event.location && <p><strong>Lokacija:</strong> {event.location}</p>}
+                            {event.description && <p><strong>Opis:</strong> {event.description}</p>}
+                            {event.participants && event.participants.length > 0 && (
+                              <div className="mt-2">
+                                <p><strong>Sudionici ({event.participants.length}):</strong></p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {event.participants.map(userId => {
+                                    const participant = allUsers.find(u => u.id === userId);
+                                    return participant ? (
+                                      <Badge key={userId} variant="outline">{participant.full_name}</Badge>
+                                    ) : null;
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                            <div className="flex space-x-2">
+                              <EventUpdateDialog event={event} onUpdate={updateEvent} allUsers={allUsers} />
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteEvent(event.id)}
+                              >
+                                Obriši
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="communication">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Komunikacija i Poruke</CardTitle>
+                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    <SendMessageDialog onSend={sendMessage} />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {messages.length === 0 ? (
+                    <p className="text-gray-500">Nema poruka</p>
+                  ) : (
+                    messages.slice().reverse().map((message) => (
+                      <div key={message.id} className={`p-4 border rounded-lg ${
+                        message.priority === 'urgent' ? 'border-red-500 bg-red-50' : 
+                        message.priority === 'normal' ? 'border-blue-500 bg-blue-50' : 
+                        'border-gray-300'
+                      }`}>
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-bold text-lg">{message.title}</h3>
+                            <p className="text-sm text-gray-600">
+                              Od: {message.sent_by_name} • {new Date(message.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Badge className={
+                              message.priority === 'urgent' ? 'bg-red-600' :
+                              message.priority === 'normal' ? 'bg-blue-600' :
+                              'bg-gray-600'
+                            }>
+                              {message.priority === 'urgent' ? '🚨 HITNO' : 
+                               message.priority === 'normal' ? 'Normalno' : 
+                               'Nisko'}
+                            </Badge>
+                            <Badge variant="outline">{message.message_type}</Badge>
+                          </div>
+                        </div>
+                        <p className="text-gray-800 whitespace-pre-wrap">{message.content}</p>
+                        <div className="mt-2 text-sm text-gray-600">
+                          <strong>Poslano na:</strong> {message.sent_to_departments.includes('all') ? 'Svi' : message.sent_to_departments.map(formatDepartmentName).join(', ')}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {hasManagementPermission(user?.role, user?.is_vzo_member) && (
             <TabsContent value="stations">
               <Card>
