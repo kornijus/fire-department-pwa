@@ -556,6 +556,407 @@ class FirefighterAPITester:
         
         return all_passed
 
+    # NEW: Vehicle Management Tests
+    def test_get_vehicles(self):
+        """Test getting all vehicles (authenticated users only)"""
+        return self.run_test("Get All Vehicles", "GET", "vehicles", 200)
+
+    def test_create_vehicle(self):
+        """Test creating a new vehicle with comprehensive data"""
+        vehicle_data = {
+            "name": "Test Fire Truck Alpha",
+            "type": "cisterna",
+            "license_plate": "ZG-1234-AB",
+            "department": "DVD_Kneginec_Gornji",
+            "year": 2020,
+            "technical_inspection_date": "2024-01-15T10:00:00Z",
+            "technical_inspection_valid_until": "2025-01-15T10:00:00Z",
+            "last_service_date": "2024-06-01T09:00:00Z",
+            "next_service_due": "2024-12-01T09:00:00Z",
+            "service_km": 45000,
+            "current_km": 47500,
+            "status": "active",
+            "notes": "Test vehicle created by automated testing"
+        }
+        
+        success, response = self.run_test(
+            "Create Vehicle with Full Details",
+            "POST",
+            "vehicles",
+            200,
+            data=vehicle_data
+        )
+        
+        if success and 'id' in response:
+            self.created_vehicle_id = response['id']
+            print(f"   ✅ Vehicle created with ID: {self.created_vehicle_id}")
+        
+        return success
+
+    def test_update_vehicle(self):
+        """Test updating vehicle details"""
+        if not self.created_vehicle_id:
+            print("❌ No vehicle ID available for update test")
+            return False
+            
+        update_data = {
+            "status": "maintenance",
+            "current_km": 48000,
+            "notes": "Updated by automated test - scheduled maintenance"
+        }
+        
+        return self.run_test(
+            "Update Vehicle Details",
+            "PUT",
+            f"vehicles/{self.created_vehicle_id}",
+            200,
+            data=update_data
+        )
+
+    def test_delete_vehicle(self):
+        """Test deleting a vehicle"""
+        if not self.created_vehicle_id:
+            print("❌ No vehicle ID available for delete test")
+            return False
+            
+        success = self.run_test(
+            "Delete Vehicle",
+            "DELETE",
+            f"vehicles/{self.created_vehicle_id}",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Vehicle {self.created_vehicle_id} successfully deleted")
+            # Verify vehicle is actually deleted
+            success_verify, response = self.run_test(
+                "Verify Vehicle Deletion",
+                "GET",
+                "vehicles",
+                200
+            )
+            if success_verify:
+                vehicle_ids = [v.get('id') for v in response if isinstance(response, list)]
+                if self.created_vehicle_id not in vehicle_ids:
+                    print(f"   ✅ Confirmed: Deleted vehicle {self.created_vehicle_id} not in vehicle list")
+                    return True
+                else:
+                    print(f"   ❌ Error: Deleted vehicle {self.created_vehicle_id} still appears in vehicle list")
+                    return False
+        
+        return success
+
+    # NEW: Equipment Management Tests
+    def test_get_equipment(self):
+        """Test getting all equipment (authenticated users only)"""
+        return self.run_test("Get All Equipment", "GET", "equipment", 200)
+
+    def test_create_equipment(self):
+        """Test creating new equipment with assignment options"""
+        equipment_data = {
+            "name": "Test Fire Helmet Alpha",
+            "type": "helmet",
+            "serial_number": "HLM-2024-001",
+            "department": "DVD_Kneginec_Gornji",
+            "location": "Station Storage Room A",
+            "last_inspection_date": "2024-01-10T08:00:00Z",
+            "next_inspection_due": "2025-01-10T08:00:00Z",
+            "condition": "good",
+            "assigned_to_user": None,
+            "assigned_to_vehicle": None,
+            "notes": "Test equipment created by automated testing"
+        }
+        
+        success, response = self.run_test(
+            "Create Equipment with Full Details",
+            "POST",
+            "equipment",
+            200,
+            data=equipment_data
+        )
+        
+        if success and 'id' in response:
+            self.created_equipment_id = response['id']
+            print(f"   ✅ Equipment created with ID: {self.created_equipment_id}")
+        
+        return success
+
+    def test_create_equipment_assigned_to_vehicle(self):
+        """Test creating equipment assigned to a vehicle"""
+        # First create a vehicle to assign to
+        vehicle_data = {
+            "name": "Test Equipment Vehicle",
+            "type": "kombi",
+            "license_plate": "ZG-5678-CD",
+            "department": "DVD_Kneginec_Gornji",
+            "status": "active"
+        }
+        
+        vehicle_success, vehicle_response = self.run_test(
+            "Create Vehicle for Equipment Assignment",
+            "POST",
+            "vehicles",
+            200,
+            data=vehicle_data
+        )
+        
+        if not vehicle_success or 'id' not in vehicle_response:
+            print("❌ Failed to create vehicle for equipment assignment test")
+            return False
+            
+        vehicle_id = vehicle_response['id']
+        
+        # Now create equipment assigned to this vehicle
+        equipment_data = {
+            "name": "Vehicle Fire Extinguisher",
+            "type": "extinguisher",
+            "serial_number": "EXT-2024-002",
+            "department": "DVD_Kneginec_Gornji",
+            "location": "Vehicle Storage",
+            "condition": "good",
+            "assigned_to_vehicle": vehicle_id,
+            "notes": "Fire extinguisher assigned to test vehicle"
+        }
+        
+        return self.run_test(
+            "Create Equipment Assigned to Vehicle",
+            "POST",
+            "equipment",
+            200,
+            data=equipment_data
+        )
+
+    def test_update_equipment(self):
+        """Test updating equipment details and assignments"""
+        if not self.created_equipment_id:
+            print("❌ No equipment ID available for update test")
+            return False
+            
+        update_data = {
+            "condition": "needs_maintenance",
+            "location": "Maintenance Workshop",
+            "notes": "Updated by automated test - needs inspection"
+        }
+        
+        return self.run_test(
+            "Update Equipment Details",
+            "PUT",
+            f"equipment/{self.created_equipment_id}",
+            200,
+            data=update_data
+        )
+
+    def test_delete_equipment(self):
+        """Test deleting equipment"""
+        if not self.created_equipment_id:
+            print("❌ No equipment ID available for delete test")
+            return False
+            
+        success = self.run_test(
+            "Delete Equipment",
+            "DELETE",
+            f"equipment/{self.created_equipment_id}",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Equipment {self.created_equipment_id} successfully deleted")
+            # Verify equipment is actually deleted
+            success_verify, response = self.run_test(
+                "Verify Equipment Deletion",
+                "GET",
+                "equipment",
+                200
+            )
+            if success_verify:
+                equipment_ids = [e.get('id') for e in response if isinstance(response, list)]
+                if self.created_equipment_id not in equipment_ids:
+                    print(f"   ✅ Confirmed: Deleted equipment {self.created_equipment_id} not in equipment list")
+                    return True
+                else:
+                    print(f"   ❌ Error: Deleted equipment {self.created_equipment_id} still appears in equipment list")
+                    return False
+        
+        return success
+
+    def test_vehicle_permission_restrictions(self):
+        """Test that only users with management permissions can manage vehicles"""
+        if not hasattr(self, 'member_data') or not self.member_data:
+            print("❌ No member data available for vehicle permission test")
+            return False
+            
+        # Login as member (should not have vehicle management permissions)
+        login_data = {
+            "username": self.member_data["username"],
+            "password": self.member_data["password"]
+        }
+        
+        success, response = self.run_test(
+            "Member Login for Vehicle Permission Test",
+            "POST",
+            "login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            # Store current token
+            temp_token = self.token
+            self.token = response['access_token']
+            
+            # Test that member cannot create vehicle
+            vehicle_data = {
+                "name": "Unauthorized Vehicle",
+                "type": "kombi",
+                "license_plate": "ZG-9999-XX",
+                "department": "DVD_Donji_Kneginec",
+                "status": "active"
+            }
+            
+            success_create, _ = self.run_test(
+                "Member Create Vehicle (Should Fail)",
+                "POST",
+                "vehicles",
+                403,  # Should return 403 Forbidden
+                data=vehicle_data
+            )
+            
+            # Restore management token
+            self.token = temp_token
+            
+            return success_create
+        
+        return False
+
+    def test_equipment_permission_restrictions(self):
+        """Test that only users with management permissions can manage equipment"""
+        if not hasattr(self, 'member_data') or not self.member_data:
+            print("❌ No member data available for equipment permission test")
+            return False
+            
+        # Login as member (should not have equipment management permissions)
+        login_data = {
+            "username": self.member_data["username"],
+            "password": self.member_data["password"]
+        }
+        
+        success, response = self.run_test(
+            "Member Login for Equipment Permission Test",
+            "POST",
+            "login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            # Store current token
+            temp_token = self.token
+            self.token = response['access_token']
+            
+            # Test that member cannot create equipment
+            equipment_data = {
+                "name": "Unauthorized Equipment",
+                "type": "helmet",
+                "department": "DVD_Donji_Kneginec",
+                "location": "Storage",
+                "condition": "good"
+            }
+            
+            success_create, _ = self.run_test(
+                "Member Create Equipment (Should Fail)",
+                "POST",
+                "equipment",
+                403,  # Should return 403 Forbidden
+                data=equipment_data
+            )
+            
+            # Restore management token
+            self.token = temp_token
+            
+            return success_create
+        
+        return False
+
+    def test_department_filtering(self):
+        """Test that DVD users only see their department's vehicles and equipment"""
+        # This test assumes we have a DVD user (non-VZO) logged in
+        if not self.user_data or self.user_data.get('is_vzo_member', False):
+            print("❌ Need DVD (non-VZO) user for department filtering test")
+            return False
+            
+        # Get vehicles and check department filtering
+        success_vehicles, vehicles_response = self.run_test(
+            "Get Vehicles (Department Filtering)",
+            "GET",
+            "vehicles",
+            200
+        )
+        
+        success_equipment, equipment_response = self.run_test(
+            "Get Equipment (Department Filtering)",
+            "GET",
+            "equipment",
+            200
+        )
+        
+        if success_vehicles and success_equipment:
+            user_department = self.user_data.get('department')
+            
+            # Check that all vehicles belong to user's department
+            if isinstance(vehicles_response, list):
+                for vehicle in vehicles_response:
+                    if vehicle.get('department') != user_department:
+                        print(f"   ❌ Found vehicle from different department: {vehicle.get('department')} (user: {user_department})")
+                        return False
+                print(f"   ✅ All vehicles belong to user's department: {user_department}")
+            
+            # Check that all equipment belongs to user's department
+            if isinstance(equipment_response, list):
+                for equipment in equipment_response:
+                    if equipment.get('department') != user_department:
+                        print(f"   ❌ Found equipment from different department: {equipment.get('department')} (user: {user_department})")
+                        return False
+                print(f"   ✅ All equipment belongs to user's department: {user_department}")
+            
+            return True
+        
+        return False
+
+    def test_data_validation(self):
+        """Test API data validation with invalid data"""
+        # Test invalid vehicle data
+        invalid_vehicle_data = {
+            "name": "",  # Empty name should fail
+            "type": "invalid_type",
+            "license_plate": "",
+            "department": ""
+        }
+        
+        success_invalid_vehicle, _ = self.run_test(
+            "Create Vehicle with Invalid Data (Should Fail)",
+            "POST",
+            "vehicles",
+            422,  # Should return 422 Validation Error
+            data=invalid_vehicle_data
+        )
+        
+        # Test invalid equipment data
+        invalid_equipment_data = {
+            "name": "",  # Empty name should fail
+            "type": "",
+            "department": ""
+        }
+        
+        success_invalid_equipment, _ = self.run_test(
+            "Create Equipment with Invalid Data (Should Fail)",
+            "POST",
+            "equipment",
+            422,  # Should return 422 Validation Error
+            data=invalid_equipment_data
+        )
+        
+        return success_invalid_vehicle and success_invalid_equipment
+
 def main():
     print("🚒 Starting Firefighter Community API Tests")
     print("=" * 60)
