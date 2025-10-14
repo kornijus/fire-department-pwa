@@ -112,27 +112,33 @@ user_problem_statement: |
 backend:
   - task: "Vehicle CRUD endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added VehicleUpdate model and PUT/DELETE endpoints for vehicles at lines 473-520"
+      - working: true
+        agent: "testing"
+        comment: "✅ All vehicle CRUD operations working correctly. GET /api/vehicles returns vehicles filtered by department. POST creates vehicles with comprehensive data (name, type, license_plate, department, technical inspection dates, service tracking, etc.). PUT updates vehicle details successfully. DELETE removes vehicles and confirms deletion. Permission system working - only users with management permissions can create/update/delete vehicles."
 
   - task: "Equipment CRUD endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added EquipmentUpdate model and PUT/DELETE endpoints for equipment at lines 522-565"
+      - working: true
+        agent: "testing"
+        comment: "✅ All equipment CRUD operations working correctly. GET /api/equipment returns equipment filtered by department. POST creates equipment with full details including assignment to users/vehicles/locations. PUT updates equipment details successfully. DELETE removes equipment and confirms deletion. Equipment assignment feature working - can assign to users, vehicles, or locations. Permission system working - only users with management permissions can manage equipment."
 
 frontend:
   - task: "Vehicle Management Dialogs"
