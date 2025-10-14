@@ -689,6 +689,77 @@ const Dashboard = () => {
     }
   };
 
+  // Vehicle CRUD operations
+  const addVehicle = async (vehicleData) => {
+    try {
+      await axios.post(`${API}/vehicles`, vehicleData);
+      fetchVehicles();
+    } catch (error) {
+      console.error('Error adding vehicle:', error);
+      alert('Greška pri dodavanju vozila');
+    }
+  };
+
+  const updateVehicle = async (vehicleId, updates) => {
+    try {
+      await axios.put(`${API}/vehicles/${vehicleId}`, updates);
+      fetchVehicles();
+    } catch (error) {
+      console.error('Error updating vehicle:', error);
+      alert('Greška pri ažuriranju vozila');
+    }
+  };
+
+  const deleteVehicle = async (vehicleId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovo vozilo?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/vehicles/${vehicleId}`);
+        fetchVehicles();
+      } catch (error) {
+        console.error('Error deleting vehicle:', error);
+        alert('Greška pri brisanju vozila');
+      }
+    }
+  };
+
+  // Equipment CRUD operations
+  const addEquipment = async (equipmentData) => {
+    try {
+      await axios.post(`${API}/equipment`, equipmentData);
+      fetchEquipment();
+      fetchAllUsers(); // Refresh to show equipment assignments
+    } catch (error) {
+      console.error('Error adding equipment:', error);
+      alert('Greška pri dodavanju opreme');
+    }
+  };
+
+  const updateEquipment = async (equipmentId, updates) => {
+    try {
+      await axios.put(`${API}/equipment/${equipmentId}`, updates);
+      fetchEquipment();
+      fetchAllUsers(); // Refresh to show equipment assignments
+    } catch (error) {
+      console.error('Error updating equipment:', error);
+      alert('Greška pri ažuriranju opreme');
+    }
+  };
+
+  const deleteEquipment = async (equipmentId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovu opremu?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/equipment/${equipmentId}`);
+        fetchEquipment();
+        fetchAllUsers(); // Refresh to show equipment assignments
+      } catch (error) {
+        console.error('Error deleting equipment:', error);
+        alert('Greška pri brisanju opreme');
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
