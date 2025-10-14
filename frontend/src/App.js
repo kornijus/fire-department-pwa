@@ -2305,6 +2305,906 @@ const StationUpdateDialog = ({ station, onUpdate }) => {
   );
 };
 
+// Add Vehicle Dialog
+const AddVehicleDialog = ({ onAdd, userDepartment }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    type: 'vatrogasno_vozilo',
+    license_plate: '',
+    department: userDepartment || '',
+    year: new Date().getFullYear(),
+    technical_inspection_date: '',
+    technical_inspection_valid_until: '',
+    last_service_date: '',
+    next_service_due: '',
+    service_km: '',
+    current_km: '',
+    status: 'active',
+    notes: ''
+  });
+
+  const handleAdd = async () => {
+    if (!formData.name || !formData.license_plate) {
+      alert('Molimo unesite naziv vozila i registraciju');
+      return;
+    }
+
+    const vehicleData = {
+      ...formData,
+      year: formData.year ? parseInt(formData.year) : null,
+      service_km: formData.service_km ? parseInt(formData.service_km) : null,
+      current_km: formData.current_km ? parseInt(formData.current_km) : null,
+      technical_inspection_date: formData.technical_inspection_date || null,
+      technical_inspection_valid_until: formData.technical_inspection_valid_until || null,
+      last_service_date: formData.last_service_date || null,
+      next_service_due: formData.next_service_due || null,
+    };
+
+    await onAdd(vehicleData);
+    setFormData({
+      name: '',
+      type: 'vatrogasno_vozilo',
+      license_plate: '',
+      department: userDepartment || '',
+      year: new Date().getFullYear(),
+      technical_inspection_date: '',
+      technical_inspection_valid_until: '',
+      last_service_date: '',
+      next_service_due: '',
+      service_km: '',
+      current_km: '',
+      status: 'active',
+      notes: ''
+    });
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Dodaj Vozilo</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Dodaj Novo Vozilo</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv vozila *</label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Npr. Cisterna VW-1"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Tip vozila</label>
+              <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cisterna">Cisterna</SelectItem>
+                  <SelectItem value="kombi">Kombi</SelectItem>
+                  <SelectItem value="vatrogasno_vozilo">Vatrogasno vozilo</SelectItem>
+                  <SelectItem value="terensko">Terensko vozilo</SelectItem>
+                  <SelectItem value="ostalo">Ostalo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Registarska oznaka *</label>
+              <Input
+                type="text"
+                value={formData.license_plate}
+                onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+                placeholder="VŽ-1234-AB"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Godina proizvodnje</label>
+              <Input
+                type="number"
+                value={formData.year}
+                onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                placeholder="2020"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Društvo</label>
+            <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                <SelectItem value="VZO">VZO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Tehnički pregled</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Datum zadnjeg tehničkog</label>
+                <Input
+                  type="date"
+                  value={formData.technical_inspection_date}
+                  onChange={(e) => setFormData({ ...formData, technical_inspection_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Tehnički vrijedi do</label>
+                <Input
+                  type="date"
+                  value={formData.technical_inspection_valid_until}
+                  onChange={(e) => setFormData({ ...formData, technical_inspection_valid_until: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Servis vozila</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Datum zadnjeg servisa</label>
+                <Input
+                  type="date"
+                  value={formData.last_service_date}
+                  onChange={(e) => setFormData({ ...formData, last_service_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Sljedeći servis</label>
+                <Input
+                  type="date"
+                  value={formData.next_service_due}
+                  onChange={(e) => setFormData({ ...formData, next_service_due: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">KM kod servisa</label>
+                <Input
+                  type="number"
+                  value={formData.service_km}
+                  onChange={(e) => setFormData({ ...formData, service_km: e.target.value })}
+                  placeholder="50000"
+                />
+              </div>
+              <div>
+                <label className="text-sm">Trenutni KM</label>
+                <Input
+                  type="number"
+                  value={formData.current_km}
+                  onChange={(e) => setFormData({ ...formData, current_km: e.target.value })}
+                  placeholder="55000"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Status vozila</label>
+            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Aktivno</SelectItem>
+                <SelectItem value="maintenance">U servisu</SelectItem>
+                <SelectItem value="out_of_service">Van funkcije</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Napomene</label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="Dodatne napomene o vozilu..."
+              rows={3}
+            />
+          </div>
+
+          <Button onClick={handleAdd} className="w-full">
+            Dodaj Vozilo
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Update Vehicle Dialog
+const VehicleUpdateDialog = ({ vehicle, onUpdate }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: vehicle.name || '',
+    type: vehicle.type || 'vatrogasno_vozilo',
+    license_plate: vehicle.license_plate || '',
+    department: vehicle.department || '',
+    year: vehicle.year || '',
+    technical_inspection_date: vehicle.technical_inspection_date ? vehicle.technical_inspection_date.split('T')[0] : '',
+    technical_inspection_valid_until: vehicle.technical_inspection_valid_until ? vehicle.technical_inspection_valid_until.split('T')[0] : '',
+    last_service_date: vehicle.last_service_date ? vehicle.last_service_date.split('T')[0] : '',
+    next_service_due: vehicle.next_service_due ? vehicle.next_service_due.split('T')[0] : '',
+    service_km: vehicle.service_km || '',
+    current_km: vehicle.current_km || '',
+    status: vehicle.status || 'active',
+    notes: vehicle.notes || ''
+  });
+
+  const handleUpdate = async () => {
+    const updateData = {
+      ...formData,
+      year: formData.year ? parseInt(formData.year) : null,
+      service_km: formData.service_km ? parseInt(formData.service_km) : null,
+      current_km: formData.current_km ? parseInt(formData.current_km) : null,
+      technical_inspection_date: formData.technical_inspection_date || null,
+      technical_inspection_valid_until: formData.technical_inspection_valid_until || null,
+      last_service_date: formData.last_service_date || null,
+      next_service_due: formData.next_service_due || null,
+    };
+
+    await onUpdate(vehicle.id, updateData);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Uredi</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Uredi Vozilo</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv vozila</label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Tip vozila</label>
+              <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cisterna">Cisterna</SelectItem>
+                  <SelectItem value="kombi">Kombi</SelectItem>
+                  <SelectItem value="vatrogasno_vozilo">Vatrogasno vozilo</SelectItem>
+                  <SelectItem value="terensko">Terensko vozilo</SelectItem>
+                  <SelectItem value="ostalo">Ostalo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Registarska oznaka</label>
+              <Input
+                type="text"
+                value={formData.license_plate}
+                onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Godina proizvodnje</label>
+              <Input
+                type="number"
+                value={formData.year}
+                onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Društvo</label>
+            <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                <SelectItem value="VZO">VZO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Tehnički pregled</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Datum zadnjeg tehničkog</label>
+                <Input
+                  type="date"
+                  value={formData.technical_inspection_date}
+                  onChange={(e) => setFormData({ ...formData, technical_inspection_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Tehnički vrijedi do</label>
+                <Input
+                  type="date"
+                  value={formData.technical_inspection_valid_until}
+                  onChange={(e) => setFormData({ ...formData, technical_inspection_valid_until: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Servis vozila</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Datum zadnjeg servisa</label>
+                <Input
+                  type="date"
+                  value={formData.last_service_date}
+                  onChange={(e) => setFormData({ ...formData, last_service_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Sljedeći servis</label>
+                <Input
+                  type="date"
+                  value={formData.next_service_due}
+                  onChange={(e) => setFormData({ ...formData, next_service_due: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">KM kod servisa</label>
+                <Input
+                  type="number"
+                  value={formData.service_km}
+                  onChange={(e) => setFormData({ ...formData, service_km: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Trenutni KM</label>
+                <Input
+                  type="number"
+                  value={formData.current_km}
+                  onChange={(e) => setFormData({ ...formData, current_km: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Status vozila</label>
+            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Aktivno</SelectItem>
+                <SelectItem value="maintenance">U servisu</SelectItem>
+                <SelectItem value="out_of_service">Van funkcije</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Napomene</label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              rows={3}
+            />
+          </div>
+
+          <Button onClick={handleUpdate} className="w-full">
+            Spremi promjene
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Add Equipment Dialog
+const AddEquipmentDialog = ({ onAdd, userDepartment, allUsers, vehicles }) => {
+  const [open, setOpen] = useState(false);
+  const [assignmentType, setAssignmentType] = useState('location'); // location, user, vehicle
+  const [formData, setFormData] = useState({
+    name: '',
+    type: 'helmet',
+    serial_number: '',
+    department: userDepartment || '',
+    location: '',
+    last_inspection_date: '',
+    next_inspection_due: '',
+    condition: 'good',
+    assigned_to_user: '',
+    assigned_to_vehicle: '',
+    notes: ''
+  });
+
+  const handleAdd = async () => {
+    if (!formData.name || !formData.type) {
+      alert('Molimo unesite naziv i tip opreme');
+      return;
+    }
+
+    const equipmentData = {
+      ...formData,
+      assigned_to_user: assignmentType === 'user' ? formData.assigned_to_user : null,
+      assigned_to_vehicle: assignmentType === 'vehicle' ? formData.assigned_to_vehicle : null,
+      location: assignmentType === 'location' ? formData.location : (assignmentType === 'user' ? 'Dodijeljeno članu' : 'Dodijeljeno vozilu'),
+      last_inspection_date: formData.last_inspection_date || null,
+      next_inspection_due: formData.next_inspection_due || null,
+    };
+
+    await onAdd(equipmentData);
+    setFormData({
+      name: '',
+      type: 'helmet',
+      serial_number: '',
+      department: userDepartment || '',
+      location: '',
+      last_inspection_date: '',
+      next_inspection_due: '',
+      condition: 'good',
+      assigned_to_user: '',
+      assigned_to_vehicle: '',
+      notes: ''
+    });
+    setAssignmentType('location');
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Dodaj Opremu</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Dodaj Novu Opremu</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv opreme *</label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Npr. Kaciga broj 5"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Tip opreme</label>
+              <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="helmet">Kaciga</SelectItem>
+                  <SelectItem value="suit">Odijelo</SelectItem>
+                  <SelectItem value="boots">Čizme</SelectItem>
+                  <SelectItem value="gloves">Rukavice</SelectItem>
+                  <SelectItem value="tank">Boca (za zrak)</SelectItem>
+                  <SelectItem value="mask">Maska</SelectItem>
+                  <SelectItem value="hose">Crijevo</SelectItem>
+                  <SelectItem value="nozzle">Mlaznica</SelectItem>
+                  <SelectItem value="axe">Sjekira</SelectItem>
+                  <SelectItem value="ladder">Ljestve</SelectItem>
+                  <SelectItem value="tool">Alat</SelectItem>
+                  <SelectItem value="other">Ostalo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Serijski broj</label>
+              <Input
+                type="text"
+                value={formData.serial_number}
+                onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
+                placeholder="SN-12345"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Društvo</label>
+              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                  <SelectItem value="VZO">VZO</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Lokacija/Zaduženje</label>
+            <div className="flex gap-4 mb-3">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'location'}
+                  onChange={() => setAssignmentType('location')}
+                />
+                <span className="text-sm">Lokacija</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'user'}
+                  onChange={() => setAssignmentType('user')}
+                />
+                <span className="text-sm">Dodijeljeno članu</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'vehicle'}
+                  onChange={() => setAssignmentType('vehicle')}
+                />
+                <span className="text-sm">Dodijeljeno vozilu</span>
+              </label>
+            </div>
+
+            {assignmentType === 'location' && (
+              <Input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="Npr. Skladište, Garaža, DVD Stanica..."
+              />
+            )}
+
+            {assignmentType === 'user' && (
+              <Select value={formData.assigned_to_user} onValueChange={(value) => setFormData({ ...formData, assigned_to_user: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Odaberi člana" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allUsers.map(user => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.full_name} ({user.department})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {assignmentType === 'vehicle' && (
+              <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Odaberi vozilo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vehicles.map(vehicle => (
+                    <SelectItem key={vehicle.id} value={vehicle.id}>
+                      {vehicle.name} ({vehicle.license_plate})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Provjera opreme</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Zadnja provjera</label>
+                <Input
+                  type="date"
+                  value={formData.last_inspection_date}
+                  onChange={(e) => setFormData({ ...formData, last_inspection_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Sljedeća provjera</label>
+                <Input
+                  type="date"
+                  value={formData.next_inspection_due}
+                  onChange={(e) => setFormData({ ...formData, next_inspection_due: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Stanje opreme</label>
+            <Select value={formData.condition} onValueChange={(value) => setFormData({ ...formData, condition: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="good">Dobro</SelectItem>
+                <SelectItem value="needs_maintenance">Potrebno održavanje</SelectItem>
+                <SelectItem value="damaged">Oštećeno</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Napomene</label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="Dodatne napomene o opremi..."
+              rows={3}
+            />
+          </div>
+
+          <Button onClick={handleAdd} className="w-full">
+            Dodaj Opremu
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Update Equipment Dialog
+const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
+  const [open, setOpen] = useState(false);
+  const [assignmentType, setAssignmentType] = useState(
+    equipment.assigned_to_user ? 'user' : equipment.assigned_to_vehicle ? 'vehicle' : 'location'
+  );
+  const [formData, setFormData] = useState({
+    name: equipment.name || '',
+    type: equipment.type || 'helmet',
+    serial_number: equipment.serial_number || '',
+    department: equipment.department || '',
+    location: equipment.location || '',
+    last_inspection_date: equipment.last_inspection_date ? equipment.last_inspection_date.split('T')[0] : '',
+    next_inspection_due: equipment.next_inspection_due ? equipment.next_inspection_due.split('T')[0] : '',
+    condition: equipment.condition || 'good',
+    assigned_to_user: equipment.assigned_to_user || '',
+    assigned_to_vehicle: equipment.assigned_to_vehicle || '',
+    notes: equipment.notes || ''
+  });
+
+  const handleUpdate = async () => {
+    const updateData = {
+      ...formData,
+      assigned_to_user: assignmentType === 'user' ? formData.assigned_to_user : null,
+      assigned_to_vehicle: assignmentType === 'vehicle' ? formData.assigned_to_vehicle : null,
+      location: assignmentType === 'location' ? formData.location : (assignmentType === 'user' ? 'Dodijeljeno članu' : 'Dodijeljeno vozilu'),
+      last_inspection_date: formData.last_inspection_date || null,
+      next_inspection_due: formData.next_inspection_due || null,
+    };
+
+    await onUpdate(equipment.id, updateData);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Uredi</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Uredi Opremu</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv opreme</label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Tip opreme</label>
+              <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="helmet">Kaciga</SelectItem>
+                  <SelectItem value="suit">Odijelo</SelectItem>
+                  <SelectItem value="boots">Čizme</SelectItem>
+                  <SelectItem value="gloves">Rukavice</SelectItem>
+                  <SelectItem value="tank">Boca (za zrak)</SelectItem>
+                  <SelectItem value="mask">Maska</SelectItem>
+                  <SelectItem value="hose">Crijevo</SelectItem>
+                  <SelectItem value="nozzle">Mlaznica</SelectItem>
+                  <SelectItem value="axe">Sjekira</SelectItem>
+                  <SelectItem value="ladder">Ljestve</SelectItem>
+                  <SelectItem value="tool">Alat</SelectItem>
+                  <SelectItem value="other">Ostalo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Serijski broj</label>
+              <Input
+                type="text"
+                value={formData.serial_number}
+                onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Društvo</label>
+              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                  <SelectItem value="VZO">VZO</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Lokacija/Zaduženje</label>
+            <div className="flex gap-4 mb-3">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'location'}
+                  onChange={() => setAssignmentType('location')}
+                />
+                <span className="text-sm">Lokacija</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'user'}
+                  onChange={() => setAssignmentType('user')}
+                />
+                <span className="text-sm">Dodijeljeno članu</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  checked={assignmentType === 'vehicle'}
+                  onChange={() => setAssignmentType('vehicle')}
+                />
+                <span className="text-sm">Dodijeljeno vozilu</span>
+              </label>
+            </div>
+
+            {assignmentType === 'location' && (
+              <Input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              />
+            )}
+
+            {assignmentType === 'user' && (
+              <Select value={formData.assigned_to_user} onValueChange={(value) => setFormData({ ...formData, assigned_to_user: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Odaberi člana" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allUsers.map(user => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.full_name} ({user.department})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {assignmentType === 'vehicle' && (
+              <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Odaberi vozilo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vehicles.map(vehicle => (
+                    <SelectItem key={vehicle.id} value={vehicle.id}>
+                      {vehicle.name} ({vehicle.license_plate})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm">Provjera opreme</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Zadnja provjera</label>
+                <Input
+                  type="date"
+                  value={formData.last_inspection_date}
+                  onChange={(e) => setFormData({ ...formData, last_inspection_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Sljedeća provjera</label>
+                <Input
+                  type="date"
+                  value={formData.next_inspection_due}
+                  onChange={(e) => setFormData({ ...formData, next_inspection_due: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Stanje opreme</label>
+            <Select value={formData.condition} onValueChange={(value) => setFormData({ ...formData, condition: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="good">Dobro</SelectItem>
+                <SelectItem value="needs_maintenance">Potrebno održavanje</SelectItem>
+                <SelectItem value="damaged">Oštećeno</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Napomene</label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              rows={3}
+            />
+          </div>
+
+          <Button onClick={handleUpdate} className="w-full">
+            Spremi promjene
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
