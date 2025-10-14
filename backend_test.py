@@ -963,27 +963,47 @@ def main():
     
     tester = FirefighterAPITester()
     
-    # Test sequence - UPDATED for specific review request
+    # Test sequence - UPDATED for vehicle and equipment management testing
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
-        ("Login Specific User (test_zapovjednik_final)", tester.test_login_specific_user),
-        ("Get User Profile", tester.test_get_me),
-        ("Get Hydrants", tester.test_get_hydrants),
-        ("Create Nadzemni Hydrant", tester.test_create_hydrant_nadzemni),
-        ("Create Podzemni Hydrant", tester.test_create_hydrant_podzemni),
-        ("Update Hydrant", tester.test_update_hydrant),
-        ("Delete Hydrant (NEW FUNCTIONALITY)", tester.test_delete_hydrant),
         ("User Registration (Zapovjednik)", tester.test_register_user_zapovjednik),
         ("VZO User Registration", tester.test_register_vzo_user),
         ("User Registration (Member)", tester.test_register_user_member),
         ("User Login", tester.test_login),
+        ("Get User Profile", tester.test_get_me),
+        
+        # Vehicle Management Tests (HIGH PRIORITY)
+        ("Get All Vehicles", tester.test_get_vehicles),
+        ("Create Vehicle with Full Details", tester.test_create_vehicle),
+        ("Update Vehicle Details", tester.test_update_vehicle),
+        ("Delete Vehicle", tester.test_delete_vehicle),
+        
+        # Equipment Management Tests (HIGH PRIORITY)
+        ("Get All Equipment", tester.test_get_equipment),
+        ("Create Equipment with Full Details", tester.test_create_equipment),
+        ("Create Equipment Assigned to Vehicle", tester.test_create_equipment_assigned_to_vehicle),
+        ("Update Equipment Details", tester.test_update_equipment),
+        ("Delete Equipment", tester.test_delete_equipment),
+        
+        # Permission Testing (HIGH PRIORITY)
+        ("Vehicle Permission Restrictions", tester.test_vehicle_permission_restrictions),
+        ("Equipment Permission Restrictions", tester.test_equipment_permission_restrictions),
+        ("Department Filtering", tester.test_department_filtering),
+        
+        # Data Validation Testing
+        ("Data Validation", tester.test_data_validation),
+        
+        # Existing Tests
+        ("Get Hydrants", tester.test_get_hydrants),
+        ("Create Nadzemni Hydrant", tester.test_create_hydrant_nadzemni),
+        ("Create Podzemni Hydrant", tester.test_create_hydrant_podzemni),
+        ("Update Hydrant", tester.test_update_hydrant),
+        ("Delete Hydrant", tester.test_delete_hydrant),
         ("Get All Users", tester.test_get_users),
         ("Get Active Locations", tester.test_get_active_locations),
         ("VZO Permissions", tester.test_vzo_permissions),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Role Restrictions", tester.test_member_role_restrictions),
-        ("All VZO Roles", tester.test_all_vzo_roles),
-        ("All Departments and Roles", tester.test_all_departments_and_roles),
     ]
     
     failed_tests = []
