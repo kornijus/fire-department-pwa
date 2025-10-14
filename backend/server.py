@@ -410,11 +410,49 @@ async def get_dvd_stations(current_user: User = Depends(get_current_user)):
 
 @api_router.post("/dvd-stations", response_model=DVDStation)
 async def create_dvd_station(station: DVDStation, current_user: User = Depends(get_current_user)):
-    if not has_vzo_full_access(current_user):
+    # VZO can add any, DVD presidents can add their own
+    if not (has_vzo_full_access(current_user) or 
+            (current_user.role == "predsjednik" and not current_user.is_vzo_member)):
         raise HTTPException(status_code=403, detail="Access denied")
     
     await db.dvd_stations.insert_one(station.dict())
     return station
+
+class DVDStationUpdate(BaseModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    contact_phone: Optional[str] = None
+    contact_email: Optional[str] = None
+    established_year: Optional[int] = None
+
+@api_router.put("/dvd-stations/{station_id}")
+async def update_dvd_station(station_id: str, station_update: DVDStationUpdate, current_user: User = Depends(get_current_user)):
+    # VZO can update any, DVD presidents can update their own
+    if not (has_vzo_full_access(current_user) or 
+            (current_user.role == "predsjednik" and not current_user.is_vzo_member)):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    update_data = {k: v for k, v in station_update.dict().items() if v is not None}
+    
+    result = await db.dvd_stations.update_one({"id": station_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="DVD station not found")
+    
+    return {"message": "DVD station updated successfully"}
+
+@api_router.delete("/dvd-stations/{station_id}")
+async def delete_dvd_station(station_id: str, current_user: User = Depends(get_current_user)):
+    # Only VZO can delete stations
+    if not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.dvd_stations.delete_one({"id": station_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="DVD station not found")
+    
+    return {"message": "DVD station deleted successfully"}
 
 # NEW: Vehicles endpoints
 @api_router.get("/vehicles", response_model=List[Vehicle])
