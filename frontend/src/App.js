@@ -2043,6 +2043,268 @@ const MemberDetailDialog = ({ member, onUpdate }) => {
   );
 };
 
+// Add Station Dialog
+const AddStationDialog = ({ onAdd }) => {
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [year, setYear] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const useMyLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLat(position.coords.latitude.toFixed(6));
+          setLng(position.coords.longitude.toFixed(6));
+        },
+        (error) => {
+          alert('Greška pri dohvaćanju GPS pozicije: ' + error.message);
+        }
+      );
+    }
+  };
+
+  const handleAdd = () => {
+    if (name && address && lat && lng) {
+      onAdd(name, address, parseFloat(lat), parseFloat(lng), phone, email, year ? parseInt(year) : null);
+      setName('');
+      setAddress('');
+      setLat('');
+      setLng('');
+      setPhone('');
+      setEmail('');
+      setYear('');
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Dodaj DVD Stanicu</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl z-50">
+        <DialogHeader>
+          <DialogTitle>Dodaj novu DVD stanicu</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv DVD-a</label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="DVD Kneginec Gornji"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Godina osnivanja</label>
+              <Input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                placeholder="1993"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Adresa</label>
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Ulica i broj, grad"
+              required
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium">Koordinate na karti</label>
+              <Button 
+                type="button"
+                variant="outline" 
+                size="sm"
+                onClick={useMyLocation}
+              >
+                📍 Koristi moju lokaciju
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs text-gray-500">Geografska širina</label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
+                  placeholder="46.250800"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">Geografska dužina</label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lng}
+                  onChange={(e) => setLng(e.target.value)}
+                  placeholder="16.375500"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Telefon</label>
+              <Input
+                type="tel"  
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+385 42 123 456"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="dvd@example.hr"
+              />
+            </div>
+          </div>
+
+          <Button onClick={handleAdd} className="w-full">
+            Dodaj DVD Stanicu
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Station Update Dialog
+const StationUpdateDialog = ({ station, onUpdate }) => {
+  const [name, setName] = useState(station.name);
+  const [address, setAddress] = useState(station.address);
+  const [lat, setLat] = useState(station.latitude.toString());
+  const [lng, setLng] = useState(station.longitude.toString());
+  const [phone, setPhone] = useState(station.contact_phone || '');
+  const [email, setEmail] = useState(station.contact_email || '');
+  const [year, setYear] = useState(station.established_year?.toString() || '');
+  const [open, setOpen] = useState(false);
+
+  const handleUpdate = () => {
+    const updates = {
+      name,
+      address,
+      latitude: parseFloat(lat),
+      longitude: parseFloat(lng),
+      contact_phone: phone || null,
+      contact_email: email || null,
+      established_year: year ? parseInt(year) : null
+    };
+    onUpdate(station.id, updates);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Uredi stanicu</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl z-50">
+        <DialogHeader>
+          <DialogTitle>Uređivanje DVD stanice</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Naziv DVD-a</label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Godina osnivanja</label>
+              <Input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Adresa</label>
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-sm font-medium">Geografska širina</label>
+              <Input
+                type="number"
+                step="any"
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Geografska dužina</label>
+              <Input
+                type="number"
+                step="any"
+                value={lng}
+                onChange={(e) => setLng(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Telefon</label>
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <Button onClick={handleUpdate} className="w-full">
+            Spremi promjene
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
