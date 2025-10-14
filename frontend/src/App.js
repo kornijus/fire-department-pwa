@@ -872,13 +872,15 @@ const Dashboard = () => {
 
       <div className="container mx-auto p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="dashboard">Pregled</TabsTrigger>
             <TabsTrigger value="map">Karta</TabsTrigger>
             <TabsTrigger value="members">Članovi</TabsTrigger>
             <TabsTrigger value="hydrants">Hidranti</TabsTrigger>
             <TabsTrigger value="vehicles">Vozila</TabsTrigger>
             <TabsTrigger value="equipment">Oprema</TabsTrigger>
+            <TabsTrigger value="events">Događaji</TabsTrigger>
+            <TabsTrigger value="communication">Komunikacija</TabsTrigger>
             {hasManagementPermission(user?.role, user?.is_vzo_member) && (
               <TabsTrigger value="stations">DVD Stanice</TabsTrigger>
             )}
