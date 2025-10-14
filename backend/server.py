@@ -527,6 +527,43 @@ async def create_equipment(equipment: Equipment, current_user: User = Depends(ge
     await db.equipment.insert_one(equipment.dict())
     return equipment
 
+class EquipmentUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    serial_number: Optional[str] = None
+    department: Optional[str] = None
+    location: Optional[str] = None
+    last_inspection_date: Optional[datetime] = None
+    next_inspection_due: Optional[datetime] = None
+    condition: Optional[str] = None
+    assigned_to_user: Optional[str] = None
+    assigned_to_vehicle: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.put("/equipment/{equipment_id}")
+async def update_equipment(equipment_id: str, equipment_update: EquipmentUpdate, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    update_data = {k: v for k, v in equipment_update.dict().items() if v is not None}
+    
+    result = await db.equipment.update_one({"id": equipment_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    return {"message": "Equipment updated successfully"}
+
+@api_router.delete("/equipment/{equipment_id}")
+async def delete_equipment(equipment_id: str, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.equipment.delete_one({"id": equipment_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    return {"message": "Equipment deleted successfully"}
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
