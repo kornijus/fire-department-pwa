@@ -1425,9 +1425,19 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Oprema</CardTitle>
-                  <Button onClick={fetchEquipment}>
-                    Osvježi popis opreme
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button onClick={fetchEquipment} variant="outline">
+                      Osvježi popis
+                    </Button>
+                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                      <AddEquipmentDialog 
+                        onAdd={addEquipment} 
+                        userDepartment={user?.department}
+                        allUsers={allUsers}
+                        vehicles={vehicles}
+                      />
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1438,7 +1448,7 @@ const Dashboard = () => {
                     equipment.map((item) => (
                       <div key={item.id} className="p-4 border rounded-lg">
                         <div className="flex justify-between items-start">
-                          <div>
+                          <div className="flex-1">
                             <h3 className="font-bold text-lg">{item.name}</h3>
                             <p><strong>Tip:</strong> {item.type}</p>
                             {item.serial_number && <p><strong>Serijski broj:</strong> {item.serial_number}</p>}
@@ -1452,9 +1462,31 @@ const Dashboard = () => {
                             {item.next_inspection_due && (
                               <p><strong>Sljedeća provjera:</strong> {new Date(item.next_inspection_due).toLocaleDateString()}</p>
                             )}
-                            {item.assigned_to_user && <p><strong>Dodijeljeno korisniku:</strong> {item.assigned_to_user}</p>}
+                            {item.assigned_to_user && (
+                              <p><strong>Dodijeljeno članu:</strong> {allUsers.find(u => u.id === item.assigned_to_user)?.full_name || item.assigned_to_user}</p>
+                            )}
+                            {item.assigned_to_vehicle && (
+                              <p><strong>Dodijeljeno vozilu:</strong> {vehicles.find(v => v.id === item.assigned_to_vehicle)?.name || item.assigned_to_vehicle}</p>
+                            )}
                             {item.notes && <p><strong>Napomene:</strong> {item.notes}</p>}
                           </div>
+                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                            <div className="flex space-x-2">
+                              <EquipmentUpdateDialog 
+                                equipment={item} 
+                                onUpdate={updateEquipment}
+                                allUsers={allUsers}
+                                vehicles={vehicles}
+                              />
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteEquipment(item.id)}
+                              >
+                                Obriši
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))
