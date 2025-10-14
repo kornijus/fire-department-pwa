@@ -426,6 +426,8 @@ const Dashboard = () => {
       fetchVehicles();
       fetchEquipment();
       fetchAllUsers(); // Fetch users for equipment assignment
+      fetchEvents(); // Fetch events
+      fetchMessages(); // Fetch messages
     }
   }, [user]);
 
