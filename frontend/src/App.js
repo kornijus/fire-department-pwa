@@ -514,11 +514,12 @@ const Dashboard = () => {
 
   // Helper function to check if user has management permissions
   const hasManagementPermission = (userRole, isVzoMember) => {
+    // Ako je VZO član, automatski ima pristup
     if (isVzoMember) {
-      const vzoRoles = ["predsjednik_vzo", "tajnik_vzo", "zapovjednik_vzo", "zamjenik_zapovjednika_vzo"];
-      return vzoRoles.includes(userRole);
+      return true;
     }
     
+    // DVD članovi s management rolama
     const managementRoles = [
       "zapovjednik", "zamjenik_zapovjednika", "zapovjednistvo", "predsjednik",
       "tajnik", "spremistar", "blagajnik", "upravni_odbor", "nadzorni_odbor"
