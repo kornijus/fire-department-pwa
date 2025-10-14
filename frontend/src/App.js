@@ -3518,6 +3518,446 @@ const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
   );
 };
 
+// Add Event Dialog
+const AddEventDialog = ({ onAdd, userDepartment, allUsers }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    event_type: 'training',
+    date: '',
+    department: userDepartment || '',
+    participants: [],
+    description: '',
+    location: ''
+  });
+
+  const handleAdd = async () => {
+    if (!formData.title || !formData.date) {
+      alert('Molimo unesite naziv i datum događaja');
+      return;
+    }
+
+    await onAdd(formData);
+    setFormData({
+      title: '',
+      event_type: 'training',
+      date: '',
+      department: userDepartment || '',
+      participants: [],
+      description: '',
+      location: ''
+    });
+    setOpen(false);
+  };
+
+  const toggleParticipant = (userId) => {
+    setFormData(prev => ({
+      ...prev,
+      participants: prev.participants.includes(userId)
+        ? prev.participants.filter(id => id !== userId)
+        : [...prev.participants, userId]
+    }));
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Dodaj Događaj</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Dodaj Novi Događaj</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium">Naziv događaja *</label>
+            <Input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Npr. Godišnje školovanje 2025"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Tip događaja</label>
+              <Select value={formData.event_type} onValueChange={(value) => setFormData({ ...formData, event_type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="training">Školovanje</SelectItem>
+                  <SelectItem value="insurance">Osiguranje</SelectItem>
+                  <SelectItem value="medical_check">Liječnički pregled</SelectItem>
+                  <SelectItem value="equipment_check">Provjera opreme</SelectItem>
+                  <SelectItem value="drill">Vježba</SelectItem>
+                  <SelectItem value="meeting">Sastanak</SelectItem>
+                  <SelectItem value="event">Događaj</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Datum *</label>
+              <Input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Društvo</label>
+              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="VZO">VZO</SelectItem>
+                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Lokacija</label>
+              <Input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="Npr. Vatrogasni dom"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Opis</label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Opis događaja..."
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Sudionici (odaberi članove)</label>
+            <div className="max-h-48 overflow-y-auto border rounded p-2 space-y-1">
+              {allUsers.filter(u => u.department === formData.department || formData.department === 'VZO').map(user => (
+                <div key={user.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={formData.participants.includes(user.id)}
+                    onCheckedChange={() => toggleParticipant(user.id)}
+                  />
+                  <span className="text-sm">{user.full_name} - {user.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Button onClick={handleAdd} className="w-full">
+            Dodaj Događaj
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Update Event Dialog
+const EventUpdateDialog = ({ event, onUpdate, allUsers }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: event.title || '',
+    event_type: event.event_type || 'training',
+    date: event.date ? event.date.split('T')[0] : '',
+    department: event.department || '',
+    participants: event.participants || [],
+    description: event.description || '',
+    location: event.location || ''
+  });
+
+  const handleUpdate = async () => {
+    await onUpdate(event.id, formData);
+    setOpen(false);
+  };
+
+  const toggleParticipant = (userId) => {
+    setFormData(prev => ({
+      ...prev,
+      participants: prev.participants.includes(userId)
+        ? prev.participants.filter(id => id !== userId)
+        : [...prev.participants, userId]
+    }));
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Uredi</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Uredi Događaj</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium">Naziv događaja</label>
+            <Input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Tip događaja</label>
+              <Select value={formData.event_type} onValueChange={(value) => setFormData({ ...formData, event_type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="training">Školovanje</SelectItem>
+                  <SelectItem value="insurance">Osiguranje</SelectItem>
+                  <SelectItem value="medical_check">Liječnički pregled</SelectItem>
+                  <SelectItem value="equipment_check">Provjera opreme</SelectItem>
+                  <SelectItem value="drill">Vježba</SelectItem>
+                  <SelectItem value="meeting">Sastanak</SelectItem>
+                  <SelectItem value="event">Događaj</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Datum</label>
+              <Input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Društvo</label>
+              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="VZO">VZO</SelectItem>
+                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Lokacija</label>
+              <Input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Opis</label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Sudionici</label>
+            <div className="max-h-48 overflow-y-auto border rounded p-2 space-y-1">
+              {allUsers.filter(u => u.department === formData.department || formData.department === 'VZO').map(user => (
+                <div key={user.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={formData.participants.includes(user.id)}
+                    onCheckedChange={() => toggleParticipant(user.id)}
+                  />
+                  <span className="text-sm">{user.full_name} - {user.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Button onClick={handleUpdate} className="w-full">
+            Spremi promjene
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Send Message Dialog
+const SendMessageDialog = ({ onSend }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    message_type: 'general',
+    title: '',
+    content: '',
+    sent_to_departments: [],
+    priority: 'normal'
+  });
+
+  const handleSend = async () => {
+    if (!formData.title || !formData.content || formData.sent_to_departments.length === 0) {
+      alert('Molimo popunite sve obavezne podatke i odaberite primatelje');
+      return;
+    }
+
+    await onSend(formData);
+    setFormData({
+      message_type: 'general',
+      title: '',
+      content: '',
+      sent_to_departments: [],
+      priority: 'normal'
+    });
+    setOpen(false);
+  };
+
+  const toggleDepartment = (dept) => {
+    setFormData(prev => ({
+      ...prev,
+      sent_to_departments: prev.sent_to_departments.includes(dept)
+        ? prev.sent_to_departments.filter(d => d !== dept)
+        : [...prev.sent_to_departments, dept]
+    }));
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Pošalji Poruku</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>Pošalji Grupnu Poruku</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Tip poruke</label>
+              <Select value={formData.message_type} onValueChange={(value) => setFormData({ ...formData, message_type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="alert">🚨 Uzbuna</SelectItem>
+                  <SelectItem value="drill">🎯 Vježba</SelectItem>
+                  <SelectItem value="event">📅 Događaj</SelectItem>
+                  <SelectItem value="general">💬 Opća poruka</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Prioritet</label>
+              <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="urgent">🚨 HITNO</SelectItem>
+                  <SelectItem value="normal">➡️ Normalno</SelectItem>
+                  <SelectItem value="low">⬇️ Nisko</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Naslov *</label>
+            <Input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Npr. Vježba u nedjelju 10:00"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Poruka *</label>
+            <Textarea
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              placeholder="Unesite poruku..."
+              rows={5}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Pošalji na (odaberi društva) *</label>
+            <div className="space-y-2 border rounded p-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.sent_to_departments.includes('all')}
+                  onCheckedChange={() => {
+                    if (formData.sent_to_departments.includes('all')) {
+                      setFormData({ ...formData, sent_to_departments: [] });
+                    } else {
+                      setFormData({ ...formData, sent_to_departments: ['all'] });
+                    }
+                  }}
+                />
+                <span className="font-semibold">📢 SVA DRUŠTVA (VZO)</span>
+              </div>
+              {!formData.sent_to_departments.includes('all') && (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={formData.sent_to_departments.includes('DVD_Kneginec_Gornji')}
+                      onCheckedChange={() => toggleDepartment('DVD_Kneginec_Gornji')}
+                    />
+                    <span>DVD Kneginec Gornji</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={formData.sent_to_departments.includes('DVD_Donji_Kneginec')}
+                      onCheckedChange={() => toggleDepartment('DVD_Donji_Kneginec')}
+                    />
+                    <span>DVD Donji Kneginec</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={formData.sent_to_departments.includes('DVD_Varazdinbreg')}
+                      onCheckedChange={() => toggleDepartment('DVD_Varazdinbreg')}
+                    />
+                    <span>DVD Varaždinbreg</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={formData.sent_to_departments.includes('DVD_Luzan_Biskupecki')}
+                      onCheckedChange={() => toggleDepartment('DVD_Luzan_Biskupecki')}
+                    />
+                    <span>DVD Lužan Biškupečki</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <Button onClick={handleSend} className="w-full">
+            📤 Pošalji Poruku
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
