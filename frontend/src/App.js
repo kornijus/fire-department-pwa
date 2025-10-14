@@ -399,6 +399,13 @@ const Dashboard = () => {
       alert(`Ping od ${data.from_user_id}: ${data.message}`);
     });
 
+    newSocket.on('new_message', (message) => {
+      // Refresh messages when new message is received
+      fetchMessages();
+      // Show notification
+      alert(`Nova poruka: ${message.title}\n${message.content}`);
+    });
+
     // Fetch hydrants and DVD stations
     fetchHydrants();
     fetchDvdStations();
