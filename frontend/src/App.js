@@ -693,6 +693,26 @@ const Dashboard = () => {
     }
   };
 
+  // Fetch events (školovanja, osiguranja, provjere)
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(`${API}/events`);
+      setEvents(response.data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  // Fetch messages
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`${API}/messages`);
+      setMessages(response.data);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
   // Vehicle CRUD operations
   const addVehicle = async (vehicleData) => {
     try {
