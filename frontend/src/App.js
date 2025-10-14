@@ -1338,6 +1338,70 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+            <TabsContent value="stations">
+              <Card>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle>DVD Stanice</CardTitle>
+                    <div className="flex space-x-2">
+                      <Button onClick={fetchDvdStations}>
+                        Osvježi stanice
+                      </Button>
+                      {(user?.is_vzo_member || user?.role === 'predsjednik') && (
+                        <AddStationDialog onAdd={addDvdStation} />
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {dvdStations.length === 0 ? (
+                      <p className="text-gray-500">Nema DVD stanica za prikaz</p>
+                    ) : (
+                      dvdStations.map((station) => (
+                        <div key={station.id} className="p-4 border rounded-lg">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h3 className="font-bold text-lg text-red-700">{station.name}</h3>
+                              <p><strong>Adresa:</strong> {station.address}</p>
+                              <p><strong>Koordinate:</strong> {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}</p>
+                              {station.contact_phone && <p><strong>Telefon:</strong> {station.contact_phone}</p>}
+                              {station.contact_email && <p><strong>Email:</strong> {station.contact_email}</p>}
+                              {station.established_year && <p><strong>Osnovano:</strong> {station.established_year}</p>}
+                              
+                              <div className="mt-3 flex space-x-2">
+                                <Badge className="bg-red-600">DVD Stanica</Badge>
+                                <Badge variant="outline">
+                                  Na karti: {station.latitude.toFixed(4)}, {station.longitude.toFixed(4)}
+                                </Badge>
+                              </div>
+                            </div>
+                            
+                            {(user?.is_vzo_member || station.name.includes(user?.department?.replace('DVD_', '').replace('_', ' '))) && (
+                              <div className="flex flex-col space-y-2">
+                                <StationUpdateDialog station={station} onUpdate={updateDvdStation} />
+                                {user?.is_vzo_member && (
+                                  <Button 
+                                    size="sm" 
+                                    variant="destructive"
+                                    onClick={() => deleteDvdStation(station.id)}
+                                  >
+                                    Obriši
+                                  </Button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+
           {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
             <TabsContent value="admin">
               <Card>
