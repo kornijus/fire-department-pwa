@@ -374,7 +374,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const [activeUsers, setActiveUsers] = useState([]);
   const [hydrants, setHydrants] = useState([]);
-  const [gpsEnabled, setGpsEnabled] = useState(false);
+  const [gpsEnabled, setGpsEnabled] = useState(true); // Default: GPS uključen
   const [userLocation, setUserLocation] = useState(null);
   const [socket, setSocket] = useState(null);
   const [isAddingHydrant, setIsAddingHydrant] = useState(false);
