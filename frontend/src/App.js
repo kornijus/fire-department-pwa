@@ -382,6 +382,8 @@ const Dashboard = () => {
   const [dvdStations, setDvdStations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [equipment, setEquipment] = useState([]);
+  const [events, setEvents] = useState([]); // Novi: događaji (osiguranja, školovanja, provjere)
+  const [messages, setMessages] = useState([]); // Novi: grupne poruke
   const watchId = useRef(null);
 
   useEffect(() => {
