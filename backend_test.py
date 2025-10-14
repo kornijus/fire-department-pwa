@@ -17,6 +17,8 @@ class FirefighterAPITester:
         self.tests_passed = 0
         self.created_hydrant_id = None
         self.created_podzemni_id = None
+        self.created_vehicle_id = None
+        self.created_equipment_id = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
