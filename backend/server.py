@@ -589,6 +589,83 @@ async def delete_equipment(equipment_id: str, current_user: User = Depends(get_c
     
     return {"message": "Equipment deleted successfully"}
 
+# NEW: Events endpoints (školovanja, osiguranja, provjere)
+@api_router.get("/events", response_model=List[Event])
+async def get_events(current_user: User = Depends(get_current_user)):
+    if has_vzo_full_access(current_user):
+        events = await db.events.find().to_list(1000)
+    else:
+        events = await db.events.find({"department": current_user.department}).to_list(1000)
+    return [Event(**event) for event in events]
+
+@api_router.post("/events", response_model=Event)
+async def create_event(event: Event, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    event.created_by = current_user.id
+    await db.events.insert_one(event.dict())
+    return event
+
+class EventUpdate(BaseModel):
+    title: Optional[str] = None
+    event_type: Optional[str] = None
+    date: Optional[datetime] = None
+    department: Optional[str] = None
+    participants: Optional[List[str]] = None
+    description: Optional[str] = None
+    location: Optional[str] = None
+
+@api_router.put("/events/{event_id}")
+async def update_event(event_id: str, event_update: EventUpdate, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    update_data = {k: v for k, v in event_update.dict().items() if v is not None}
+    
+    result = await db.events.update_one({"id": event_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    return {"message": "Event updated successfully"}
+
+@api_router.delete("/events/{event_id}")
+async def delete_event(event_id: str, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.events.delete_one({"id": event_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    return {"message": "Event deleted successfully"}
+
+# NEW: Messages endpoints (grupne poruke)
+@api_router.get("/messages", response_model=List[Message])
+async def get_messages(current_user: User = Depends(get_current_user)):
+    # Return messages sent to user's department or to "all"
+    messages = await db.messages.find({
+        "$or": [
+            {"sent_to_departments": current_user.department},
+            {"sent_to_departments": "all"}
+        ]
+    }).to_list(1000)
+    return [Message(**msg) for msg in messages]
+
+@api_router.post("/messages", response_model=Message)
+async def send_message(message: Message, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    message.sent_by = current_user.id
+    message.sent_by_name = current_user.full_name
+    await db.messages.insert_one(message.dict())
+    
+    # Broadcast message via WebSocket
+    await sio.emit('new_message', message.dict())
+    
+    return message
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
