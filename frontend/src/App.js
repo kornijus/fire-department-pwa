@@ -622,6 +622,44 @@ const Dashboard = () => {
     }
   };
 
+  const addDvdStation = async (name, address, lat, lng, phone, email, year) => {
+    try {
+      await axios.post(`${API}/dvd-stations`, {
+        name,
+        address,
+        latitude: lat,
+        longitude: lng,
+        contact_phone: phone || null,
+        contact_email: email || null,
+        established_year: year || null
+      });
+      fetchDvdStations();
+    } catch (error) {
+      console.error('Error adding DVD station:', error);
+    }
+  };
+
+  const updateDvdStation = async (stationId, updates) => {
+    try {
+      await axios.put(`${API}/dvd-stations/${stationId}`, updates);
+      fetchDvdStations();
+    } catch (error) {
+      console.error('Error updating DVD station:', error);
+    }
+  };
+
+  const deleteDvdStation = async (stationId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovu DVD stanicu?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/dvd-stations/${stationId}`);
+        fetchDvdStations();
+      } catch (error) {
+        console.error('Error deleting DVD station:', error);
+      }
+    }
+  };
+
   const fetchDvdStations = async () => {
     try {
       console.log('Fetching DVD stations...');
