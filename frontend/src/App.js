@@ -1399,6 +1399,18 @@ const Dashboard = () => {
                             )}
                             {vehicle.notes && <p><strong>Napomene:</strong> {vehicle.notes}</p>}
                           </div>
+                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                            <div className="flex space-x-2">
+                              <VehicleUpdateDialog vehicle={vehicle} onUpdate={updateVehicle} />
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteVehicle(vehicle.id)}
+                              >
+                                Obriši
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))
