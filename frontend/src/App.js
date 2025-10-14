@@ -1362,9 +1362,14 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Vozila</CardTitle>
-                  <Button onClick={fetchVehicles}>
-                    Osvježi popis vozila
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button onClick={fetchVehicles} variant="outline">
+                      Osvježi popis
+                    </Button>
+                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                      <AddVehicleDialog onAdd={addVehicle} userDepartment={user?.department} />
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1375,7 +1380,7 @@ const Dashboard = () => {
                     vehicles.map((vehicle) => (
                       <div key={vehicle.id} className="p-4 border rounded-lg">
                         <div className="flex justify-between items-start">
-                          <div>
+                          <div className="flex-1">
                             <h3 className="font-bold text-lg">{vehicle.name}</h3>
                             <p><strong>Tip:</strong> {vehicle.type}</p>
                             <p><strong>Registracija:</strong> {vehicle.license_plate}</p>
