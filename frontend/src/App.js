@@ -759,6 +759,51 @@ const Dashboard = () => {
     }
   };
 
+  // Event CRUD operations
+  const addEvent = async (eventData) => {
+    try {
+      await axios.post(`${API}/events`, eventData);
+      fetchEvents();
+    } catch (error) {
+      console.error('Error adding event:', error);
+      alert('Greška pri dodavanju događaja');
+    }
+  };
+
+  const updateEvent = async (eventId, updates) => {
+    try {
+      await axios.put(`${API}/events/${eventId}`, updates);
+      fetchEvents();
+    } catch (error) {
+      console.error('Error updating event:', error);
+      alert('Greška pri ažuriranju događaja');
+    }
+  };
+
+  const deleteEvent = async (eventId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovaj događaj?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/events/${eventId}`);
+        fetchEvents();
+      } catch (error) {
+        console.error('Error deleting event:', error);
+        alert('Greška pri brisanju događaja');
+      }
+    }
+  };
+
+  // Message operations
+  const sendMessage = async (messageData) => {
+    try {
+      await axios.post(`${API}/messages`, messageData);
+      fetchMessages();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Greška pri slanju poruke');
+    }
+  };
+
   const updateEquipment = async (equipmentId, updates) => {
     try {
       await axios.put(`${API}/equipment/${equipmentId}`, updates);
