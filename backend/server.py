@@ -471,6 +471,45 @@ async def create_vehicle(vehicle: Vehicle, current_user: User = Depends(get_curr
     await db.vehicles.insert_one(vehicle.dict())
     return vehicle
 
+class VehicleUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    license_plate: Optional[str] = None
+    department: Optional[str] = None
+    year: Optional[int] = None
+    technical_inspection_date: Optional[datetime] = None
+    technical_inspection_valid_until: Optional[datetime] = None
+    last_service_date: Optional[datetime] = None
+    next_service_due: Optional[datetime] = None
+    service_km: Optional[int] = None
+    current_km: Optional[int] = None
+    status: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.put("/vehicles/{vehicle_id}")
+async def update_vehicle(vehicle_id: str, vehicle_update: VehicleUpdate, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    update_data = {k: v for k, v in vehicle_update.dict().items() if v is not None}
+    
+    result = await db.vehicles.update_one({"id": vehicle_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    
+    return {"message": "Vehicle updated successfully"}
+
+@api_router.delete("/vehicles/{vehicle_id}")
+async def delete_vehicle(vehicle_id: str, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.vehicles.delete_one({"id": vehicle_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    
+    return {"message": "Vehicle deleted successfully"}
+
 # NEW: Equipment endpoints
 @api_router.get("/equipment", response_model=List[Equipment])
 async def get_equipment(current_user: User = Depends(get_current_user)):
