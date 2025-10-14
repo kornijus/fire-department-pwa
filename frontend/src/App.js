@@ -692,6 +692,9 @@ const Dashboard = () => {
             <TabsTrigger value="hydrants">Hidranti</TabsTrigger>
             <TabsTrigger value="vehicles">Vozila</TabsTrigger>
             <TabsTrigger value="equipment">Oprema</TabsTrigger>
+            {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+              <TabsTrigger value="stations">DVD Stanice</TabsTrigger>
+            )}
             {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
               <TabsTrigger value="admin">Administracija</TabsTrigger>
             )}
