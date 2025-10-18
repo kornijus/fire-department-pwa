@@ -2491,6 +2491,9 @@ const AddStationDialog = ({ onAdd }) => {
                 📍 Koristi moju lokaciju
               </Button>
             </div>
+            <div className="bg-blue-50 border border-blue-200 rounded p-2 mb-2 text-sm">
+              💡 <strong>Savjet:</strong> Možete kliknuti na kartu (tab "Karta") da odaberete točnu lokaciju!
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-xs text-gray-500">Geografska širina</label>
