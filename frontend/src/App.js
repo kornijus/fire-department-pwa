@@ -427,6 +427,11 @@ const Dashboard = () => {
     }
   }, [gpsEnabled, user]);
 
+  // Debug: Log when activeUsers changes
+  useEffect(() => {
+    console.log('🔄 activeUsers state changed:', activeUsers.length, activeUsers);
+  }, [activeUsers]);
+
   // Fetch data when user logs in
   useEffect(() => {
     if (user) {
