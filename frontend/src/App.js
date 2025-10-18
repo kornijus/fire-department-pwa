@@ -395,6 +395,7 @@ const Dashboard = () => {
     setSocket(newSocket);
 
     newSocket.on('user_locations', (locations) => {
+      console.log('📥 Primljene lokacije korisnika:', locations.length, 'korisnika');
       setActiveUsers(locations);
     });
 
