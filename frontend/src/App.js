@@ -1251,6 +1251,7 @@ const Dashboard = () => {
                     ))}
                     
                     {/* Active Users */}
+                    {console.log('🗺️ Rendering active users on map:', activeUsers.length, activeUsers)}
                     {activeUsers.map((activeUser, index) => (
                       <Marker
                         key={index}
