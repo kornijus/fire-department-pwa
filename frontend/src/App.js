@@ -1944,22 +1944,45 @@ const AddHydrantDialog = ({ onAdd }) => {
   const [open, setOpen] = useState(false);
 
   const useMyLocation = () => {
+    console.log('🔍 Pokušavam dohvatiti GPS lokaciju...');
     if (navigator.geolocation) {
+      // Prikaz loading stanja
+      setLat('Učitavanje...');
+      setLng('Učitavanje...');
+      
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLat(position.coords.latitude.toFixed(6));
-          setLng(position.coords.longitude.toFixed(6));
+          const lat = position.coords.latitude.toFixed(6);
+          const lng = position.coords.longitude.toFixed(6);
+          console.log('✅ GPS lokacija dobivena:', lat, lng);
+          setLat(lat);
+          setLng(lng);
+          alert('✅ GPS lokacija dobivena!');
         },
         (error) => {
-          alert('Greška pri dohvaćanju GPS pozicije: ' + error.message);
+          console.error('❌ GPS greška:', error);
+          setLat('');
+          setLng('');
+          let errorMsg = 'Greška pri dohvaćanju GPS pozicije: ';
+          if (error.code === 1) {
+            errorMsg += 'Dozvola odbijena. Molimo omogućite pristup lokaciji u postavkama preglednika.';
+          } else if (error.code === 2) {
+            errorMsg += 'Pozicija nije dostupna.';
+          } else if (error.code === 3) {
+            errorMsg += 'Istek vremena. Pokušajte ponovno.';
+          } else {
+            errorMsg += error.message;
+          }
+          alert(errorMsg);
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000
+          timeout: 15000,
+          maximumAge: 0
         }
       );
     } else {
+      console.error('❌ GPS nije podržan');
       alert('GPS nije podržan u vašem pregledniku');
     }
   };
