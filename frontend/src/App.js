@@ -451,9 +451,22 @@ const Dashboard = () => {
   };
 
   const startLocationTracking = () => {
+    console.log('🚀 Pokretanje GPS praćenja...');
+    
     if (!navigator.geolocation) {
+      console.error('❌ GPS nije podržan');
       alert('GPS nije podržan u vašem pregledniku');
       return;
+    }
+
+    // Prvo provjerimo dozvolu
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        console.log('📍 GPS dozvola status:', result.state);
+        if (result.state === 'denied') {
+          alert('⚠️ GPS pristup je blokiran! Molimo omogućite pristup lokaciji u postavkama preglednika.');
+        }
+      });
     }
 
     watchId.current = navigator.geolocation.watchPosition(
@@ -463,25 +476,41 @@ const Dashboard = () => {
           longitude: position.coords.longitude
         };
         
+        console.log('📍 Nova GPS pozicija:', location);
         setUserLocation(location);
         
         if (socket && user) {
+          console.log('📤 Šaljem lokaciju na server za korisnika:', user.id);
           socket.emit('location_update', {
             user_id: user.id,
+            username: user.username,
+            full_name: user.full_name,
             ...location
           });
+        } else {
+          console.warn('⚠️ Socket ili user nisu dostupni:', { socket: !!socket, user: !!user });
         }
       },
       (error) => {
-        console.error('GPS error:', error);
-        alert('Greška pri dohvaćanju GPS pozicije');
+        console.error('❌ GPS greška:', error);
+        let errorMsg = 'Greška pri dohvaćanju GPS pozicije: ';
+        if (error.code === 1) {
+          errorMsg = '⚠️ Dozvola za GPS je odbijena! Molimo omogućite pristup lokaciji.';
+        } else if (error.code === 2) {
+          errorMsg = '⚠️ GPS pozicija nije dostupna.';
+        } else if (error.code === 3) {
+          errorMsg = '⚠️ Istek vremena za GPS.';
+        }
+        alert(errorMsg);
       },
       {
         enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 10000
+        timeout: 10000,
+        maximumAge: 5000
       }
     );
+    
+    console.log('✅ GPS praćenje pokrenuto, watchId:', watchId.current);
   };
 
   const stopLocationTracking = () => {
