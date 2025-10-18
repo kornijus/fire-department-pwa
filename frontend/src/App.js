@@ -423,9 +423,12 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    console.log('📍 GPS useEffect:', { gpsEnabled, user: !!user });
     if (gpsEnabled && user) {
+      console.log('✅ GPS je uključen, pokrećem praćenje...');
       startLocationTracking();
     } else {
+      console.log('⏹️ GPS isključen ili nema usera, zaustavljam praćenje...');
       stopLocationTracking();
     }
   }, [gpsEnabled, user]);
