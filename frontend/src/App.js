@@ -454,6 +454,23 @@ const Dashboard = () => {
       });
     }
 
+    // Prvo pokušaj dobiti trenutnu poziciju kao test
+    console.log('🔍 Testiram GPS...');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log('✅ GPS TEST USPJEŠAN:', position.coords.latitude, position.coords.longitude);
+      },
+      (error) => {
+        console.warn('⚠️ GPS test neuspješan:', error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 0
+      }
+    );
+
+    // Pokreni praćenje sa većim timeout-om i bez high accuracy
     watchId.current = navigator.geolocation.watchPosition(
       (position) => {
         const location = {
@@ -461,37 +478,61 @@ const Dashboard = () => {
           longitude: position.coords.longitude
         };
         
-        console.log('📍 Nova GPS pozicija:', location);
+        console.log('📍 ✅ Nova GPS pozicija dobivena:', location);
+        console.log('📍 Točnost:', position.coords.accuracy, 'metara');
         setUserLocation(location);
         
         if (socket && user) {
-          console.log('📤 Šaljem lokaciju na server za korisnika:', user.id);
+          console.log('📤 Šaljem lokaciju na server za korisnika:', user.full_name, user.id);
           socket.emit('location_update', {
             user_id: user.id,
             username: user.username,
             full_name: user.full_name,
             ...location
           });
+          console.log('✅ Lokacija poslana!');
         } else {
           console.warn('⚠️ Socket ili user nisu dostupni:', { socket: !!socket, user: !!user });
         }
       },
       (error) => {
-        console.error('❌ GPS greška:', error);
-        let errorMsg = 'Greška pri dohvaćanju GPS pozicije: ';
-        if (error.code === 1) {
-          errorMsg = '⚠️ Dozvola za GPS je odbijena! Molimo omogućite pristup lokaciji.';
-        } else if (error.code === 2) {
-          errorMsg = '⚠️ GPS pozicija nije dostupna.';
-        } else if (error.code === 3) {
-          errorMsg = '⚠️ Istek vremena za GPS.';
+        console.error('❌ GPS greška (kod ' + error.code + '):', error.message);
+        
+        // Pokušaj s testnom lokacijom ako je timeout
+        if (error.code === 3) {
+          console.log('⚠️ GPS timeout - pokušavam s testnom lokacijom (Varaždin)...');
+          const testLocation = {
+            latitude: 46.3061,
+            longitude: 16.3378
+          };
+          
+          console.log('🧪 Koristim testnu lokaciju:', testLocation);
+          setUserLocation(testLocation);
+          
+          if (socket && user) {
+            socket.emit('location_update', {
+              user_id: user.id,
+              username: user.username,
+              full_name: user.full_name + ' (TEST)',
+              ...testLocation
+            });
+          }
+          
+          alert('⚠️ GPS timeout - koristi se testna lokacija (Varaždin centar). Za pravu lokaciju, omogućite GPS na uređaju.');
+        } else {
+          let errorMsg = 'Greška pri dohvaćanju GPS pozicije: ';
+          if (error.code === 1) {
+            errorMsg = '⚠️ Dozvola za GPS je odbijena! Molimo omogućite pristup lokaciji.';
+          } else if (error.code === 2) {
+            errorMsg = '⚠️ GPS pozicija nije dostupna.';
+          }
+          alert(errorMsg);
         }
-        alert(errorMsg);
       },
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000
+        enableHighAccuracy: false, // Promijenjeno na false za brže dohvaćanje
+        timeout: 30000, // Povećano na 30 sekundi
+        maximumAge: 10000 // Prihvati stariju poziciju
       }
     );
     
