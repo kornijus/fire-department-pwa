@@ -29,38 +29,41 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Custom icons
-const firefighterIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/2917/2917995.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
+// Zelena točka za online korisnike
+const activeUserIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#22c55e" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="12" cy="12" r="6" fill="#4ade80"/>
+    </svg>
+  `),
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10]
 });
 
-// NEW: Different hydrant icons based on type (Blue for nadzemni, Red for podzemni)
+// Plava točka za nadzemne hidrante (bez H)
 const nadzemniHydrantIcon = new L.Icon({
   iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6">
-      <circle cx="12" cy="12" r="10" stroke="#1e40af" stroke-width="2"/>
-      <circle cx="12" cy="12" r="6" fill="#60a5fa"/>
-      <text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">H</text>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
     </svg>
   `),
-  iconSize: [24, 24],
-  iconAnchor: [12, 24],
-  popupAnchor: [0, -24]
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -8]
 });
 
+// Crvena točka za podzemne hidrante (bez H)
 const podzemniHydrantIcon = new L.Icon({
-  iconUrl: 'data:image/svg+xml;base64=' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#dc2626">
-      <circle cx="12" cy="12" r="10" stroke="#991b1b" stroke-width="2"/>
-      <circle cx="12" cy="12" r="6" fill="#f87171"/>
-      <text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">H</text>
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
     </svg>
   `),
-  iconSize: [24, 24], 
-  iconAnchor: [12, 24],
-  popupAnchor: [0, -24]
+  iconSize: [16, 16], 
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -8]
 });
 
 // NEW: DVD Station icon - Much more visible
