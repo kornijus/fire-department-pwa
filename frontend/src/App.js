@@ -578,7 +578,7 @@ const Dashboard = () => {
 
   const addHydrant = async (lat, lng, status, tip_hidranta, address, notes, images = []) => {
     try {
-      await axios.post(`${API}/hydrants`, {
+      const response = await axios.post(`${API}/hydrants`, {
         latitude: lat,
         longitude: lng,
         status,
@@ -587,9 +587,12 @@ const Dashboard = () => {
         notes,
         images
       });
-      fetchHydrants();
+      console.log('Hidrant dodan:', response.data);
+      await fetchHydrants(); // Čekamo da se učita
+      alert('✅ Hidrant uspješno dodan!');
     } catch (error) {
       console.error('Error adding hydrant:', error);
+      alert('❌ Greška pri dodavanju hidranta: ' + (error.response?.data?.detail || error.message));
     }
   };
 
