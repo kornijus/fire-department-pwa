@@ -372,11 +372,24 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Initialize socket connection
+    console.log('🔌 Spajam se na WebSocket:', BACKEND_URL);
     const newSocket = io(BACKEND_URL);
     setSocket(newSocket);
 
+    newSocket.on('connect', () => {
+      console.log('✅ WebSocket spojen! Socket ID:', newSocket.id);
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('❌ WebSocket odspojen!');
+    });
+
+    newSocket.on('connection_success', (data) => {
+      console.log('✅ Backend potvrda:', data.message);
+    });
+
     newSocket.on('user_locations', (locations) => {
-      console.log('📥 Primljene lokacije korisnika:', locations.length, 'korisnika');
+      console.log('📥 Primljene lokacije korisnika:', locations.length, 'korisnika', locations);
       setActiveUsers(locations);
     });
 
