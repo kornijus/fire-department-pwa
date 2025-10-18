@@ -68,26 +68,7 @@ const podzemniHydrantIcon = new L.Icon({
 
 // NEW: DVD Station icon - Much more visible
 const dvdStationIcon = new L.Icon({
-  iconUrl: 'data:image/svg+xml;base64=' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="#dc2626">
-      <!-- Main building -->
-      <rect x="6" y="18" width="36" height="24" rx="3" fill="#dc2626" stroke="#000" stroke-width="2"/>
-      <!-- Windows -->
-      <rect x="10" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/>
-      <rect x="17" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/>
-      <rect x="26" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/>
-      <rect x="33" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/>
-      <!-- Door -->
-      <rect x="20" y="30" width="8" height="12" fill="#8B0000" stroke="#000" stroke-width="1"/>
-      <!-- Roof -->
-      <polygon points="24,6 6,18 42,18" fill="#8B0000" stroke="#000" stroke-width="2"/>
-      <!-- Chimney -->
-      <rect x="32" y="8" width="4" height="10" fill="#666" stroke="#000" stroke-width="1"/>
-      <!-- DVD Label with background -->
-      <rect x="12" y="35" width="24" height="6" fill="white" stroke="#000" stroke-width="1"/>
-      <text x="24" y="39" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="bold">DVD STANICA</text>
-    </svg>
-  `),
+  iconUrl: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="18" width="36" height="24" rx="3" fill="#dc2626" stroke="#000" stroke-width="2"/><rect x="10" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/><rect x="17" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/><rect x="26" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/><rect x="33" y="22" width="5" height="4" fill="white" stroke="#333" stroke-width="1"/><rect x="20" y="30" width="8" height="12" fill="#8B0000" stroke="#000" stroke-width="1"/><polygon points="24,6 6,18 42,18" fill="#8B0000" stroke="#000" stroke-width="2"/><rect x="32" y="8" width="4" height="10" fill="#666" stroke="#000" stroke-width="1"/><rect x="12" y="35" width="24" height="6" fill="white" stroke="#000" stroke-width="1"/><text x="24" y="39" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="bold">DVD</text></svg>'),
   iconSize: [48, 48],
   iconAnchor: [24, 48],
   popupAnchor: [0, -48]
