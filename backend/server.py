@@ -750,6 +750,5 @@ logger = logging.getLogger(__name__)
 async def shutdown_db_client():
     client.close()
 
-# Mount socket.io
-from fastapi import FastAPI
-app.mount("/socket.io", socket_app)
+# Socket.IO is already wrapped in socket_app via socketio.ASGIApp(sio, app)
+# No need to mount it separately - this was causing the routing issue!
