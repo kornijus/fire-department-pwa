@@ -187,8 +187,12 @@ async def disconnect(sid):
 async def location_update(sid, data):
     try:
         user_id = data.get('user_id')
+        username = data.get('username', 'Unknown')
+        full_name = data.get('full_name', 'Unknown')
         latitude = float(data.get('latitude'))
         longitude = float(data.get('longitude'))
+        
+        print(f"📍 Location update from {full_name} ({user_id}): {latitude}, {longitude}")
         
         # Check geofencing
         within_fence = is_within_geofence(latitude, longitude)
@@ -197,6 +201,8 @@ async def location_update(sid, data):
         # Save location to database
         location_data = {
             "user_id": user_id,
+            "username": username,
+            "full_name": full_name,
             "latitude": latitude,
             "longitude": longitude,
             "timestamp": datetime.now(timezone.utc),
@@ -209,17 +215,23 @@ async def location_update(sid, data):
         # Update active connections
         active_connections[sid] = {
             "user_id": user_id,
+            "username": username,
+            "full_name": full_name,
             "latitude": latitude,
             "longitude": longitude,
             "status": status,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
+        print(f"✅ Broadcasting {len(active_connections)} active users")
+        
         # Broadcast to all connected clients
         await sio.emit('user_locations', list(active_connections.values()))
         
     except Exception as e:
-        print(f"Error handling location update: {e}")
+        print(f"❌ Error handling location update: {e}")
+        import traceback
+        traceback.print_exc()
 
 @sio.event
 async def ping_user(sid, data):
