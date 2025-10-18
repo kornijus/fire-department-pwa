@@ -172,7 +172,9 @@ def is_within_geofence(lat: float, lon: float) -> bool:
 # Socket.IO events
 @sio.event
 async def connect(sid, environ):
-    print(f"Client {sid} connected")
+    print(f"🔌 Client {sid} connected from {environ.get('REMOTE_ADDR')}")
+    # Send immediate test message
+    await sio.emit('connection_success', {'message': 'Successfully connected to server!'}, room=sid)
 
 @sio.event
 async def disconnect(sid):
