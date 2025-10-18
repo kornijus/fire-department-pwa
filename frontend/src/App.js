@@ -1182,7 +1182,7 @@ const Dashboard = () => {
                       <Marker
                         key={index}
                         position={[activeUser.latitude, activeUser.longitude]}
-                        icon={firefighterIcon}
+                        icon={activeUserIcon}
                       >
                         <Popup>
                           <div className="p-2">
