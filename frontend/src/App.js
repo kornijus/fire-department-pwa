@@ -392,6 +392,10 @@ const Dashboard = () => {
       newSocket.emit('test_event', { test: 'hello from frontend' });
     });
 
+    newSocket.on('location_received', (data) => {
+      console.log('✅ BACKEND POTVRDIO PRIMANJE:', data.message, 'Ukupno korisnika:', data.user_count);
+    });
+
     newSocket.on('user_locations', (locations) => {
       console.log('📥 Primljene lokacije korisnika:', locations.length, 'korisnika', locations);
       setActiveUsers(locations);
