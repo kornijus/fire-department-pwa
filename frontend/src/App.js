@@ -470,13 +470,24 @@ const Dashboard = () => {
       return;
     }
 
+    // Provjera da li je socket spreman
+    if (!socket) {
+      console.warn('⚠️ Socket još nije spreman, pokušavam ponovno za 2 sekunde...');
+      setTimeout(startLocationTracking, 2000);
+      return;
+    }
+
     // Prvo provjerimo dozvolu
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         console.log('📍 GPS dozvola status:', result.state);
         if (result.state === 'denied') {
-          alert('⚠️ GPS pristup je blokiran! Molimo omogućite pristup lokaciji u postavkama preglednika.');
+          alert('⚠️ GPS pristup je blokiran!\n\nNa mobitelu:\n1. Idite u Postavke → Safari/Chrome\n2. Postavke → Lokacija\n3. Omogućite "Dok koristim aplikaciju"\n\nNa računalu:\n4. Kliknite 🔒 pored URL-a\n5. Postavke stranice → Lokacija → Dopusti');
+        } else if (result.state === 'prompt') {
+          console.log('📍 Tražim dozvolu od korisnika...');
         }
+      }).catch(err => {
+        console.warn('⚠️ Permissions API nije dostupan:', err);
       });
     }
 
