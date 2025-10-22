@@ -188,14 +188,15 @@ async def disconnect(sid):
     # Broadcast updated user locations
     await sio.emit('user_locations', list(active_connections.values()))
 
-@sio.event
-async def test_event(sid, data):
+async def handle_test_event(sid, data):
     print(f"🧪 ========================================")
     print(f"🧪 TEST EVENT RECEIVED!")
     print(f"🧪 SID: {sid}")
     print(f"🧪 DATA: {data}")
     print(f"🧪 ========================================")
     return {'received': True}
+
+sio.on('test_event', handle_test_event)
 
 # Register location_update handler using sio.on instead of decorator
 async def handle_location_update(sid, data):
