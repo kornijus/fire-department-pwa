@@ -577,14 +577,20 @@ const Dashboard = () => {
         }
         
         console.log('📤 Šaljem lokaciju na server za korisnika:', user.full_name, user.id);
+        console.log('📤 POST URL:', `${API}/locations/update`);
+        console.log('📤 Data:', location);
         
         // Use HTTP POST instead of WebSocket
         axios.post(`${API}/locations/update`, location)
           .then(response => {
-            console.log('✅ Lokacija poslana! Aktivnih korisnika:', response.data.user_count);
+            console.log('✅ Lokacija poslana! Response:', response.data);
+            console.log('✅ Aktivnih korisnika:', response.data.user_count);
           })
           .catch(error => {
-            console.error('❌ Greška pri slanju lokacije:', error);
+            console.error('❌ Greška pri slanju lokacije!');
+            console.error('❌ Error response:', error.response?.data);
+            console.error('❌ Error status:', error.response?.status);
+            console.error('❌ Full error:', error);
           });
       },
       (error) => {
