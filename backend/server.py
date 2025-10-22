@@ -190,6 +190,11 @@ async def disconnect(sid):
 
 @sio.event
 async def location_update(sid, data):
+    print(f"📍 ========================================")
+    print(f"📍 LOCATION UPDATE EVENT RECEIVED!")
+    print(f"📍 SID: {sid}")
+    print(f"📍 DATA: {data}")
+    print(f"📍 ========================================")
     try:
         user_id = data.get('user_id')
         username = data.get('username', 'Unknown')
