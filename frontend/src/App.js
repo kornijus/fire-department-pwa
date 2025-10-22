@@ -1274,10 +1274,22 @@ const Dashboard = () => {
                     {hasManagementPermission(user?.role, user?.is_vzo_member) && (
                       <>
                         <Button
-                          onClick={() => setIsAddingHydrant(!isAddingHydrant)}
+                          onClick={() => {
+                            setIsAddingHydrant(!isAddingHydrant);
+                            if (!isAddingHydrant) setIsAddingDvdStation(false); // Close DVD mode
+                          }}
                           className={isAddingHydrant ? 'bg-green-600' : 'bg-blue-600'}
                         >
                           {isAddingHydrant ? 'Odustani' : 'Dodaj Hidrant'}
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setIsAddingDvdStation(!isAddingDvdStation);
+                            if (!isAddingDvdStation) setIsAddingHydrant(false); // Close Hydrant mode
+                          }}
+                          className={isAddingDvdStation ? 'bg-green-600' : 'bg-red-600'}
+                        >
+                          {isAddingDvdStation ? 'Odustani' : '🏠 Dodaj DVD Stanicu'}
                         </Button>
                         <AddHydrantDialog onAdd={addHydrant} />
                       </>
