@@ -445,17 +445,15 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log('📍 GPS useEffect:', { gpsEnabled, user: !!user, socket: !!socket });
-    if (gpsEnabled && user && socket) {
-      console.log('✅ GPS je uključen i socket je spreman, pokrećem praćenje...');
+    console.log('📍 GPS useEffect:', { gpsEnabled, user: !!user });
+    if (gpsEnabled && user) {
+      console.log('✅ GPS je uključen, pokrećem praćenje (HTTP polling)...');
       startLocationTracking();
-    } else if (gpsEnabled && user && !socket) {
-      console.log('⏳ Čekam da se socket poveže prije pokretanja GPS-a...');
     } else {
-      console.log('⏹️ GPS isključen ili nema usera/socketa, zaustavljam praćenje...');
+      console.log('⏹️ GPS isključen ili nema usera, zaustavljam praćenje...');
       stopLocationTracking();
     }
-  }, [gpsEnabled, user, socket]);
+  }, [gpsEnabled, user]);
 
   // Debug: Log when activeUsers changes
   useEffect(() => {
