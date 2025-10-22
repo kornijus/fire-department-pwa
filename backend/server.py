@@ -261,13 +261,6 @@ def is_within_geofence(lat: float, lon: float) -> bool:
     distance = geodesic(BASE_LOCATION, (lat, lon)).kilometers
     return distance <= GEOFENCE_RADIUS_KM
 
-    
-    if target_sid:
-        await sio.emit('ping_received', {
-            'from_user_id': from_user_id,
-            'message': 'Ping from fellow firefighter!'
-        }, room=target_sid)
-
 # API Routes
 @api_router.post("/register")
 async def register(user: UserCreate):
