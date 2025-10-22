@@ -244,7 +244,14 @@ async def location_update(sid, data):
         
         print(f"✅ Broadcasting {len(active_connections)} active users")
         
+        # Send confirmation back to sender
+        await sio.emit('location_received', {
+            'message': f'Location received for {full_name}',
+            'user_count': len(active_connections)
+        }, room=sid)
+        
         # Broadcast to all connected clients
+        print(f"✅ Broadcasting {len(active_connections)} active users")
         await sio.emit('user_locations', list(active_connections.values()))
         
     except Exception as e:
