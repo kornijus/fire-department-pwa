@@ -519,18 +519,31 @@ const Dashboard = () => {
         console.log('📍 Točnost:', position.coords.accuracy, 'metara');
         setUserLocation(location);
         
-        if (socket && user) {
-          console.log('📤 Šaljem lokaciju na server za korisnika:', user.full_name, user.id);
-          socket.emit('location_update', {
-            user_id: user.id,
-            username: user.username,
-            full_name: user.full_name,
-            ...location
-          });
-          console.log('✅ Lokacija poslana!');
-        } else {
-          console.warn('⚠️ Socket ili user nisu dostupni:', { socket: !!socket, user: !!user });
+        if (!socket) {
+          console.error('❌ Socket nije dostupan! Ne mogu poslati lokaciju.');
+          console.log('🔄 Pokušavam ponovo conectati socket...');
+          return;
         }
+        
+        if (!user) {
+          console.error('❌ User nije dostupan! Ne mogu poslati lokaciju.');
+          return;
+        }
+
+        if (!socket.connected) {
+          console.error('❌ Socket nije povezan! Status:', socket.connected);
+          return;
+        }
+        
+        console.log('📤 Šaljem lokaciju na server za korisnika:', user.full_name, user.id);
+        console.log('📤 Socket ID:', socket.id, 'Connected:', socket.connected);
+        socket.emit('location_update', {
+          user_id: user.id,
+          username: user.username,
+          full_name: user.full_name,
+          ...location
+        });
+        console.log('✅ Lokacija poslana!');
       },
       (error) => {
         console.error('❌ GPS greška (kod ' + error.code + '):', error.message);
