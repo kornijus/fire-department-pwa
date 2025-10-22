@@ -386,6 +386,10 @@ const Dashboard = () => {
 
     newSocket.on('connection_success', (data) => {
       console.log('✅ Backend potvrda:', data.message);
+      
+      // Test: Pošalji test event
+      console.log('🧪 Šaljem test event...');
+      newSocket.emit('test_event', { test: 'hello from frontend' });
     });
 
     newSocket.on('user_locations', (locations) => {
