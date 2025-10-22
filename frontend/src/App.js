@@ -544,6 +544,23 @@ const Dashboard = () => {
       }
     );
 
+    // Odmah pošalji testnu lokaciju kao fallback
+    if (user) {
+      console.log('🧪 Šaljem inicijalnu testnu lokaciju...');
+      const initialTestLocation = {
+        latitude: 46.3061,
+        longitude: 16.3378
+      };
+      
+      axios.post(`${API}/locations/update`, initialTestLocation)
+        .then(response => {
+          console.log('✅ Inicijalna testna lokacija poslana! Aktivnih:', response.data.user_count);
+        })
+        .catch(error => {
+          console.error('❌ Greška pri slanju inicijalne lokacije:', error);
+        });
+    }
+    
     // Pokreni praćenje sa većim timeout-om i bez high accuracy
     watchId.current = navigator.geolocation.watchPosition(
       (position) => {
