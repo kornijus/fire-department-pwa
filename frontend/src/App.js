@@ -373,7 +373,19 @@ const Dashboard = () => {
   useEffect(() => {
     // Initialize socket connection
     console.log('🔌 Spajam se na WebSocket:', BACKEND_URL);
-    const newSocket = io(BACKEND_URL);
+    const newSocket = io(BACKEND_URL, {
+      transports: ['websocket', 'polling'],
+      path: '/socket.io/',
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5
+    });
+    
+    console.log('🔌 Socket options:', {
+      transports: ['websocket', 'polling'],
+      path: '/socket.io/'
+    });
+    
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
