@@ -556,19 +556,8 @@ const Dashboard = () => {
         console.log('📍 Točnost:', position.coords.accuracy, 'metara');
         setUserLocation(location);
         
-        if (!socket) {
-          console.error('❌ Socket nije dostupan! Ne mogu poslati lokaciju.');
-          console.log('🔄 Pokušavam ponovo conectati socket...');
-          return;
-        }
-        
         if (!user) {
           console.error('❌ User nije dostupan! Ne mogu poslati lokaciju.');
-          return;
-        }
-
-        if (!socket.connected) {
-          console.error('❌ Socket nije povezan! Status:', socket.connected);
           return;
         }
         
