@@ -33,16 +33,108 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 # Socket.IO manager
-sio = socketio.AsyncServer(cors_allowed_origins="*", async_mode='asgi')
+sio = socketio.AsyncServer(cors_allowed_origins="*", async_mode='asgi', logger=True, engineio_logger=True)
+
+# Active connections tracking - MUST be defined before event handlers
+active_connections: Dict[str, Dict] = {}
+
+# ===== SOCKET.IO EVENT HANDLERS - REGISTER BEFORE socket_app =====
+print("🔧 Registering Socket.IO event handlers...")
+
+@sio.event
+async def connect(sid, environ):
+    print(f"🔌 ========================================")
+    print(f"🔌 CLIENT CONNECTED: {sid}")
+    print(f"🔌 FROM IP: {environ.get('REMOTE_ADDR')}")
+    print(f"🔌 ========================================")
+    await sio.emit('connection_success', {'message': 'Successfully connected to server!'}, room=sid)
+
+@sio.event
+async def disconnect(sid):
+    print(f"❌ Client {sid} disconnected")
+    if sid in active_connections:
+        del active_connections[sid]
+    await sio.emit('user_locations', list(active_connections.values()))
+
+@sio.event
+async def test_event(sid, data):
+    print(f"🧪 TEST EVENT RECEIVED from {sid}: {data}")
+    return {'received': True}
+
+@sio.event
+async def location_update(sid, data):
+    print(f"📍 ========================================")
+    print(f"📍 LOCATION UPDATE EVENT RECEIVED!")
+    print(f"📍 SID: {sid}")
+    print(f"📍 DATA: {data}")
+    print(f"📍 ========================================")
+    try:
+        user_id = data.get('user_id')
+        username = data.get('username', 'Unknown')
+        full_name = data.get('full_name', 'Unknown')
+        latitude = float(data.get('latitude'))
+        longitude = float(data.get('longitude'))
+        
+        print(f"📍 Location update from {full_name} ({user_id}): {latitude}, {longitude}")
+        
+        # Check geofencing
+        from geopy.distance import geodesic
+        base_coords = (46.2508, 16.3755)
+        user_coords = (latitude, longitude)
+        distance = geodesic(base_coords, user_coords).km
+        within_fence = distance <= 10
+        status = "active" if within_fence else "inactive"
+        
+        # Update active connections
+        active_connections[sid] = {
+            "user_id": user_id,
+            "username": username,
+            "full_name": full_name,
+            "latitude": latitude,
+            "longitude": longitude,
+            "status": status,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        print(f"✅ Updated connections, now {len(active_connections)} active users")
+        
+        # Send confirmation
+        await sio.emit('location_received', {
+            'message': f'Location received for {full_name}',
+            'user_count': len(active_connections)
+        }, room=sid)
+        
+        # Broadcast to all
+        await sio.emit('user_locations', list(active_connections.values()))
+        print(f"✅ Broadcasted user_locations to all clients")
+        
+    except Exception as e:
+        print(f"❌ Error handling location update: {e}")
+        import traceback
+        traceback.print_exc()
+
+@sio.event
+async def ping_user(sid, data):
+    target_user_id = data.get('target_user_id')
+    from_user_id = data.get('from_user_id')
+    message = data.get('message', 'Ping!')
+    
+    for conn_sid, conn_data in active_connections.items():
+        if conn_data.get('user_id') == target_user_id:
+            await sio.emit('ping_received', {
+                'from_user_id': from_user_id,
+                'message': message
+            }, room=conn_sid)
+            break
+
+print("✅ Socket.IO event handlers registered!")
+# ===== END OF SOCKET.IO EVENT HANDLERS =====
 
 # Create the main app
 app = FastAPI()
 
-# Socket.IO app
+# Socket.IO app - created AFTER event handlers are registered
 socket_app = socketio.ASGIApp(sio, app)
-
-# Active connections tracking
-active_connections: Dict[str, Dict] = {}
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
