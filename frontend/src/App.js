@@ -1876,7 +1876,7 @@ const Dashboard = () => {
                         Osvježi stanice
                       </Button>
                       {(user?.is_vzo_member || user?.role === 'predsjednik') && (
-                        <AddStationDialog onAdd={addDvdStation} />
+                        <AddStationDialog onAdd={addDvdStation} clickedPosition={clickedPosition} />
                       )}
                     </div>
                   </div>
