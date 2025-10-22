@@ -1296,10 +1296,8 @@ const Dashboard = () => {
                     {/* Map click handler for adding hydrants */}
                     <MapClickHandler onMapClick={handleMapClick} />
                     
-                    {/* DVD Stations - SAKRIVENO */}
-                    {/* DVD stanice su sakrivene jer smetaju na karti */}
-                    {/* Možete ih vidjeti u tabu "DVD Stanice" */}
-                    {false && dvdStations.map((station) => (
+                    {/* DVD Stations - Vidljive i draggable */}
+                    {dvdStations.map((station) => (
                       <Marker
                         key={station.id}
                         position={[station.latitude, station.longitude]}
