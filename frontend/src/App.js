@@ -558,14 +558,15 @@ const Dashboard = () => {
         }
         
         console.log('📤 Šaljem lokaciju na server za korisnika:', user.full_name, user.id);
-        console.log('📤 Socket ID:', socket.id, 'Connected:', socket.connected);
-        socket.emit('location_update', {
-          user_id: user.id,
-          username: user.username,
-          full_name: user.full_name,
-          ...location
-        });
-        console.log('✅ Lokacija poslana!');
+        
+        // Use HTTP POST instead of WebSocket
+        axios.post(`${API}/locations/update`, location)
+          .then(response => {
+            console.log('✅ Lokacija poslana! Aktivnih korisnika:', response.data.user_count);
+          })
+          .catch(error => {
+            console.error('❌ Greška pri slanju lokacije:', error);
+          });
       },
       (error) => {
         console.error('❌ GPS greška (kod ' + error.code + '):', error.message);
