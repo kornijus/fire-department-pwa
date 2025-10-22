@@ -1305,7 +1305,12 @@ const Dashboard = () => {
                 </div>
                 {isAddingHydrant && (
                   <Alert className="bg-blue-50 border-blue-200">
-                    <AlertDescription>Kliknite na kartu za dodavanje novog hidranta</AlertDescription>
+                    <AlertDescription>🔵 Kliknite na kartu za dodavanje novog hidranta</AlertDescription>
+                  </Alert>
+                )}
+                {isAddingDvdStation && (
+                  <Alert className="bg-red-50 border-red-200">
+                    <AlertDescription>🏠 Kliknite na kartu za postavljanje DVD stanice</AlertDescription>
                   </Alert>
                 )}
               </CardHeader>
