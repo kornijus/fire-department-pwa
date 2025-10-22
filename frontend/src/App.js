@@ -396,6 +396,14 @@ const Dashboard = () => {
       console.log('❌ WebSocket odspojen!');
     });
 
+    newSocket.on('connect_error', (error) => {
+      console.error('❌ Socket.IO connect error:', error);
+    });
+
+    newSocket.on('error', (error) => {
+      console.error('❌ Socket.IO error:', error);
+    });
+
     newSocket.on('connection_success', (data) => {
       console.log('✅ Backend potvrda:', data.message);
       
