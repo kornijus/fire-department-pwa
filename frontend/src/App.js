@@ -700,6 +700,20 @@ const Dashboard = () => {
       }
       setIsAddingHydrant(false);
     }
+    
+    if (isAddingDvdStation && hasManagementPermission(user?.role, user?.is_vzo_member)) {
+      const confirmed = window.confirm(
+        `Postaviti DVD stanicu na poziciju:\nŠirina: ${latlng.lat.toFixed(6)}\nDužina: ${latlng.lng.toFixed(6)}?`
+      );
+      
+      if (confirmed) {
+        setClickedPosition(latlng);
+        setIsAddingDvdStation(false); // Close adding mode
+        // Open add station dialog will automatically use clickedPosition
+      }
+    }
+    
+    setClickedPosition(latlng);
   };
 
   const addHydrantFromMap = async (lat, lng) => {
