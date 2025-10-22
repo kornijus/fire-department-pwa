@@ -363,6 +363,7 @@ const Dashboard = () => {
   const [socket, setSocket] = useState(null);
   const [isAddingHydrant, setIsAddingHydrant] = useState(false);
   const [isAddingDvdStation, setIsAddingDvdStation] = useState(false);
+  const [clickedPosition, setClickedPosition] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [dvdStations, setDvdStations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
