@@ -181,12 +181,21 @@ async def connect(sid, environ):
 
 @sio.event
 async def disconnect(sid):
-    print(f"Client {sid} disconnected")
+    print(f"❌ Client {sid} disconnected")
     # Remove from active connections
     if sid in active_connections:
         del active_connections[sid]
     # Broadcast updated user locations
     await sio.emit('user_locations', list(active_connections.values()))
+
+@sio.event
+async def test_event(sid, data):
+    print(f"🧪 ========================================")
+    print(f"🧪 TEST EVENT RECEIVED!")
+    print(f"🧪 SID: {sid}")
+    print(f"🧪 DATA: {data}")
+    print(f"🧪 ========================================")
+    return {'received': True}
 
 @sio.event
 async def location_update(sid, data):
