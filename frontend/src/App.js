@@ -511,12 +511,8 @@ const Dashboard = () => {
       return;
     }
 
-    // Provjera da li je socket spreman
-    if (!socket) {
-      console.warn('⚠️ Socket još nije spreman, pokušavam ponovno za 2 sekunde...');
-      setTimeout(startLocationTracking, 2000);
-      return;
-    }
+    // Ne trebamo više socket jer koristimo HTTP polling!
+    console.log('✅ Koristim HTTP umjesto WebSocket-a');
 
     // Prvo provjerimo dozvolu
     if (navigator.permissions) {
