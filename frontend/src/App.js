@@ -581,28 +581,30 @@ const Dashboard = () => {
       (error) => {
         console.error('❌ GPS greška (kod ' + error.code + '):', error.message);
         
-        // Pokušaj s testnom lokacijom ako je timeout
-        if (error.code === 3) {
-          console.log('⚠️ GPS timeout - pokušavam s testnom lokacijom (Varaždin)...');
-          const testLocation = {
-            latitude: 46.3061,
-            longitude: 16.3378
-          };
-          
-          console.log('🧪 Koristim testnu lokaciju:', testLocation);
-          setUserLocation(testLocation);
-          
-          if (socket && user) {
-            socket.emit('location_update', {
-              user_id: user.id,
-              username: user.username,
-              full_name: user.full_name + ' (TEST)',
-              ...testLocation
+        // Pokušaj s testnom lokacijom ako je timeout ili bilo koja greška
+        console.log('⚠️ GPS greška - koristim testnu lokaciju (Varaždin)...');
+        const testLocation = {
+          latitude: 46.3061,
+          longitude: 16.3378
+        };
+        
+        console.log('🧪 Koristim testnu lokaciju:', testLocation);
+        setUserLocation(testLocation);
+        
+        if (user) {
+          console.log('📤 Šaljem TESTNU lokaciju na server...');
+          axios.post(`${API}/locations/update`, testLocation)
+            .then(response => {
+              console.log('✅ TESTNA lokacija poslana! Response:', response.data);
+            })
+            .catch(error => {
+              console.error('❌ Greška pri slanju TESTNE lokacije:', error);
             });
-          }
-          
-          alert('⚠️ GPS timeout - koristi se testna lokacija (Varaždin centar). Za pravu lokaciju, omogućite GPS na uređaju.');
-        } else {
+        }
+        
+        if (error.code === 3) {
+          alert('⚠️ GPS timeout - koristi se testna lokacija (Varaždin centar).');
+        } else if (error.code === 1) {
           let errorMsg = 'Greška pri dohvaćanju GPS pozicije: ';
           if (error.code === 1) {
             errorMsg = '⚠️ Dozvola za GPS je odbijena! Molimo omogućite pristup lokaciji.';
