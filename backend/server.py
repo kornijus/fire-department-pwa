@@ -197,8 +197,8 @@ async def test_event(sid, data):
     print(f"🧪 ========================================")
     return {'received': True}
 
-@sio.event
-async def location_update(sid, data):
+# Register location_update handler using sio.on instead of decorator
+async def handle_location_update(sid, data):
     print(f"📍 ========================================")
     print(f"📍 LOCATION UPDATE EVENT RECEIVED!")
     print(f"📍 SID: {sid}")
@@ -251,13 +251,15 @@ async def location_update(sid, data):
         }, room=sid)
         
         # Broadcast to all connected clients
-        print(f"✅ Broadcasting {len(active_connections)} active users")
         await sio.emit('user_locations', list(active_connections.values()))
         
     except Exception as e:
         print(f"❌ Error handling location update: {e}")
         import traceback
         traceback.print_exc()
+
+# Register the event handler
+sio.on('location_update', handle_location_update)
 
 @sio.event
 async def ping_user(sid, data):
