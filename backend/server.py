@@ -261,6 +261,83 @@ def is_within_geofence(lat: float, lon: float) -> bool:
     distance = geodesic(BASE_LOCATION, (lat, lon)).kilometers
     return distance <= GEOFENCE_RADIUS_KM
 
+# HTTP-based location tracking (alternative to WebSocket)
+@api_router.post("/locations/update")
+async def update_location(data: dict, current_user: User = Depends(get_current_user)):
+    """Update user location via HTTP POST"""
+    try:
+        latitude = float(data.get('latitude'))
+        longitude = float(data.get('longitude'))
+        
+        print(f"📍 HTTP Location update from {current_user.full_name}: {latitude}, {longitude}")
+        
+        # Check geofencing
+        from geopy.distance import geodesic
+        base_coords = (46.2508, 16.3755)
+        user_coords = (latitude, longitude)
+        distance = geodesic(base_coords, user_coords).km
+        within_fence = distance <= 10
+        status = "active" if within_fence else "inactive"
+        
+        # Save to database
+        location_data = {
+            "user_id": current_user.id,
+            "username": current_user.username,
+            "full_name": current_user.full_name,
+            "latitude": latitude,
+            "longitude": longitude,
+            "timestamp": datetime.now(timezone.utc),
+            "is_active": within_fence,
+            "status": status
+        }
+        
+        await db.locations.insert_one(location_data)
+        
+        # Store in memory cache
+        active_connections[current_user.id] = {
+            "user_id": current_user.id,
+            "username": current_user.username,
+            "full_name": current_user.full_name,
+            "latitude": latitude,
+            "longitude": longitude,
+            "status": status,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        print(f"✅ Location saved, {len(active_connections)} active users")
+        
+        return {"success": True, "message": "Location updated", "user_count": len(active_connections)}
+        
+    except Exception as e:
+        print(f"❌ Error updating location: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.get("/locations/active")
+async def get_active_locations(current_user: User = Depends(get_current_user)):
+    """Get all active user locations"""
+    # Remove stale locations (older than 60 seconds)
+    cutoff_time = datetime.now(timezone.utc) - timedelta(seconds=60)
+    
+    active_list = []
+    stale_keys = []
+    
+    for user_id, loc_data in active_connections.items():
+        try:
+            loc_time = datetime.fromisoformat(loc_data['timestamp'].replace('Z', '+00:00'))
+            if loc_time > cutoff_time:
+                active_list.append(loc_data)
+            else:
+                stale_keys.append(user_id)
+        except:
+            stale_keys.append(user_id)
+    
+    # Remove stale entries
+    for key in stale_keys:
+        del active_connections[key]
+    
+    print(f"📥 Returning {len(active_list)} active users")
+    return active_list
+
 # API Routes
 @api_router.post("/register")
 async def register(user: UserCreate):
