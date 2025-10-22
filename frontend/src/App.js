@@ -462,6 +462,17 @@ const Dashboard = () => {
     console.log('🔄 activeUsers state changed:', activeUsers.length, activeUsers);
   }, [activeUsers]);
 
+  // Fetch active user locations via HTTP polling
+  const fetchActiveLocations = async () => {
+    try {
+      const response = await axios.get(`${API}/locations/active`);
+      console.log('📥 HTTP polling - primljeno korisnika:', response.data.length);
+      setActiveUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching active locations:', error);
+    }
+  };
+
   // Fetch data when user logs in
   useEffect(() => {
     if (user) {
@@ -471,6 +482,14 @@ const Dashboard = () => {
       fetchAllUsers(); // Fetch users for equipment assignment
       fetchEvents(); // Fetch events
       fetchMessages(); // Fetch messages
+      
+      // Start polling for active locations every 3 seconds
+      const locationInterval = setInterval(fetchActiveLocations, 3000);
+      
+      // Cleanup on unmount
+      return () => {
+        clearInterval(locationInterval);
+      };
     }
   }, [user]);
 
