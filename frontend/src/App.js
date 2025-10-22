@@ -2556,7 +2556,7 @@ const MemberDetailDialog = ({ member, onUpdate }) => {
 };
 
 // Add Station Dialog
-const AddStationDialog = ({ onAdd }) => {
+const AddStationDialog = ({ onAdd, clickedPosition }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [lat, setLat] = useState('');
@@ -2565,6 +2565,15 @@ const AddStationDialog = ({ onAdd }) => {
   const [email, setEmail] = useState('');
   const [year, setYear] = useState('');
   const [open, setOpen] = useState(false);
+
+  // Auto-fill coordinates when clickedPosition changes
+  useEffect(() => {
+    if (clickedPosition) {
+      setLat(clickedPosition.lat.toFixed(6));
+      setLng(clickedPosition.lng.toFixed(6));
+      setOpen(true); // Auto-open dialog
+    }
+  }, [clickedPosition]);
 
   const useMyLocation = () => {
     if (navigator.geolocation) {
