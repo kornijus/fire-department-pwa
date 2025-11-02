@@ -254,6 +254,22 @@ const LoginPage = () => {
                   </label>
                 </div>
                 
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="operational_member"
+                    checked={formData.is_operational}
+                    onCheckedChange={(checked) => {
+                      setFormData({ ...formData, is_operational: checked });
+                    }}
+                  />
+                  <label htmlFor="operational_member" className="text-sm font-medium">
+                    Operativni član 🚒
+                  </label>
+                </div>
+                <p className="text-xs text-gray-600 -mt-2">
+                  *Operativni članovi sudjeluju u intervencijama i imaju pristup operativnom chatu
+                </p>
+                
                 {!formData.is_vzo_member && (
                   <div>
                     <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
