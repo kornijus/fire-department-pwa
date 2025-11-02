@@ -160,6 +160,7 @@ class UserCreate(BaseModel):
     department: str
     role: str = "clan_bez_funkcije"
     is_vzo_member: bool = False  # NEW: VZO membership
+    is_operational: bool = False  # NEW: Da li je član operativac
 
 class UserLogin(BaseModel):
     username: str
