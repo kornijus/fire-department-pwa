@@ -957,6 +957,196 @@ class FirefighterAPITester:
         
         return success_invalid_vehicle and success_invalid_equipment
 
+    # NEW: PDF Generation Tests
+    def test_pdf_evidencijski_list_dvd(self):
+        """Test PDF generation for evidencijski list - DVD department"""
+        success, response = self.run_test(
+            "Generate Evidencijski List PDF (DVD_Kneginec_Gornji)",
+            "GET",
+            "pdf/evidencijski-list/DVD_Kneginec_Gornji",
+            200
+        )
+        
+        if success:
+            # Check if response is PDF content (binary data)
+            print(f"   ✅ PDF generated successfully for DVD_Kneginec_Gornji")
+            return True
+        return False
+
+    def test_pdf_evidencijski_list_vzo(self):
+        """Test PDF generation for evidencijski list - VZO (all members)"""
+        success, response = self.run_test(
+            "Generate Evidencijski List PDF (VZO - All Members)",
+            "GET",
+            "pdf/evidencijski-list/VZO",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ PDF generated successfully for VZO (all members)")
+            return True
+        return False
+
+    def test_pdf_oprema_vozilo_dvd(self):
+        """Test PDF generation for vehicle equipment - DVD department"""
+        success, response = self.run_test(
+            "Generate Vehicle Equipment PDF (DVD_Kneginec_Gornji)",
+            "GET",
+            "pdf/oprema-vozilo/DVD_Kneginec_Gornji",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Vehicle equipment PDF generated successfully for DVD_Kneginec_Gornji")
+            return True
+        return False
+
+    def test_pdf_oprema_vozilo_vzo(self):
+        """Test PDF generation for vehicle equipment - VZO (all vehicles)"""
+        success, response = self.run_test(
+            "Generate Vehicle Equipment PDF (VZO - All Vehicles)",
+            "GET",
+            "pdf/oprema-vozilo/VZO",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Vehicle equipment PDF generated successfully for VZO (all vehicles)")
+            return True
+        return False
+
+    def test_pdf_oprema_spremiste_dvd(self):
+        """Test PDF generation for storage equipment - DVD department"""
+        success, response = self.run_test(
+            "Generate Storage Equipment PDF (DVD_Kneginec_Gornji)",
+            "GET",
+            "pdf/oprema-spremiste/DVD_Kneginec_Gornji",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Storage equipment PDF generated successfully for DVD_Kneginec_Gornji")
+            return True
+        return False
+
+    def test_pdf_osobno_zaduzenje(self):
+        """Test PDF generation for personal equipment assignment"""
+        # First, we need to get a user ID to test with
+        success_users, users_response = self.run_test(
+            "Get Users for PDF Test",
+            "GET",
+            "users",
+            200
+        )
+        
+        if not success_users or not isinstance(users_response, list) or len(users_response) == 0:
+            print("❌ No users available for personal assignment PDF test")
+            return False
+        
+        # Use the first user from the list
+        test_user = users_response[0]
+        user_id = test_user.get('id')
+        
+        if not user_id:
+            print("❌ No valid user ID found for personal assignment PDF test")
+            return False
+        
+        success, response = self.run_test(
+            f"Generate Personal Assignment PDF (User: {test_user.get('full_name', 'Unknown')})",
+            "GET",
+            f"pdf/osobno-zaduzenje/{user_id}",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Personal assignment PDF generated successfully for user {test_user.get('full_name', user_id)}")
+            return True
+        return False
+
+    def test_pdf_authentication_required(self):
+        """Test that PDF endpoints require authentication"""
+        # Temporarily remove token
+        temp_token = self.token
+        self.token = None
+        
+        success, _ = self.run_test(
+            "PDF Access Without Authentication (Should Fail)",
+            "GET",
+            "pdf/evidencijski-list/DVD_Kneginec_Gornji",
+            401  # Should return 401 Unauthorized
+        )
+        
+        # Restore token
+        self.token = temp_token
+        return success
+
+    def test_pdf_invalid_department(self):
+        """Test PDF generation with invalid department"""
+        success, _ = self.run_test(
+            "PDF Generation with Invalid Department (Should Fail)",
+            "GET",
+            "pdf/evidencijski-list/INVALID_DEPARTMENT",
+            200  # Should still return 200 but with empty data
+        )
+        
+        return success
+
+    def test_pdf_invalid_user_id(self):
+        """Test personal assignment PDF with invalid user ID"""
+        success, _ = self.run_test(
+            "Personal Assignment PDF with Invalid User ID (Should Fail)",
+            "GET",
+            "pdf/osobno-zaduzenje/invalid-user-id-12345",
+            404  # Should return 404 Not Found
+        )
+        
+        return success
+
+    def test_pdf_content_type_headers(self):
+        """Test that PDF endpoints return correct content type and headers"""
+        url = f"{self.api_url}/pdf/evidencijski-list/DVD_Kneginec_Gornji"
+        headers = {'Authorization': f'Bearer {self.token}'}
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            
+            if response.status_code == 200:
+                content_type = response.headers.get('Content-Type', '')
+                content_disposition = response.headers.get('Content-Disposition', '')
+                
+                print(f"   Content-Type: {content_type}")
+                print(f"   Content-Disposition: {content_disposition}")
+                
+                # Check if content type is PDF
+                if 'application/pdf' in content_type:
+                    print(f"   ✅ Correct Content-Type: {content_type}")
+                else:
+                    print(f"   ❌ Incorrect Content-Type: {content_type}")
+                    return False
+                
+                # Check if content disposition indicates attachment
+                if 'attachment' in content_disposition and 'filename=' in content_disposition:
+                    print(f"   ✅ Correct Content-Disposition: {content_disposition}")
+                else:
+                    print(f"   ❌ Incorrect Content-Disposition: {content_disposition}")
+                    return False
+                
+                # Check if response has content (PDF size > 0)
+                content_length = len(response.content)
+                if content_length > 0:
+                    print(f"   ✅ PDF file size: {content_length} bytes")
+                    return True
+                else:
+                    print(f"   ❌ PDF file is empty")
+                    return False
+            else:
+                print(f"   ❌ Failed to get PDF: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"   ❌ Exception during PDF header test: {str(e)}")
+            return False
+
 def main():
     print("🚒 Starting Firefighter Community API Tests")
     print("=" * 60)
