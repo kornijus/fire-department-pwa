@@ -1135,6 +1135,10 @@ async def generate_evidencijski_list_pdf(
 ):
     """Generate evidencijski list članova PDF for a specific department"""
     
+    # Fetch logo for this department
+    logo_data = await db.dvd_logos.find_one({"department": department})
+    logo_url = logo_data['logo_url'] if logo_data else "https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png"
+    
     # Fetch members of the department
     if department == "VZO":
         # VZO gets all members
