@@ -4361,6 +4361,278 @@ const SendMessageDialog = ({ onSend }) => {
   );
 };
 
+// Add Intervention Dialog
+const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    intervention_type: 'fire',
+    date: new Date().toISOString().slice(0, 16),
+    location: '',
+    address: '',
+    latitude: '',
+    longitude: '',
+    department: userDepartment || '',
+    participants: [],
+    vehicles_used: [],
+    description: '',
+    actions_taken: '',
+    damage_assessment: '',
+    casualties: '',
+    status: 'completed'
+  });
+  const [images, setImages] = useState([]);
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+      if (file.size > 5000000) {
+        alert('Slika je prevelika! Maksimalno 5MB po slici.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImages(prev => [...prev, e.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const toggleParticipant = (userId) => {
+    setFormData(prev => ({
+      ...prev,
+      participants: prev.participants.includes(userId)
+        ? prev.participants.filter(id => id !== userId)
+        : [...prev.participants, userId]
+    }));
+  };
+
+  const toggleVehicle = (vehicleId) => {
+    setFormData(prev => ({
+      ...prev,
+      vehicles_used: prev.vehicles_used.includes(vehicleId)
+        ? prev.vehicles_used.filter(id => id !== vehicleId)
+        : [...prev.vehicles_used, vehicleId]
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.location || !formData.description) {
+      alert('Molimo unesite lokaciju i opis intervencije');
+      return;
+    }
+
+    const interventionData = {
+      ...formData,
+      images: images,
+      date: new Date(formData.date).toISOString()
+    };
+
+    await onAdd(interventionData);
+    
+    // Reset form
+    setFormData({
+      intervention_type: 'fire',
+      date: new Date().toISOString().slice(0, 16),
+      location: '',
+      address: '',
+      latitude: '',
+      longitude: '',
+      department: userDepartment || '',
+      participants: [],
+      vehicles_used: [],
+      description: '',
+      actions_taken: '',
+      damage_assessment: '',
+      casualties: '',
+      status: 'completed'
+    });
+    setImages([]);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="bg-red-600 hover:bg-red-700">🚒 Novi Izvještaj</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto z-50">
+        <DialogHeader>
+          <DialogTitle>🚒 Novi Izvještaj o Intervenciji</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Tip intervencije *</label>
+              <Select value={formData.intervention_type} onValueChange={(value) => setFormData({ ...formData, intervention_type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fire">🔥 Požar</SelectItem>
+                  <SelectItem value="flood">🌊 Poplava</SelectItem>
+                  <SelectItem value="accident">🚗 Prometna nesreća</SelectItem>
+                  <SelectItem value="rescue">🆘 Spašavanje</SelectItem>
+                  <SelectItem value="medical">🚑 Medicinska pomoć</SelectItem>
+                  <SelectItem value="technical">🔧 Tehnička intervencija</SelectItem>
+                  <SelectItem value="other">📋 Ostalo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Datum i vrijeme *</label>
+              <Input
+                type="datetime-local"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Lokacija *</label>
+              <Input
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="Npr. Centar Varaždina"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Adresa</label>
+              <Input
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                placeholder="Ulica i broj"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Društvo</label>
+            <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="VZO">VZO</SelectItem>
+                <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Opis intervencije *</label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Detaljan opis što se dogodilo..."
+              rows={4}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Poduzete mjere</label>
+            <Textarea
+              value={formData.actions_taken}
+              onChange={(e) => setFormData({ ...formData, actions_taken: e.target.value })}
+              placeholder="Koje mjere su poduzete..."
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">👥 Sudionici</label>
+            <div className="max-h-32 overflow-y-auto border rounded p-2 space-y-1">
+              {allUsers.filter(u => u.department === formData.department || formData.department === 'VZO').map(user => (
+                <div key={user.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={formData.participants.includes(user.id)}
+                    onCheckedChange={() => toggleParticipant(user.id)}
+                  />
+                  <span className="text-sm">{user.full_name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">🚒 Korištena vozila</label>
+            <div className="max-h-32 overflow-y-auto border rounded p-2 space-y-1">
+              {vehicles.filter(v => v.department === formData.department || formData.department === 'VZO').map(vehicle => (
+                <div key={vehicle.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={formData.vehicles_used.includes(vehicle.id)}
+                    onCheckedChange={() => toggleVehicle(vehicle.id)}
+                  />
+                  <span className="text-sm">{vehicle.name} ({vehicle.license_plate})</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">📸 Fotografije (max 10)</label>
+            <Input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              disabled={images.length >= 10}
+            />
+            {images.length > 0 && (
+              <div className="grid grid-cols-5 gap-2 mt-2">
+                {images.map((img, idx) => (
+                  <div key={idx} className="relative">
+                    <img src={img} alt={`Slika ${idx + 1}`} className="w-full h-20 object-cover rounded" />
+                    <button
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <Button onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700">
+            💾 Spremi Izvještaj
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Update Intervention Dialog (simplified version)
+const InterventionUpdateDialog = ({ intervention, onUpdate, allUsers, vehicles }) => {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">Uredi</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Uredi Izvještaj</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-gray-600">Funkcionalnost uređivanja u razvoju...</p>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
