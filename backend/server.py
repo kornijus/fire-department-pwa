@@ -500,6 +500,29 @@ class Message(BaseModel):
     priority: str = "normal"  # urgent, normal, low
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# NEW: Intervention/Incident Report model
+class Intervention(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    intervention_type: str  # fire, flood, accident, rescue, medical, other
+    date: datetime
+    location: str
+    address: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    department: str  # which DVD responded
+    participants: List[str] = []  # list of user IDs
+    vehicles_used: List[str] = []  # list of vehicle IDs
+    description: str
+    actions_taken: Optional[str] = None
+    damage_assessment: Optional[str] = None
+    casualties: Optional[str] = None
+    images: List[str] = []  # base64 encoded images
+    created_by: str  # user ID
+    created_by_name: str
+    status: str = "completed"  # in_progress, completed
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = None
+
 class UserUpdate(BaseModel):
     role: Optional[str] = None
     department: Optional[str] = None
