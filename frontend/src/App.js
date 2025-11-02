@@ -2007,10 +2007,69 @@ const Dashboard = () => {
                     }
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col" style={{height: '500px'}}>
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto mb-4 space-y-2 p-2 bg-gray-50 rounded">
+                    {chatMessages.length === 0 ? (
+                      <p className="text-gray-500 text-center mt-10">Nema poruka</p>
+                    ) : (
+                      chatMessages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`flex ${msg.sender_id === user.id ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-xs p-3 rounded-lg ${
+                              msg.sender_id === user.id
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white border'
+                            }`}
+                          >
+                            {msg.sender_id !== user.id && (
+                              <p className="text-xs font-semibold mb-1">{msg.sender_name}</p>
+                            )}
+                            <p className="whitespace-pre-wrap">{msg.content}</p>
+                            <p className={`text-xs mt-1 ${msg.sender_id === user.id ? 'text-blue-200' : 'text-gray-500'}`}>
+                              {new Date(msg.created_at).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Input */}
+                  {(selectedChatType === 'group' || selectedChatUser) && (
+                    <ChatInput
+                      onSend={(content) => {
+                        const messageData = {
+                          chat_type: selectedChatType,
+                          content: content,
+                          recipient_id: selectedChatType === 'private' ? selectedChatUser.id : null,
+                          group_id: selectedChatType === 'group' ? user.department : null
+                        };
+                        sendChatMessage(messageData);
+                      }}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Obavijesti - stari Messages */}
+            <Card className="mt-4">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>📢 Obavijesti i Uzbune</CardTitle>
+                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    <SendMessageDialog onSend={sendMessage} />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-4">
                   {messages.length === 0 ? (
-                    <p className="text-gray-500">Nema poruka</p>
+                    <p className="text-gray-500">Nema obavijesti</p>
                   ) : (
                     messages.slice().reverse().map((message) => (
                       <div key={message.id} className={`p-4 border rounded-lg ${
