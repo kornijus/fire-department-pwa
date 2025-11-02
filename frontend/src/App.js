@@ -2087,8 +2087,8 @@ const Dashboard = () => {
                           chat_type: selectedChatType === 'private' ? 'private' : 'group',
                           content: content,
                           recipient_id: selectedChatType === 'private' ? selectedChatUser.id : null,
-                          group_id: selectedChatType === 'group_operational' ? 'operational' : 
-                                   selectedChatType === 'group_all' ? 'all' : null
+                          group_id: selectedChatType === 'group_operational' ? `${user.department}_operational` : 
+                                   selectedChatType === 'group_all' ? `${user.department}_all` : null
                         };
                         sendChatMessage(messageData);
                       }}
