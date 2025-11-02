@@ -26,3 +26,4 @@ typer>=0.9.0
 python-socketio==5.8.0
 websockets==11.0.3
 geopy==2.3.0
+reportlab==4.4.4
