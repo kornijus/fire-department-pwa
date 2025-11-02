@@ -1013,6 +1013,436 @@ async def delete_hydrant(hydrant_id: str, current_user: User = Depends(get_curre
     
     return {"message": "Hydrant deleted successfully"}
 
+# ===== PDF GENERATORS =====
+
+def create_pdf_header(canvas, doc, title: str, department: str):
+    """Helper function to create PDF header with logo and title"""
+    canvas.saveState()
+    # Title
+    canvas.setFont('Helvetica-Bold', 16)
+    canvas.drawCentredString(A4[0]/2, A4[1] - 2*cm, title)
+    
+    # Department
+    canvas.setFont('Helvetica', 12)
+    canvas.drawCentredString(A4[0]/2, A4[1] - 2.7*cm, department)
+    
+    # Date
+    canvas.setFont('Helvetica', 10)
+    canvas.drawCentredString(A4[0]/2, A4[1] - 3.2*cm, 
+                            f"Datum generiranja: {datetime.now().strftime('%d.%m.%Y.')}")
+    
+    canvas.restoreState()
+
+@api_router.get("/pdf/evidencijski-list/{department}")
+async def generate_evidencijski_list_pdf(
+    department: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate evidencijski list članova PDF for a specific department"""
+    
+    # Fetch members of the department
+    if department == "VZO":
+        # VZO gets all members
+        members_cursor = db.users.find({})
+    else:
+        members_cursor = db.users.find({"department": department})
+    
+    members = await members_cursor.to_list(length=None)
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, 
+                           topMargin=4*cm, bottomMargin=2*cm,
+                           leftMargin=1.5*cm, rightMargin=1.5*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    dept_name = "VZO Gornji Kneginec" if department == "VZO" else department.replace('_', ' ')
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor=colors.HexColor('#dc2626'),
+        spaceAfter=10,
+        alignment=TA_CENTER
+    )
+    
+    elements.append(Paragraph(f"<b>EVIDENCIJSKI LIST ČLANOVA</b>", title_style))
+    elements.append(Paragraph(f"<b>{dept_name}</b>", title_style))
+    elements.append(Paragraph(f"Datum: {datetime.now().strftime('%d.%m.%Y.')}", 
+                             ParagraphStyle('Date', parent=styles['Normal'], alignment=TA_CENTER)))
+    elements.append(Spacer(1, 1*cm))
+    
+    # Table data
+    data = [['Rb.', 'Ime i Prezime', 'Uloga', 'Liječnički do', 'Kontakt', 'Specijalnosti']]
+    
+    for idx, member in enumerate(members, 1):
+        medical_date = ''
+        if member.get('medical_exam_valid_until'):
+            medical_date = datetime.fromisoformat(member['medical_exam_valid_until']).strftime('%d.%m.%Y.')
+        
+        certifications = ', '.join(member.get('certifications', [])[:2]) if member.get('certifications') else '-'
+        
+        data.append([
+            str(idx),
+            member.get('full_name', ''),
+            member.get('role', '').replace('_', ' '),
+            medical_date or '-',
+            member.get('phone', '-'),
+            certifications
+        ])
+    
+    # Create table
+    table = Table(data, colWidths=[1*cm, 4.5*cm, 3.5*cm, 2.5*cm, 3*cm, 4*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    
+    elements.append(table)
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    filename = f"evidencijski_list_{department}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.get("/pdf/oprema-vozilo/{department}")
+async def generate_oprema_vozilo_pdf(
+    department: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate lista opreme vozilo PDF"""
+    
+    # Fetch vehicles and equipment
+    if department == "VZO":
+        vehicles_cursor = db.vehicles.find({})
+    else:
+        vehicles_cursor = db.vehicles.find({"department": department})
+    
+    vehicles = await vehicles_cursor.to_list(length=None)
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                           topMargin=4*cm, bottomMargin=2*cm,
+                           leftMargin=1.5*cm, rightMargin=1.5*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    dept_name = "VZO Gornji Kneginec" if department == "VZO" else department.replace('_', ' ')
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor=colors.HexColor('#dc2626'),
+        spaceAfter=10,
+        alignment=TA_CENTER
+    )
+    
+    elements.append(Paragraph(f"<b>LISTA OPREME - VOZILA</b>", title_style))
+    elements.append(Paragraph(f"<b>{dept_name}</b>", title_style))
+    elements.append(Paragraph(f"Datum: {datetime.now().strftime('%d.%m.%Y.')}", 
+                             ParagraphStyle('Date', parent=styles['Normal'], alignment=TA_CENTER)))
+    elements.append(Spacer(1, 1*cm))
+    
+    # For each vehicle, create a table
+    for vehicle in vehicles:
+        # Vehicle header
+        vehicle_style = ParagraphStyle(
+            'VehicleHeader',
+            parent=styles['Heading2'],
+            fontSize=12,
+            textColor=colors.HexColor('#1e40af'),
+            spaceAfter=5
+        )
+        elements.append(Paragraph(f"<b>Vozilo: {vehicle.get('name', '')} ({vehicle.get('license_plate', '')})</b>", 
+                                 vehicle_style))
+        
+        # Get equipment for this vehicle
+        equipment_cursor = db.equipment.find({"assigned_to_vehicle": vehicle['id']})
+        equipment_list = await equipment_cursor.to_list(length=None)
+        
+        if equipment_list:
+            # Table data
+            data = [['Rb.', 'Naziv opreme', 'Tip', 'Serijski broj', 'Stanje', 'Sljedeća provjera']]
+            
+            for idx, item in enumerate(equipment_list, 1):
+                next_inspection = ''
+                if item.get('next_inspection_due'):
+                    next_inspection = datetime.fromisoformat(item['next_inspection_due']).strftime('%d.%m.%Y.')
+                
+                data.append([
+                    str(idx),
+                    item.get('name', ''),
+                    item.get('type', ''),
+                    item.get('serial_number', '-'),
+                    item.get('condition', ''),
+                    next_inspection or '-'
+                ])
+            
+            # Create table
+            table = Table(data, colWidths=[1*cm, 4*cm, 3*cm, 3*cm, 2*cm, 2.5*cm])
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 9),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.lightblue),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ]))
+            
+            elements.append(table)
+        else:
+            elements.append(Paragraph("<i>Nema zadužene opreme na ovom vozilu</i>", styles['Normal']))
+        
+        elements.append(Spacer(1, 0.5*cm))
+    
+    if not vehicles:
+        elements.append(Paragraph("<i>Nema evidentirani vozila</i>", styles['Normal']))
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    filename = f"oprema_vozilo_{department}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.get("/pdf/oprema-spremiste/{department}")
+async def generate_oprema_spremiste_pdf(
+    department: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate lista opreme spremište/dom PDF"""
+    
+    # Fetch equipment not assigned to vehicles or users (in storage)
+    if department == "VZO":
+        equipment_cursor = db.equipment.find({
+            "$or": [
+                {"assigned_to_vehicle": None},
+                {"assigned_to_user": None}
+            ]
+        })
+    else:
+        equipment_cursor = db.equipment.find({
+            "department": department,
+            "$or": [
+                {"assigned_to_vehicle": None},
+                {"assigned_to_user": None}
+            ]
+        })
+    
+    equipment_list = await equipment_cursor.to_list(length=None)
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                           topMargin=4*cm, bottomMargin=2*cm,
+                           leftMargin=1.5*cm, rightMargin=1.5*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    dept_name = "VZO Gornji Kneginec" if department == "VZO" else department.replace('_', ' ')
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor=colors.HexColor('#dc2626'),
+        spaceAfter=10,
+        alignment=TA_CENTER
+    )
+    
+    elements.append(Paragraph(f"<b>LISTA OPREME - DOM/SPREMIŠTE</b>", title_style))
+    elements.append(Paragraph(f"<b>{dept_name}</b>", title_style))
+    elements.append(Paragraph(f"Datum: {datetime.now().strftime('%d.%m.%Y.')}", 
+                             ParagraphStyle('Date', parent=styles['Normal'], alignment=TA_CENTER)))
+    elements.append(Spacer(1, 1*cm))
+    
+    # Table data
+    data = [['Rb.', 'Naziv opreme', 'Tip', 'Serijski broj', 'Lokacija', 'Stanje', 'Sljedeća provjera']]
+    
+    for idx, item in enumerate(equipment_list, 1):
+        next_inspection = ''
+        if item.get('next_inspection_due'):
+            next_inspection = datetime.fromisoformat(item['next_inspection_due']).strftime('%d.%m.%Y.')
+        
+        data.append([
+            str(idx),
+            item.get('name', ''),
+            item.get('type', ''),
+            item.get('serial_number', '-'),
+            item.get('location', '-'),
+            item.get('condition', ''),
+            next_inspection or '-'
+        ])
+    
+    # Create table
+    table = Table(data, colWidths=[1*cm, 3.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c2d12')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 9),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.lightgoldenrodyellow),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+    ]))
+    
+    elements.append(table)
+    
+    if not equipment_list:
+        elements.append(Paragraph("<i>Nema opreme u spremištu</i>", styles['Normal']))
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    filename = f"oprema_spremiste_{department}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.get("/pdf/osobno-zaduzenje/{user_id}")
+async def generate_osobno_zaduzenje_pdf(
+    user_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate list osobnog zaduženja PDF for a specific member"""
+    
+    # Fetch member
+    member = await db.users.find_one({"id": user_id})
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+    
+    # Fetch equipment assigned to this member
+    equipment_cursor = db.equipment.find({"assigned_to_user": user_id})
+    equipment_list = await equipment_cursor.to_list(length=None)
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                           topMargin=3*cm, bottomMargin=2*cm,
+                           leftMargin=2*cm, rightMargin=2*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor=colors.HexColor('#dc2626'),
+        spaceAfter=10,
+        alignment=TA_CENTER
+    )
+    
+    elements.append(Paragraph(f"<b>LIST OSOBNOG ZADUŽENJA</b>", title_style))
+    elements.append(Paragraph(f"<b>VZO Gornji Kneginec</b>", title_style))
+    elements.append(Spacer(1, 0.8*cm))
+    
+    # Member info
+    info_style = ParagraphStyle('MemberInfo', parent=styles['Normal'], fontSize=11, spaceAfter=5)
+    elements.append(Paragraph(f"<b>Ime i prezime:</b> {member.get('full_name', '')}", info_style))
+    elements.append(Paragraph(f"<b>Društvo:</b> {member.get('department', '').replace('_', ' ')}", info_style))
+    elements.append(Paragraph(f"<b>Uloga:</b> {member.get('role', '').replace('_', ' ')}", info_style))
+    elements.append(Paragraph(f"<b>Datum izdavanja:</b> {datetime.now().strftime('%d.%m.%Y.')}", info_style))
+    elements.append(Spacer(1, 0.8*cm))
+    
+    # Equipment table
+    if equipment_list:
+        data = [['Rb.', 'Naziv opreme', 'Tip', 'Serijski broj', 'Stanje', 'Datum zaduženja']]
+        
+        for idx, item in enumerate(equipment_list, 1):
+            created_at = ''
+            if item.get('created_at'):
+                created_at = datetime.fromisoformat(item['created_at']).strftime('%d.%m.%Y.')
+            
+            data.append([
+                str(idx),
+                item.get('name', ''),
+                item.get('type', ''),
+                item.get('serial_number', '-'),
+                item.get('condition', ''),
+                created_at or '-'
+            ])
+        
+        # Create table
+        table = Table(data, colWidths=[1*cm, 4.5*cm, 3*cm, 3*cm, 2*cm, 2.5*cm])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ]))
+        
+        elements.append(table)
+    else:
+        elements.append(Paragraph("<i>Nema zadužene opreme</i>", styles['Normal']))
+    
+    # Signature section
+    elements.append(Spacer(1, 2*cm))
+    signature_style = ParagraphStyle('Signature', parent=styles['Normal'], fontSize=10)
+    elements.append(Paragraph("_" * 40, signature_style))
+    elements.append(Paragraph(f"Potpis člana: {member.get('full_name', '')}", signature_style))
+    elements.append(Spacer(1, 1*cm))
+    elements.append(Paragraph("_" * 40, signature_style))
+    elements.append(Paragraph("Potpis zapovjednika", signature_style))
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    filename = f"osobno_zaduzenje_{member.get('full_name', '').replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 @api_router.get("/")
 async def root():
     return {"message": "Vatrogasna zajednica API"}
