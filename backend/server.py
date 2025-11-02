@@ -794,7 +794,8 @@ async def get_interventions(current_user: User = Depends(get_current_user)):
     if has_vzo_full_access(current_user):
         interventions = await db.interventions.find().to_list(1000)
     else:
-        interventions = await db.interventions.find({"department": current_user.department}).to_list(1000)
+        # Show interventions where user's department is in the departments array
+        interventions = await db.interventions.find({"departments": current_user.department}).to_list(1000)
     return [Intervention(**intervention) for intervention in interventions]
 
 @api_router.post("/interventions", response_model=Intervention)
