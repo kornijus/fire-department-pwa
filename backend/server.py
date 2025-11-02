@@ -788,6 +788,62 @@ async def send_message(message: Message, current_user: User = Depends(get_curren
     
     return message
 
+# NEW: Intervention/Incident Reports endpoints
+@api_router.get("/interventions", response_model=List[Intervention])
+async def get_interventions(current_user: User = Depends(get_current_user)):
+    if has_vzo_full_access(current_user):
+        interventions = await db.interventions.find().to_list(1000)
+    else:
+        interventions = await db.interventions.find({"department": current_user.department}).to_list(1000)
+    return [Intervention(**intervention) for intervention in interventions]
+
+@api_router.post("/interventions", response_model=Intervention)
+async def create_intervention(intervention: Intervention, current_user: User = Depends(get_current_user)):
+    intervention.created_by = current_user.id
+    intervention.created_by_name = current_user.full_name
+    intervention.created_at = datetime.now(timezone.utc)
+    await db.interventions.insert_one(intervention.dict())
+    return intervention
+
+class InterventionUpdate(BaseModel):
+    intervention_type: Optional[str] = None
+    date: Optional[datetime] = None
+    location: Optional[str] = None
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    department: Optional[str] = None
+    participants: Optional[List[str]] = None
+    vehicles_used: Optional[List[str]] = None
+    description: Optional[str] = None
+    actions_taken: Optional[str] = None
+    damage_assessment: Optional[str] = None
+    casualties: Optional[str] = None
+    images: Optional[List[str]] = None
+    status: Optional[str] = None
+
+@api_router.put("/interventions/{intervention_id}")
+async def update_intervention(intervention_id: str, intervention_update: InterventionUpdate, current_user: User = Depends(get_current_user)):
+    update_data = {k: v for k, v in intervention_update.dict().items() if v is not None}
+    update_data['updated_at'] = datetime.now(timezone.utc)
+    
+    result = await db.interventions.update_one({"id": intervention_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Intervention not found")
+    
+    return {"message": "Intervention updated successfully"}
+
+@api_router.delete("/interventions/{intervention_id}")
+async def delete_intervention(intervention_id: str, current_user: User = Depends(get_current_user)):
+    if not has_hydrant_management_permission(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.interventions.delete_one({"id": intervention_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Intervention not found")
+    
+    return {"message": "Intervention deleted successfully"}
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
