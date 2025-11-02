@@ -1965,9 +1965,13 @@ const Dashboard = () => {
                             <h3 className="font-bold text-xl">{intervention.location}</h3>
                             <p className="text-sm text-gray-600">
                               📅 {new Date(intervention.date).toLocaleString()} • 
-                              📍 {intervention.address} • 
-                              🏠 {formatDepartmentName(intervention.department)}
+                              📍 {intervention.address}
                             </p>
+                            {intervention.departments && intervention.departments.length > 0 && (
+                              <p className="text-sm text-gray-700 mt-1">
+                                🚒 DVD-ovi: {intervention.departments.map(formatDepartmentName).join(', ')}
+                              </p>
+                            )}
                             <p className="text-sm text-gray-500 mt-1">
                               Evidentirao: {intervention.created_by_name}
                             </p>
