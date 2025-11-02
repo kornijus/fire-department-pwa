@@ -483,6 +483,7 @@ const Dashboard = () => {
       fetchAllUsers(); // Fetch users for equipment assignment
       fetchEvents(); // Fetch events
       fetchMessages(); // Fetch messages
+      fetchInterventions(); // Fetch interventions
       
       // Start polling for active locations every 3 seconds
       const locationInterval = setInterval(fetchActiveLocations, 3000);
