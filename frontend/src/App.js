@@ -4523,19 +4523,37 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
           </div>
 
           <div>
-            <label className="text-sm font-medium">Društvo</label>
-            <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="VZO">VZO</SelectItem>
-                <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
-                <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
-                <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
-                <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
-              </SelectContent>
-            </Select>
+            <label className="text-sm font-medium mb-2 block">🚒 DVD-ovi na intervenciji * (jedan ili više)</label>
+            <div className="border rounded p-3 space-y-2 bg-gray-50">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.departments.includes('DVD_Kneginec_Gornji')}
+                  onCheckedChange={() => toggleDepartment('DVD_Kneginec_Gornji')}
+                />
+                <span className="text-sm">DVD Kneginec Gornji</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.departments.includes('DVD_Donji_Kneginec')}
+                  onCheckedChange={() => toggleDepartment('DVD_Donji_Kneginec')}
+                />
+                <span className="text-sm">DVD Donji Kneginec</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.departments.includes('DVD_Varazdinbreg')}
+                  onCheckedChange={() => toggleDepartment('DVD_Varazdinbreg')}
+                />
+                <span className="text-sm">DVD Varaždinbreg</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.departments.includes('DVD_Luzan_Biskupecki')}
+                  onCheckedChange={() => toggleDepartment('DVD_Luzan_Biskupecki')}
+                />
+                <span className="text-sm">DVD Lužan Biškupečki</span>
+              </div>
+            </div>
           </div>
 
           <div>
