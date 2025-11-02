@@ -1957,22 +1957,45 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button
-                    onClick={() => {
-                      setSelectedChatType('group');
-                      setSelectedChatUser(null);
-                      fetchGroupChat(user.department);
-                    }}
-                    className={`w-full ${selectedChatType === 'group' ? 'bg-blue-600' : 'bg-gray-600'}`}
-                  >
-                    👥 {formatDepartmentName(user.department)}
-                  </Button>
+                  {/* Grupni chatovi */}
+                  <div className="space-y-2 pb-2 border-b">
+                    <p className="text-xs font-semibold text-gray-600 uppercase">Grupni Chat</p>
+                    
+                    {/* Operativni članovi chat - samo za operativce */}
+                    {user?.is_operational && (
+                      <Button
+                        onClick={() => {
+                          setSelectedChatType('group_operational');
+                          setSelectedChatUser(null);
+                          fetchGroupChat('operational');
+                        }}
+                        className={`w-full justify-start ${selectedChatType === 'group_operational' ? 'bg-red-600' : 'bg-red-500'}`}
+                        size="sm"
+                      >
+                        🚒 Operativni Članovi
+                      </Button>
+                    )}
+                    
+                    {/* Svi članovi chat - za sve */}
+                    <Button
+                      onClick={() => {
+                        setSelectedChatType('group_general');
+                        setSelectedChatUser(null);
+                        fetchGroupChat('general');
+                      }}
+                      className={`w-full justify-start ${selectedChatType === 'group_general' ? 'bg-blue-600' : 'bg-blue-500'}`}
+                      size="sm"
+                    >
+                      👥 Svi Članovi
+                    </Button>
+                  </div>
                   
+                  {/* Privatni chat - samo operativci */}
                   <div className="border-t pt-2 mt-2">
-                    <p className="text-sm font-semibold mb-2">Privatne poruke:</p>
+                    <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Privatne poruke (Operativci)</p>
                     <div className="space-y-1 max-h-96 overflow-y-auto">
                       {allUsers
-                        .filter(u => u.id !== user.id && u.department === user.department)
+                        .filter(u => u.id !== user.id && u.is_operational === true)
                         .map(chatUser => (
                           <Button
                             key={chatUser.id}
@@ -1990,6 +2013,9 @@ const Dashboard = () => {
                             👤 {chatUser.full_name}
                           </Button>
                         ))}
+                      {allUsers.filter(u => u.id !== user.id && u.is_operational === true).length === 0 && (
+                        <p className="text-xs text-gray-500 italic">Nema operativnih članova</p>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -1999,13 +2025,25 @@ const Dashboard = () => {
               <Card className="col-span-2">
                 <CardHeader>
                   <CardTitle>
-                    {selectedChatType === 'group' 
-                      ? `👥 ${formatDepartmentName(user.department)} - Grupni Chat`
-                      : selectedChatUser 
-                        ? `👤 ${selectedChatUser.full_name}`
-                        : '💬 Odaberite razgovor'
+                    {selectedChatType === 'group_operational' 
+                      ? `🚒 Operativni Članovi - Chat`
+                      : selectedChatType === 'group_general'
+                        ? `👥 Svi Članovi - Chat`
+                        : selectedChatUser 
+                          ? `👤 ${selectedChatUser.full_name}`
+                          : '💬 Odaberite razgovor'
                     }
                   </CardTitle>
+                  <p className="text-sm text-gray-600">
+                    {selectedChatType === 'group_operational' 
+                      ? 'Operativni chat za uzbune, intervencije i školovanja'
+                      : selectedChatType === 'group_general'
+                        ? 'Općeniti chat za sve članove društva'
+                        : selectedChatUser 
+                          ? 'Privatna komunikacija'
+                          : 'Odaberite grupni ili privatni chat'
+                    }
+                  </p>
                 </CardHeader>
                 <CardContent className="flex flex-col" style={{height: '500px'}}>
                   {/* Messages */}
@@ -2039,14 +2077,15 @@ const Dashboard = () => {
                   </div>
 
                   {/* Input */}
-                  {(selectedChatType === 'group' || selectedChatUser) && (
+                  {(selectedChatType === 'group_operational' || selectedChatType === 'group_general' || selectedChatUser) && (
                     <ChatInput
                       onSend={(content) => {
                         const messageData = {
-                          chat_type: selectedChatType,
+                          chat_type: selectedChatType === 'private' ? 'private' : 'group',
                           content: content,
                           recipient_id: selectedChatType === 'private' ? selectedChatUser.id : null,
-                          group_id: selectedChatType === 'group' ? user.department : null
+                          group_id: selectedChatType === 'group_operational' ? 'operational' : 
+                                   selectedChatType === 'group_general' ? 'general' : null
                         };
                         sendChatMessage(messageData);
                       }}
