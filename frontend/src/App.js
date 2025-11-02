@@ -4421,6 +4421,15 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
     }));
   };
 
+  const toggleDepartment = (dept) => {
+    setFormData(prev => ({
+      ...prev,
+      departments: prev.departments.includes(dept)
+        ? prev.departments.filter(d => d !== dept)
+        : [...prev.departments, dept]
+    }));
+  };
+
   const handleSubmit = async () => {
     if (!formData.location || !formData.description) {
       alert('Molimo unesite lokaciju i opis intervencije');
