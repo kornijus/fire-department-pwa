@@ -439,6 +439,19 @@ const Dashboard = () => {
       alert(`Nova poruka: ${message.title}\n${message.content}`);
     });
 
+    newSocket.on('new_chat_message', (message) => {
+      console.log('📨 Nova chat poruka:', message);
+      // Refresh unread count
+      fetchUnreadCount();
+      // If viewing current chat, refresh it
+      if (selectedChatType === 'private' && selectedChatUser && 
+          (message.sender_id === selectedChatUser.id || message.recipient_id === selectedChatUser.id)) {
+        fetchPrivateChat(selectedChatUser.id);
+      } else if (selectedChatType === 'group' && message.group_id === user?.department) {
+        fetchGroupChat(user.department);
+      }
+    });
+
     // Fetch hydrants and DVD stations
     fetchHydrants();
     fetchDvdStations();
