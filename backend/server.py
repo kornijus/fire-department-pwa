@@ -878,6 +878,10 @@ async def send_chat_message(message: ChatMessage, current_user: User = Depends(g
 @api_router.get("/chat/private/{user_id}", response_model=List[ChatMessage])
 async def get_private_chat(user_id: str, current_user: User = Depends(get_current_user)):
     """Get private chat messages between current user and specified user"""
+    # Private chat primarily for operational members
+    if not current_user.is_operational:
+        raise HTTPException(status_code=403, detail="Privatni chat je dostupan operativnim članovima")
+    
     messages = await db.chat_messages.find({
         "chat_type": "private",
         "$or": [
