@@ -140,6 +140,21 @@ backend:
         agent: "testing"
         comment: "✅ All equipment CRUD operations working correctly. GET /api/equipment returns equipment filtered by department. POST creates equipment with full details including assignment to users/vehicles/locations. PUT updates equipment details successfully. DELETE removes equipment and confirms deletion. Equipment assignment feature working - can assign to users, vehicles, or locations. Permission system working - only users with management permissions can manage equipment."
 
+  - task: "PDF Generation endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented 4 PDF generation endpoints using reportlab: evidencijski-list, oprema-vozilo, oprema-spremiste, and osobno-zaduzenje. All endpoints require JWT authentication and generate proper PDF documents with Croatian fire department formatting."
+      - working: true
+        agent: "testing"
+        comment: "✅ All PDF generation endpoints working correctly. Fixed datetime parsing issues in PDF generation code. GET /api/pdf/evidencijski-list/{department} generates member lists (tested with DVD_Kneginec_Gornji and VZO). GET /api/pdf/oprema-vozilo/{department} generates vehicle equipment lists. GET /api/pdf/oprema-spremiste/{department} generates storage equipment lists. GET /api/pdf/osobno-zaduzenje/{user_id} generates personal equipment assignment PDFs. All endpoints return proper PDF content-type headers, correct filenames, and valid PDF files. Authentication properly enforced (403 without token). Error handling works (404 for invalid user IDs). Edge cases tested successfully."
+
 frontend:
   - task: "Vehicle Management Dialogs"
     implemented: true
