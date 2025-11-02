@@ -1081,7 +1081,11 @@ async def generate_evidencijski_list_pdf(
     for idx, member in enumerate(members, 1):
         medical_date = ''
         if member.get('medical_exam_valid_until'):
-            medical_date = datetime.fromisoformat(member['medical_exam_valid_until']).strftime('%d.%m.%Y.')
+            exam_date = member['medical_exam_valid_until']
+            if isinstance(exam_date, str):
+                medical_date = datetime.fromisoformat(exam_date).strftime('%d.%m.%Y.')
+            elif isinstance(exam_date, datetime):
+                medical_date = exam_date.strftime('%d.%m.%Y.')
         
         certifications = ', '.join(member.get('certifications', [])[:2]) if member.get('certifications') else '-'
         
