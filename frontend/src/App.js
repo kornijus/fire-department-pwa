@@ -4579,7 +4579,7 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
           <div>
             <label className="text-sm font-medium mb-2 block">👥 Sudionici</label>
             <div className="max-h-32 overflow-y-auto border rounded p-2 space-y-1">
-              {allUsers.filter(u => u.department === formData.department || formData.department === 'VZO').map(user => (
+              {allUsers.filter(u => formData.departments.includes(u.department)).map(user => (
                 <div key={user.id} className="flex items-center space-x-2">
                   <Checkbox
                     checked={formData.participants.includes(user.id)}
