@@ -84,23 +84,20 @@ class PDFEdgeCaseTester:
             "password": "password123"
         }
         
-        success, response = self.run_test(
-            "Login Test User",
-            "POST",
-            "login",
-            200,
-            data=login_data
-        )
+        url = f"{self.api_url}/login"
+        headers = {'Content-Type': 'application/json'}
         
-        if success:
-            try:
-                response_data = response.json() if hasattr(response, 'json') else {}
+        try:
+            response = requests.post(url, json=login_data, headers=headers, timeout=10)
+            if response.status_code == 200:
+                response_data = response.json()
                 if 'access_token' in response_data:
                     self.token = response_data['access_token']
-                    print(f"   ✅ Logged in successfully")
+                    print(f"✅ Logged in successfully")
                     return True
-            except:
-                pass
+        except Exception as e:
+            print(f"❌ Login failed: {str(e)}")
+        
         return False
 
     def test_pdf_without_auth(self):
