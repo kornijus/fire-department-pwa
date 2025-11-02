@@ -512,6 +512,7 @@ const Dashboard = () => {
       // Cleanup on unmount
       return () => {
         clearInterval(locationInterval);
+        clearInterval(chatInterval);
       };
     }
   }, [user]);
