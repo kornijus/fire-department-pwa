@@ -189,6 +189,18 @@ frontend:
         agent: "main"
         comment: "Integrated dialogs into Vehicles and Equipment tabs with Edit and Delete buttons. Added fetchAllUsers to useEffect for equipment user assignment"
 
+  - task: "Communication Module - Operational/General Segregation"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented operational vs. general member communication. Two group chat types: 'Operativni Članovi' (is_operational=true only) and 'Svi Članovi' (all members). Private chat shows only operational members. Added 'is_operational' checkbox to registration, badges to member profiles, and admin panel updates. Group chats use backend format: {department}_operational or {department}_all"
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
