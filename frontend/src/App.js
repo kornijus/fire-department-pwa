@@ -900,6 +900,16 @@ const Dashboard = () => {
     }
   };
 
+  // Fetch interventions
+  const fetchInterventions = async () => {
+    try {
+      const response = await axios.get(`${API}/interventions`);
+      setInterventions(response.data);
+    } catch (error) {
+      console.error('Error fetching interventions:', error);
+    }
+  };
+
   // Vehicle CRUD operations
   const addVehicle = async (vehicleData) => {
     try {
