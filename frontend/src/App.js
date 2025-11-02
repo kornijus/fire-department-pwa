@@ -4452,7 +4452,7 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
       address: '',
       latitude: '',
       longitude: '',
-      department: userDepartment || '',
+      departments: userDepartment ? [userDepartment] : [],
       participants: [],
       vehicles_used: [],
       description: '',
