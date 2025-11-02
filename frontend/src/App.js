@@ -501,9 +501,13 @@ const Dashboard = () => {
       fetchEvents(); // Fetch events
       fetchMessages(); // Fetch messages
       fetchInterventions(); // Fetch interventions
+      fetchUnreadCount(); // Fetch unread chat count
       
       // Start polling for active locations every 3 seconds
       const locationInterval = setInterval(fetchActiveLocations, 3000);
+      
+      // Poll for unread messages every 10 seconds
+      const chatInterval = setInterval(fetchUnreadCount, 10000);
       
       // Cleanup on unmount
       return () => {
