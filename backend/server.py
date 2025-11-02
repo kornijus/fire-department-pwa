@@ -1404,7 +1404,11 @@ async def generate_osobno_zaduzenje_pdf(
         for idx, item in enumerate(equipment_list, 1):
             created_at = ''
             if item.get('created_at'):
-                created_at = datetime.fromisoformat(item['created_at']).strftime('%d.%m.%Y.')
+                creation_date = item['created_at']
+                if isinstance(creation_date, str):
+                    created_at = datetime.fromisoformat(creation_date).strftime('%d.%m.%Y.')
+                elif isinstance(creation_date, datetime):
+                    created_at = creation_date.strftime('%d.%m.%Y.')
             
             data.append([
                 str(idx),
