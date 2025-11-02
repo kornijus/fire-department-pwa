@@ -524,6 +524,13 @@ class ChatMessage(BaseModel):
     read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# NEW: DVD Logo model (for managing department logos)
+class DvdLogo(BaseModel):
+    department: str  # DVD_Kneginec_Gornji, DVD_Donji_Kneginec, DVD_Varazdinbreg, DVD_Luzan_Biskupecki, VZO
+    logo_url: str
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: Optional[str] = None  # user ID who updated
+
 # NEW: Intervention/Incident Report model
 class Intervention(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
