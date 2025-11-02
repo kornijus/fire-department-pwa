@@ -370,6 +370,7 @@ const Dashboard = () => {
   const [equipment, setEquipment] = useState([]);
   const [events, setEvents] = useState([]); // Novi: događaji (osiguranja, školovanja, provjere)
   const [messages, setMessages] = useState([]); // Novi: grupne poruke
+  const [interventions, setInterventions] = useState([]); // Novi: intervencije/izvještaji
   const watchId = useRef(null);
 
   useEffect(() => {
