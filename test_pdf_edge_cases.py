@@ -56,7 +56,14 @@ class PDFEdgeCaseTester:
                     if len(response.content) == 0:
                         print(f"   ⚠️  Warning: PDF file is empty")
                 
-                return True, {}
+                try:
+                    if 'application/json' in response.headers.get('Content-Type', ''):
+                        response_data = response.json()
+                        return True, response_data
+                    else:
+                        return True, {}
+                except:
+                    return True, {}
             else:
                 print(f"❌ FAILED")
                 try:
