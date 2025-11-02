@@ -4440,6 +4440,11 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
       return;
     }
 
+    if (formData.departments.length === 0) {
+      alert('Molimo odaberite barem jedan DVD koji je sudjelovao na intervenciji');
+      return;
+    }
+
     const interventionData = {
       ...formData,
       images: images,
