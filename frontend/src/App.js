@@ -2750,6 +2750,7 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
   const [department, setDepartment] = useState(adminUser.department);
   const [isActive, setIsActive] = useState(adminUser.is_active);
   const [isVzoMember, setIsVzoMember] = useState(adminUser.is_vzo_member);
+  const [isOperational, setIsOperational] = useState(adminUser.is_operational || false);
   const [open, setOpen] = useState(false);
 
   const handleUpdate = () => {
@@ -2757,7 +2758,8 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
       role,
       department,
       is_active: isActive,
-      is_vzo_member: isVzoMember
+      is_vzo_member: isVzoMember,
+      is_operational: isOperational
     };
     onUpdate(adminUser.id, updates);
     setOpen(false);
