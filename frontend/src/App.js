@@ -1932,6 +1932,131 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="interventions">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>🚒 Izvještaji o Intervencijama</CardTitle>
+                  <AddInterventionDialog 
+                    onAdd={addIntervention} 
+                    allUsers={allUsers}
+                    vehicles={vehicles}
+                    userDepartment={user?.department}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {interventions.length === 0 ? (
+                    <p className="text-gray-500">Nema evidentiranih intervencija</p>
+                  ) : (
+                    interventions.slice().reverse().map((intervention) => (
+                      <div key={intervention.id} className="p-4 border rounded-lg bg-gradient-to-r from-red-50 to-orange-50">
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge className="bg-red-600 text-white">
+                                {intervention.intervention_type.toUpperCase()}
+                              </Badge>
+                              <Badge variant="outline">
+                                {intervention.status === 'completed' ? '✅ Završeno' : '🔄 U tijeku'}
+                              </Badge>
+                            </div>
+                            <h3 className="font-bold text-xl">{intervention.location}</h3>
+                            <p className="text-sm text-gray-600">
+                              📅 {new Date(intervention.date).toLocaleString()} • 
+                              📍 {intervention.address} • 
+                              🏠 {formatDepartmentName(intervention.department)}
+                            </p>
+                            <p className="text-sm text-gray-500 mt-1">
+                              Evidentirao: {intervention.created_by_name}
+                            </p>
+                          </div>
+                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                            <div className="flex space-x-2">
+                              <InterventionUpdateDialog 
+                                intervention={intervention} 
+                                onUpdate={updateIntervention}
+                                allUsers={allUsers}
+                                vehicles={vehicles}
+                              />
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteIntervention(intervention.id)}
+                              >
+                                Obriši
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="bg-white p-3 rounded mb-2">
+                          <h4 className="font-semibold mb-1">Opis intervencije:</h4>
+                          <p className="text-gray-800 whitespace-pre-wrap">{intervention.description}</p>
+                        </div>
+
+                        {intervention.actions_taken && (
+                          <div className="bg-white p-3 rounded mb-2">
+                            <h4 className="font-semibold mb-1">Poduzete mjere:</h4>
+                            <p className="text-gray-800 whitespace-pre-wrap">{intervention.actions_taken}</p>
+                          </div>
+                        )}
+
+                        {intervention.participants && intervention.participants.length > 0 && (
+                          <div className="mb-2">
+                            <p className="font-semibold mb-1">👥 Sudionici ({intervention.participants.length}):</p>
+                            <div className="flex flex-wrap gap-1">
+                              {intervention.participants.map(userId => {
+                                const participant = allUsers.find(u => u.id === userId);
+                                return participant ? (
+                                  <Badge key={userId} variant="outline">{participant.full_name}</Badge>
+                                ) : null;
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {intervention.vehicles_used && intervention.vehicles_used.length > 0 && (
+                          <div className="mb-2">
+                            <p className="font-semibold mb-1">🚒 Korištena vozila ({intervention.vehicles_used.length}):</p>
+                            <div className="flex flex-wrap gap-1">
+                              {intervention.vehicles_used.map(vehicleId => {
+                                const vehicle = vehicles.find(v => v.id === vehicleId);
+                                return vehicle ? (
+                                  <Badge key={vehicleId} variant="outline" className="bg-blue-100">
+                                    {vehicle.name}
+                                  </Badge>
+                                ) : null;
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {intervention.images && intervention.images.length > 0 && (
+                          <div className="mt-3">
+                            <p className="font-semibold mb-2">📸 Fotografije ({intervention.images.length}):</p>
+                            <div className="grid grid-cols-4 gap-2">
+                              {intervention.images.map((img, idx) => (
+                                <img 
+                                  key={idx} 
+                                  src={img} 
+                                  alt={`Slika ${idx + 1}`}
+                                  className="w-full h-24 object-cover rounded cursor-pointer hover:scale-105 transition"
+                                  onClick={() => window.open(img, '_blank')}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {hasManagementPermission(user?.role, user?.is_vzo_member) && (
             <TabsContent value="stations">
               <Card>
