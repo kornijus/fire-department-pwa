@@ -542,6 +542,7 @@ class UserUpdate(BaseModel):
     department: Optional[str] = None
     is_active: Optional[bool] = None
     is_vzo_member: Optional[bool] = None
+    is_operational: Optional[bool] = None  # NEW: Da li je član operativac
     phone: Optional[str] = None
     address: Optional[str] = None
     medical_exam_date: Optional[datetime] = None
