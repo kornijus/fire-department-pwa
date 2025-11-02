@@ -1294,7 +1294,11 @@ async def generate_oprema_spremiste_pdf(
     for idx, item in enumerate(equipment_list, 1):
         next_inspection = ''
         if item.get('next_inspection_due'):
-            next_inspection = datetime.fromisoformat(item['next_inspection_due']).strftime('%d.%m.%Y.')
+            inspection_date = item['next_inspection_due']
+            if isinstance(inspection_date, str):
+                next_inspection = datetime.fromisoformat(inspection_date).strftime('%d.%m.%Y.')
+            elif isinstance(inspection_date, datetime):
+                next_inspection = inspection_date.strftime('%d.%m.%Y.')
         
         data.append([
             str(idx),
