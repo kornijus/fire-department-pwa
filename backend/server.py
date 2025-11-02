@@ -148,6 +148,7 @@ class User(BaseModel):
     department: str  # DVD society or VZO
     role: str = "clan_bez_funkcije"
     is_vzo_member: bool = False  # NEW: VZO membership flag
+    is_operational: bool = False  # NEW: Da li je član operativac (za uzbune, intervencije)
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
