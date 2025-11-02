@@ -1869,6 +1869,17 @@ const Dashboard = () => {
                 <div className="flex justify-between items-center">
                   <CardTitle>Oprema</CardTitle>
                   <div className="flex space-x-2">
+                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                      <Button 
+                        onClick={() => {
+                          const dept = user.is_vzo_member ? 'VZO' : user.department;
+                          window.open(`${API}/pdf/oprema-spremiste/${dept}`, '_blank');
+                        }}
+                        className="bg-amber-600 hover:bg-amber-700"
+                      >
+                        📄 Lista Opreme Spremište PDF
+                      </Button>
+                    )}
                     <Button onClick={fetchEquipment} variant="outline">
                       Osvježi popis
                     </Button>
