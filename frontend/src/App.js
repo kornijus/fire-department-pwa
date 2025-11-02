@@ -1701,6 +1701,14 @@ const Dashboard = () => {
                                 {hasManagementPermission(user?.role, user?.is_vzo_member) && (
                                   <div className="flex flex-col space-y-2">
                                     <MemberDetailDialog member={member} onUpdate={updateUser} />
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => window.open(`${API}/pdf/osobno-zaduzenje/${member.id}`, '_blank')}
+                                      className="bg-blue-50"
+                                    >
+                                      📄 PDF Zaduženja
+                                    </Button>
                                     <Button size="sm" variant="outline" onClick={() => pingUser(member.id)}>
                                       Ping
                                     </Button>
