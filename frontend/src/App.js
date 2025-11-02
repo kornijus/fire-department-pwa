@@ -1945,16 +1945,69 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="communication">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Komunikacija i Poruke</CardTitle>
-                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
-                    <SendMessageDialog onSend={sendMessage} />
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              {/* Chat UI - Sidebar with chat types */}
+              <Card className="col-span-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    💬 Chat
+                    {unreadCount > 0 && (
+                      <Badge className="bg-red-600">{unreadCount}</Badge>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button
+                    onClick={() => {
+                      setSelectedChatType('group');
+                      setSelectedChatUser(null);
+                      fetchGroupChat(user.department);
+                    }}
+                    className={`w-full ${selectedChatType === 'group' ? 'bg-blue-600' : 'bg-gray-600'}`}
+                  >
+                    👥 {formatDepartmentName(user.department)}
+                  </Button>
+                  
+                  <div className="border-t pt-2 mt-2">
+                    <p className="text-sm font-semibold mb-2">Privatne poruke:</p>
+                    <div className="space-y-1 max-h-96 overflow-y-auto">
+                      {allUsers
+                        .filter(u => u.id !== user.id && u.department === user.department)
+                        .map(chatUser => (
+                          <Button
+                            key={chatUser.id}
+                            onClick={() => {
+                              setSelectedChatType('private');
+                              setSelectedChatUser(chatUser);
+                              fetchPrivateChat(chatUser.id);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className={`w-full justify-start ${
+                              selectedChatUser?.id === chatUser.id ? 'bg-blue-100' : ''
+                            }`}
+                          >
+                            👤 {chatUser.full_name}
+                          </Button>
+                        ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Chat Messages Area */}
+              <Card className="col-span-2">
+                <CardHeader>
+                  <CardTitle>
+                    {selectedChatType === 'group' 
+                      ? `👥 ${formatDepartmentName(user.department)} - Grupni Chat`
+                      : selectedChatUser 
+                        ? `👤 ${selectedChatUser.full_name}`
+                        : '💬 Odaberite razgovor'
+                    }
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                 <div className="space-y-4">
                   {messages.length === 0 ? (
                     <p className="text-gray-500">Nema poruka</p>
