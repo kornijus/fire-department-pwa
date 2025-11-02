@@ -447,8 +447,10 @@ const Dashboard = () => {
       if (selectedChatType === 'private' && selectedChatUser && 
           (message.sender_id === selectedChatUser.id || message.recipient_id === selectedChatUser.id)) {
         fetchPrivateChat(selectedChatUser.id);
-      } else if (selectedChatType === 'group' && message.group_id === user?.department) {
-        fetchGroupChat(user.department);
+      } else if (selectedChatType === 'group_operational' && message.group_id === 'operational') {
+        fetchGroupChat('operational');
+      } else if (selectedChatType === 'group_general' && message.group_id === 'general') {
+        fetchGroupChat('general');
       }
     });
 
