@@ -85,10 +85,15 @@ class PDFEdgeCaseTester:
             data=login_data
         )
         
-        if success and 'access_token' in response:
-            self.token = response['access_token']
-            print(f"   ✅ Logged in successfully")
-            return True
+        if success:
+            try:
+                response_data = response.json() if hasattr(response, 'json') else {}
+                if 'access_token' in response_data:
+                    self.token = response_data['access_token']
+                    print(f"   ✅ Logged in successfully")
+                    return True
+            except:
+                pass
         return False
 
     def test_pdf_without_auth(self):
