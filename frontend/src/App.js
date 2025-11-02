@@ -1001,6 +1001,41 @@ const Dashboard = () => {
     }
   };
 
+  // Intervention operations
+  const addIntervention = async (interventionData) => {
+    try {
+      await axios.post(`${API}/interventions`, interventionData);
+      fetchInterventions();
+      alert('✅ Izvještaj o intervenciji uspješno spremljen!');
+    } catch (error) {
+      console.error('Error adding intervention:', error);
+      alert('Greška pri dodavanju izvještaja');
+    }
+  };
+
+  const updateIntervention = async (interventionId, updates) => {
+    try {
+      await axios.put(`${API}/interventions/${interventionId}`, updates);
+      fetchInterventions();
+    } catch (error) {
+      console.error('Error updating intervention:', error);
+      alert('Greška pri ažuriranju izvještaja');
+    }
+  };
+
+  const deleteIntervention = async (interventionId) => {
+    const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovaj izvještaj?');
+    if (confirmed) {
+      try {
+        await axios.delete(`${API}/interventions/${interventionId}`);
+        fetchInterventions();
+      } catch (error) {
+        console.error('Error deleting intervention:', error);
+        alert('Greška pri brisanju izvještaja');
+      }
+    }
+  };
+
   const updateEquipment = async (equipmentId, updates) => {
     try {
       await axios.put(`${API}/equipment/${equipmentId}`, updates);
