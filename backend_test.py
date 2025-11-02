@@ -1183,6 +1183,18 @@ def main():
         # Data Validation Testing
         ("Data Validation", tester.test_data_validation),
         
+        # PDF Generation Tests (HIGH PRIORITY - NEW FEATURE)
+        ("PDF Evidencijski List (DVD)", tester.test_pdf_evidencijski_list_dvd),
+        ("PDF Evidencijski List (VZO)", tester.test_pdf_evidencijski_list_vzo),
+        ("PDF Vehicle Equipment (DVD)", tester.test_pdf_oprema_vozilo_dvd),
+        ("PDF Vehicle Equipment (VZO)", tester.test_pdf_oprema_vozilo_vzo),
+        ("PDF Storage Equipment (DVD)", tester.test_pdf_oprema_spremiste_dvd),
+        ("PDF Personal Assignment", tester.test_pdf_osobno_zaduzenje),
+        ("PDF Authentication Required", tester.test_pdf_authentication_required),
+        ("PDF Invalid Department", tester.test_pdf_invalid_department),
+        ("PDF Invalid User ID", tester.test_pdf_invalid_user_id),
+        ("PDF Content Type Headers", tester.test_pdf_content_type_headers),
+        
         # Existing Tests
         ("Get Hydrants", tester.test_get_hydrants),
         ("Create Nadzemni Hydrant", tester.test_create_hydrant_nadzemni),
