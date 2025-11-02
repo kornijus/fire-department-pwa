@@ -213,6 +213,7 @@ test_plan:
     - "Equipment Management Dialogs"
     - "Vehicle/Equipment CRUD Operations"
     - "UI Integration"
+    - "Communication Module - Operational/General Segregation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
