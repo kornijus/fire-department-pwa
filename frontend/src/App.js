@@ -2859,6 +2859,17 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
             </label>
           </div>
 
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="is_operational_edit"
+              checked={isOperational}
+              onCheckedChange={setIsOperational}
+            />
+            <label htmlFor="is_operational_edit" className="text-sm font-medium">
+              🚒 Operativni član
+            </label>
+          </div>
+
           <div className="flex space-x-2">
             <Button onClick={handleUpdate} className="flex-1">
               Spremi promjene
