@@ -1020,6 +1020,94 @@ async def delete_hydrant(hydrant_id: str, current_user: User = Depends(get_curre
     
     return {"message": "Hydrant deleted successfully"}
 
+# ===== DVD LOGO MANAGEMENT =====
+
+@api_router.post("/init-logos")
+async def initialize_logos(current_user: User = Depends(get_current_user)):
+    """Initialize DVD logos with default URLs - only for VZO admins"""
+    if not current_user.is_vzo_member:
+        raise HTTPException(status_code=403, detail="Only VZO members can initialize logos")
+    
+    default_logos = [
+        {
+            "department": "DVD_Kneginec_Gornji",
+            "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/f1tyvmh4_DVD_Gornji%20Kneginec.JPG",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_by": current_user.id
+        },
+        {
+            "department": "DVD_Donji_Kneginec",
+            "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/e4twmm74_DVD%20Donji%20Kneginec.JPG",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_by": current_user.id
+        },
+        {
+            "department": "DVD_Varazdinbreg",
+            "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/vblcwugd_DVD_Varazdinbreg.JPG",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_by": current_user.id
+        },
+        {
+            "department": "DVD_Luzan_Biskupecki",
+            "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/5znmbbq9_DVD_Luzan_Biskupecki.JPG",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_by": current_user.id
+        },
+        {
+            "department": "VZO",
+            "logo_url": "https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_by": current_user.id
+        }
+    ]
+    
+    # Clear existing logos
+    await db.dvd_logos.delete_many({})
+    
+    # Insert new logos
+    await db.dvd_logos.insert_many(default_logos)
+    
+    return {"message": "Logos initialized successfully", "count": len(default_logos)}
+
+@api_router.get("/dvd-logos")
+async def get_all_logos(current_user: User = Depends(get_current_user)):
+    """Get all DVD logos"""
+    logos = await db.dvd_logos.find({}).to_list(length=None)
+    return logos
+
+@api_router.get("/dvd-logos/{department}")
+async def get_logo_by_department(department: str):
+    """Get logo for specific department - public endpoint"""
+    logo = await db.dvd_logos.find_one({"department": department})
+    if not logo:
+        # Return default VZO logo if department logo not found
+        return {"department": department, "logo_url": "https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png"}
+    return logo
+
+@api_router.put("/dvd-logos/{department}")
+async def update_logo(
+    department: str,
+    logo_url: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Update logo URL for a department - only VZO members"""
+    if not current_user.is_vzo_member:
+        raise HTTPException(status_code=403, detail="Only VZO members can update logos")
+    
+    update_data = {
+        "logo_url": logo_url,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_by": current_user.id
+    }
+    
+    result = await db.dvd_logos.update_one(
+        {"department": department},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    return {"message": "Logo updated successfully", "department": department}
+
 # ===== PDF GENERATORS =====
 
 def create_pdf_header(canvas, doc, title: str, department: str):
