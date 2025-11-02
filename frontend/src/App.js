@@ -154,7 +154,8 @@ const LoginPage = () => {
     full_name: '',
     department: '',
     role: '',
-    is_vzo_member: false  // NEW: VZO membership flag
+    is_vzo_member: false,  // NEW: VZO membership flag
+    is_operational: false  // NEW: Operational member flag
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
