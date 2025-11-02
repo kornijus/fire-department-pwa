@@ -1006,6 +1006,49 @@ const Dashboard = () => {
     }
   };
 
+  // Chat operations
+  const sendChatMessage = async (messageData) => {
+    try {
+      await axios.post(`${API}/chat/send`, messageData);
+      // Refresh current chat
+      if (selectedChatType === 'private' && selectedChatUser) {
+        fetchPrivateChat(selectedChatUser.id);
+      } else if (selectedChatType === 'group') {
+        fetchGroupChat(user.department);
+      }
+    } catch (error) {
+      console.error('Error sending chat message:', error);
+      alert('Greška pri slanju poruke');
+    }
+  };
+
+  const fetchPrivateChat = async (userId) => {
+    try {
+      const response = await axios.get(`${API}/chat/private/${userId}`);
+      setChatMessages(response.data);
+    } catch (error) {
+      console.error('Error fetching private chat:', error);
+    }
+  };
+
+  const fetchGroupChat = async (department) => {
+    try {
+      const response = await axios.get(`${API}/chat/group/${department}`);
+      setChatMessages(response.data);
+    } catch (error) {
+      console.error('Error fetching group chat:', error);
+    }
+  };
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await axios.get(`${API}/chat/unread-count`);
+      setUnreadCount(response.data.unread_private);
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
+  };
+
   // Intervention operations
   const addIntervention = async (interventionData) => {
     try {
