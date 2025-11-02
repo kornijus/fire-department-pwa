@@ -1982,11 +1982,11 @@ const Dashboard = () => {
                     {/* Svi članovi chat - za sve */}
                     <Button
                       onClick={() => {
-                        setSelectedChatType('group_general');
+                        setSelectedChatType('group_all');
                         setSelectedChatUser(null);
-                        fetchGroupChat('general');
+                        fetchGroupChat('all');
                       }}
-                      className={`w-full justify-start ${selectedChatType === 'group_general' ? 'bg-blue-600' : 'bg-blue-500'}`}
+                      className={`w-full justify-start ${selectedChatType === 'group_all' ? 'bg-blue-600' : 'bg-blue-500'}`}
                       size="sm"
                     >
                       👥 Svi Članovi
@@ -2030,7 +2030,7 @@ const Dashboard = () => {
                   <CardTitle>
                     {selectedChatType === 'group_operational' 
                       ? `🚒 Operativni Članovi - Chat`
-                      : selectedChatType === 'group_general'
+                      : selectedChatType === 'group_all'
                         ? `👥 Svi Članovi - Chat`
                         : selectedChatUser 
                           ? `👤 ${selectedChatUser.full_name}`
@@ -2040,7 +2040,7 @@ const Dashboard = () => {
                   <p className="text-sm text-gray-600">
                     {selectedChatType === 'group_operational' 
                       ? 'Operativni chat za uzbune, intervencije i školovanja'
-                      : selectedChatType === 'group_general'
+                      : selectedChatType === 'group_all'
                         ? 'Općeniti chat za sve članove društva'
                         : selectedChatUser 
                           ? 'Privatna komunikacija'
@@ -2080,7 +2080,7 @@ const Dashboard = () => {
                   </div>
 
                   {/* Input */}
-                  {(selectedChatType === 'group_operational' || selectedChatType === 'group_general' || selectedChatUser) && (
+                  {(selectedChatType === 'group_operational' || selectedChatType === 'group_all' || selectedChatUser) && (
                     <ChatInput
                       onSend={(content) => {
                         const messageData = {
@@ -2088,7 +2088,7 @@ const Dashboard = () => {
                           content: content,
                           recipient_id: selectedChatType === 'private' ? selectedChatUser.id : null,
                           group_id: selectedChatType === 'group_operational' ? 'operational' : 
-                                   selectedChatType === 'group_general' ? 'general' : null
+                                   selectedChatType === 'group_all' ? 'all' : null
                         };
                         sendChatMessage(messageData);
                       }}
