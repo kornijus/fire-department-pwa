@@ -813,7 +813,7 @@ class InterventionUpdate(BaseModel):
     address: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    department: Optional[str] = None
+    departments: Optional[List[str]] = None
     participants: Optional[List[str]] = None
     vehicles_used: Optional[List[str]] = None
     description: Optional[str] = None
