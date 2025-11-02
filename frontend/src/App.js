@@ -4846,6 +4846,41 @@ const InterventionUpdateDialog = ({ intervention, onUpdate, allUsers, vehicles }
   );
 };
 
+// Chat Input Component
+const ChatInput = ({ onSend }) => {
+  const [message, setMessage] = useState('');
+
+  const handleSend = () => {
+    if (message.trim()) {
+      onSend(message);
+      setMessage('');
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress}
+        placeholder="Napišite poruku..."
+        rows={2}
+        className="flex-1"
+      />
+      <Button onClick={handleSend} className="bg-blue-600">
+        Pošalji
+      </Button>
+    </div>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
