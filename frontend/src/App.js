@@ -4594,7 +4594,7 @@ const AddInterventionDialog = ({ onAdd, allUsers, vehicles, userDepartment }) =>
           <div>
             <label className="text-sm font-medium mb-2 block">🚒 Korištena vozila</label>
             <div className="max-h-32 overflow-y-auto border rounded p-2 space-y-1">
-              {vehicles.filter(v => v.department === formData.department || formData.department === 'VZO').map(vehicle => (
+              {vehicles.filter(v => formData.departments.includes(v.department)).map(vehicle => (
                 <div key={vehicle.id} className="flex items-center space-x-2">
                   <Checkbox
                     checked={formData.vehicles_used.includes(vehicle.id)}
