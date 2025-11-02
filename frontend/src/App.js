@@ -1049,9 +1049,10 @@ const Dashboard = () => {
     }
   };
 
-  const fetchGroupChat = async (department) => {
+  const fetchGroupChat = async (groupType) => {
     try {
-      const response = await axios.get(`${API}/chat/group/${department}`);
+      // groupType može biti 'operational' ili 'general'
+      const response = await axios.get(`${API}/chat/group/${groupType}`);
       setChatMessages(response.data);
     } catch (error) {
       console.error('Error fetching group chat:', error);
