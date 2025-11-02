@@ -371,6 +371,10 @@ const Dashboard = () => {
   const [events, setEvents] = useState([]); // Novi: događaji (osiguranja, školovanja, provjere)
   const [messages, setMessages] = useState([]); // Novi: grupne poruke
   const [interventions, setInterventions] = useState([]); // Novi: intervencije/izvještaji
+  const [chatMessages, setChatMessages] = useState([]); // Novi: chat poruke
+  const [selectedChatUser, setSelectedChatUser] = useState(null); // Za privatni chat
+  const [selectedChatType, setSelectedChatType] = useState('group'); // 'private' ili 'group'
+  const [unreadCount, setUnreadCount] = useState(0);
   const watchId = useRef(null);
 
   useEffect(() => {
