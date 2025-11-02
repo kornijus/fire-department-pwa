@@ -857,6 +857,98 @@ async def delete_intervention(intervention_id: str, current_user: User = Depends
     
     return {"message": "Intervention deleted successfully"}
 
+# NEW: Chat/Communication endpoints
+@api_router.post("/chat/send", response_model=ChatMessage)
+async def send_chat_message(message: ChatMessage, current_user: User = Depends(get_current_user)):
+    """Send a private or group chat message"""
+    message.sender_id = current_user.id
+    message.sender_name = current_user.full_name
+    message.created_at = datetime.now(timezone.utc)
+    
+    await db.chat_messages.insert_one(message.dict())
+    
+    # Broadcast via WebSocket for real-time
+    await sio.emit('new_chat_message', message.dict())
+    
+    return message
+
+@api_router.get("/chat/private/{user_id}", response_model=List[ChatMessage])
+async def get_private_chat(user_id: str, current_user: User = Depends(get_current_user)):
+    """Get private chat messages between current user and specified user"""
+    messages = await db.chat_messages.find({
+        "chat_type": "private",
+        "$or": [
+            {"sender_id": current_user.id, "recipient_id": user_id},
+            {"sender_id": user_id, "recipient_id": current_user.id}
+        ]
+    }).sort("created_at", 1).to_list(1000)
+    
+    # Mark messages as read
+    await db.chat_messages.update_many(
+        {"sender_id": user_id, "recipient_id": current_user.id, "read": False},
+        {"$set": {"read": True}}
+    )
+    
+    return [ChatMessage(**msg) for msg in messages]
+
+@api_router.get("/chat/group/{department}", response_model=List[ChatMessage])
+async def get_group_chat(department: str, current_user: User = Depends(get_current_user)):
+    """Get group chat messages for a DVD"""
+    # Only allow access if user is from that department or is VZO
+    if current_user.department != department and not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    messages = await db.chat_messages.find({
+        "chat_type": "group",
+        "group_id": department
+    }).sort("created_at", 1).to_list(1000)
+    
+    return [ChatMessage(**msg) for msg in messages]
+
+@api_router.get("/chat/unread-count")
+async def get_unread_count(current_user: User = Depends(get_current_user)):
+    """Get count of unread messages"""
+    private_count = await db.chat_messages.count_documents({
+        "chat_type": "private",
+        "recipient_id": current_user.id,
+        "read": False
+    })
+    
+    return {"unread_private": private_count}
+
+@api_router.get("/chat/conversations")
+async def get_conversations(current_user: User = Depends(get_current_user)):
+    """Get list of users current user has chatted with"""
+    # Get unique user IDs from sent and received messages
+    pipeline = [
+        {
+            "$match": {
+                "chat_type": "private",
+                "$or": [
+                    {"sender_id": current_user.id},
+                    {"recipient_id": current_user.id}
+                ]
+            }
+        },
+        {
+            "$group": {
+                "_id": {
+                    "$cond": [
+                        {"$eq": ["$sender_id", current_user.id]},
+                        "$recipient_id",
+                        "$sender_id"
+                    ]
+                },
+                "last_message": {"$last": "$$ROOT"}
+            }
+        },
+        {"$sort": {"last_message.created_at": -1}}
+    ]
+    
+    conversations = await db.chat_messages.aggregate(pipeline).to_list(100)
+    
+    return conversations
+
 @api_router.get("/locations/active")
 async def get_active_locations():
     return list(active_connections.values())
