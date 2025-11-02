@@ -894,16 +894,19 @@ async def get_private_chat(user_id: str, current_user: User = Depends(get_curren
     
     return [ChatMessage(**msg) for msg in messages]
 
-@api_router.get("/chat/group/{department}", response_model=List[ChatMessage])
-async def get_group_chat(department: str, current_user: User = Depends(get_current_user)):
-    """Get group chat messages for a DVD"""
-    # Only allow access if user is from that department or is VZO
-    if current_user.department != department and not has_vzo_full_access(current_user):
-        raise HTTPException(status_code=403, detail="Access denied")
+@api_router.get("/chat/group/{group_type}", response_model=List[ChatMessage])
+async def get_group_chat(group_type: str, current_user: User = Depends(get_current_user)):
+    """Get group chat messages - group_type: 'operational' or 'all'"""
+    # For operational chat - only operational members
+    if group_type == 'operational' and not current_user.is_operational:
+        raise HTTPException(status_code=403, detail="Samo operativni članovi imaju pristup")
+    
+    # Group ID format: "DVD_Name_operational" or "DVD_Name_all"
+    group_id = f"{current_user.department}_{group_type}"
     
     messages = await db.chat_messages.find({
         "chat_type": "group",
-        "group_id": department
+        "group_id": group_id
     }).sort("created_at", 1).to_list(1000)
     
     return [ChatMessage(**msg) for msg in messages]
