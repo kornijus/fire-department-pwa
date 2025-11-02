@@ -1795,6 +1795,17 @@ const Dashboard = () => {
                 <div className="flex justify-between items-center">
                   <CardTitle>Vozila</CardTitle>
                   <div className="flex space-x-2">
+                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                      <Button 
+                        onClick={() => {
+                          const dept = user.is_vzo_member ? 'VZO' : user.department;
+                          window.open(`${API}/pdf/oprema-vozilo/${dept}`, '_blank');
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        📄 Lista Opreme Vozilo PDF
+                      </Button>
+                    )}
                     <Button onClick={fetchVehicles} variant="outline">
                       Osvježi popis
                     </Button>
