@@ -509,7 +509,7 @@ class Intervention(BaseModel):
     address: str
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    department: str  # which DVD responded
+    departments: List[str] = []  # which DVDs responded (can be multiple)
     participants: List[str] = []  # list of user IDs
     vehicles_used: List[str] = []  # list of vehicle IDs
     description: str
