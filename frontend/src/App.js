@@ -1630,9 +1630,22 @@ const Dashboard = () => {
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle>Svi Članovi Zajednice</CardTitle>
-                      <Button onClick={fetchAllUsers}>
-                        Osvježi popis
-                      </Button>
+                      <div className="flex space-x-2">
+                        {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                          <Button 
+                            onClick={() => {
+                              const dept = user.is_vzo_member ? 'VZO' : user.department;
+                              window.open(`${API}/pdf/evidencijski-list/${dept}`, '_blank');
+                            }}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            📄 Evidencijski List PDF
+                          </Button>
+                        )}
+                        <Button onClick={fetchAllUsers}>
+                          Osvježi popis
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
