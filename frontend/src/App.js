@@ -2394,6 +2394,11 @@ const Dashboard = () => {
                                     {adminUser.is_vzo_member ? 'Da' : 'Ne'}
                                   </Badge>
                                 </p>
+                                <p><strong>Operativni član:</strong> 
+                                  <Badge className={adminUser.is_operational ? 'bg-red-600 ml-2' : 'bg-gray-500 ml-2'}>
+                                    {adminUser.is_operational ? '🚒 Da' : 'Ne'}
+                                  </Badge>
+                                </p>
                                 <p><strong>Status:</strong> 
                                   <Badge className={adminUser.is_active ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
                                     {adminUser.is_active ? 'Aktivan' : 'Neaktivan'}
