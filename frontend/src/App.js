@@ -146,20 +146,24 @@ const useAuth = () => {
 
 // Login Component
 const LoginPage = () => {
+  const [searchParams] = useSearchParams();
+  const departmentFromUrl = searchParams.get('department');
+  
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     email: '',
     full_name: '',
-    department: '',
+    department: departmentFromUrl || '',
     role: '',
-    is_vzo_member: false,  // NEW: VZO membership flag
-    is_operational: false  // NEW: Operational member flag
+    is_vzo_member: departmentFromUrl === 'VZO',
+    is_operational: false
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
