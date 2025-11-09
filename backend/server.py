@@ -415,6 +415,26 @@ async def login(user_login: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.get("/vzo-roles/available")
+async def get_available_vzo_roles():
+    """Get list of available VZO roles (not yet assigned)"""
+    occupied_roles = []
+    for role in VZO_ROLES:
+        existing = await db.users.find_one({"vzo_role": role})
+        if existing:
+            occupied_roles.append({
+                "role": role,
+                "occupied_by": existing.get('full_name'),
+                "available": False
+            })
+        else:
+            occupied_roles.append({
+                "role": role,
+                "occupied_by": None,
+                "available": True
+            })
+    return occupied_roles
+
 @api_router.get("/users")
 async def get_users(current_user: User = Depends(get_current_user)):
     # VZO dužnosnici vide sve članove iz svih DVD-ova
