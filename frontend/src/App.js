@@ -2635,7 +2635,7 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.vzo_role)) && (
+          {((user?.vzo_role && hasManagementPermission(user?.role, user?.vzo_role)) || user?.is_super_admin) && (
             <TabsContent value="admin">
               <Tabs defaultValue="users" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
