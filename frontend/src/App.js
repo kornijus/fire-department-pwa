@@ -50,23 +50,29 @@ const transformCoordinates = (coords) => {
   return [lng, lat];
 };
 
-// DVD colors for different areas
+// DVD colors for different areas (using GeoJSON property names)
 const DVD_COLORS = {
-  'DVD Lužan Biškupečki': '#ef4444',      // Red
-  'DVD Gornji Kneginec': '#3b82f6',       // Blue
-  'DVD Donji Kneginec': '#22c55e',        // Green
-  'DVD Halić': '#a855f7',                 // Purple (isto kao Varaždinbreg)
-  'DVD Varaždinbreg': '#a855f7'           // Purple
+  'Područje DVD Lužan Biškupečki': '#ef4444',      // Red
+  'Područje DVD Gornji Kneginec': '#3b82f6',       // Blue
+  'Područje DVD Donji Kneginec': '#22c55e',        // Green
+  'Područje DVD Halić': '#a855f7',                 // Purple (Varaždinbreg)
 };
 
 // DVD name mapping (GeoJSON names -> Display names)
 const DVD_NAME_MAPPING = {
-  'DVD Halić': 'DVD Varaždinbreg'
+  'Područje DVD Lužan Biškupečki': 'DVD Lužan Biškupečki',
+  'Područje DVD Gornji Kneginec': 'DVD Gornji Kneginec',
+  'Područje DVD Donji Kneginec': 'DVD Donji Kneginec',
+  'Područje DVD Halić': 'DVD Varaždinbreg'
 };
 
 // Function to get color for DVD
 const getDvdColor = (dvdName) => {
-  return DVD_COLORS[dvdName] || '#999999';
+  const color = DVD_COLORS[dvdName];
+  if (!color) {
+    console.warn('⚠️ No color found for:', dvdName, '→ using gray');
+  }
+  return color || '#999999';
 };
 
 // Function to get display name for DVD
