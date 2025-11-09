@@ -3034,8 +3034,8 @@ const AddHydrantDialog = ({ onAdd }) => {
 const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
   const [role, setRole] = useState(adminUser.role);
   const [department, setDepartment] = useState(adminUser.department);
+  const [vzoRole, setVzoRole] = useState(adminUser.vzo_role || null);
   const [isActive, setIsActive] = useState(adminUser.is_active);
-  const [isVzoMember, setIsVzoMember] = useState(adminUser.is_vzo_member);
   const [isOperational, setIsOperational] = useState(adminUser.is_operational || false);
   const [open, setOpen] = useState(false);
 
@@ -3043,37 +3043,38 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
     const updates = {
       role,
       department,
+      vzo_role: vzoRole,
       is_active: isActive,
-      is_vzo_member: isVzoMember,
       is_operational: isOperational
     };
     onUpdate(adminUser.id, updates);
     setOpen(false);
   };
 
-  const getAvailableRoles = () => {
-    if (isVzoMember) {
-      return [
-        { value: 'predsjednik_vzo', label: 'Predsjednik VZO-a' },
-        { value: 'zamjenik_predsjednika_vzo', label: 'Zamjenik predsjednika VZO-a' },
-        { value: 'tajnik_vzo', label: 'Tajnik VZO-a' },
-        { value: 'zapovjednik_vzo', label: 'Zapovjednik VZO-a' },
-        { value: 'zamjenik_zapovjednika_vzo', label: 'Zamjenik zapovjednika VZO-a' }
-      ];
-    } else {
-      return [
-        { value: 'clan_bez_funkcije', label: 'Član bez funkcije' },
-        { value: 'predsjednik', label: 'Predsjednik' },
-        { value: 'tajnik', label: 'Tajnik' },
-        { value: 'zapovjednik', label: 'Zapovjednik' },
-        { value: 'zamjenik_zapovjednika', label: 'Zamjenik zapovjednika' },
-        { value: 'spremistar', label: 'Spremistar' },
-        { value: 'blagajnik', label: 'Blagajnik' },
-        { value: 'upravni_odbor', label: 'Upravni odbor' },
-        { value: 'nadzorni_odbor', label: 'Nadzorni odbor' },
-        { value: 'zapovjednistvo', label: 'Zapovjedništvo' }
-      ];
-    }
+  const getDvdRoles = () => {
+    return [
+      { value: 'clan_bez_funkcije', label: 'Član bez funkcije' },
+      { value: 'predsjednik', label: 'Predsjednik' },
+      { value: 'tajnik', label: 'Tajnik' },
+      { value: 'zapovjednik', label: 'Zapovjednik' },
+      { value: 'zamjenik_zapovjednika', label: 'Zamjenik zapovjednika' },
+      { value: 'spremistar', label: 'Spremistar' },
+      { value: 'blagajnik', label: 'Blagajnik' },
+      { value: 'upravni_odbor', label: 'Upravni odbor' },
+      { value: 'nadzorni_odbor', label: 'Nadzorni odbor' },
+      { value: 'zapovjednistvo', label: 'Zapovjedništvo' }
+    ];
+  };
+
+  const getVzoRoles = () => {
+    return [
+      { value: null, label: 'Bez VZO funkcije' },
+      { value: 'predsjednik_vzo', label: 'Predsjednik VZO' },
+      { value: 'zamjenik_predsjednika_vzo', label: 'Zamjenik predsjednika VZO' },
+      { value: 'tajnik_vzo', label: 'Tajnik VZO' },
+      { value: 'zapovjednik_vzo', label: 'Zapovjednik VZO' },
+      { value: 'zamjenik_zapovjednika_vzo', label: 'Zamjenik zapovjednika VZO' }
+    ];
   };
 
   return (
