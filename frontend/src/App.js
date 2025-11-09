@@ -1287,8 +1287,13 @@ const Dashboard = () => {
               <div className="text-sm font-semibold">{user?.full_name}</div>
               <div className="text-xs opacity-90">{formatRoleName(user?.role)}</div>
               <div className="text-xs opacity-75">{formatDepartmentName(user?.department)}</div>
-              {user?.is_vzo_member && (
-                <Badge className="bg-yellow-500 text-black text-xs mt-1">VZO</Badge>
+              {user?.vzo_role && (
+                <Badge className="bg-yellow-500 text-black text-xs mt-1">
+                  {formatRoleName(user.vzo_role)}
+                </Badge>
+              )}
+              {user?.is_operational && (
+                <Badge className="bg-red-700 text-xs mt-1 ml-1">🚒 Operativac</Badge>
               )}
             </div>
             <Button variant="outline" size="sm" onClick={() => {
