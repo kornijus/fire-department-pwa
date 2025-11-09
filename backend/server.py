@@ -172,6 +172,7 @@ class UserCreate(BaseModel):
     role: str = "clan_bez_funkcije"
     vzo_role: Optional[str] = None  # NEW: VZO funkcija
     is_operational: bool = False
+    is_super_admin: bool = False  # NEW: Super admin flag
 
 class UserLogin(BaseModel):
     username: str
