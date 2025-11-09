@@ -1,0 +1,32 @@
+[
+  {
+    "department": "DVD_Kneginec_Gornji",
+    "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/f1tyvmh4_DVD_Gornji%20Kneginec.JPG",
+    "updated_at": "2025-11-09T12:58:40.720373+00:00",
+    "updated_by": "c736000b-3e48-40c5-91ca-b573f2af36d8"
+  },
+  {
+    "department": "DVD_Donji_Kneginec",
+    "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/e4twmm74_DVD%20Donji%20Kneginec.JPG",
+    "updated_at": "2025-11-09T12:58:40.720386+00:00",
+    "updated_by": "c736000b-3e48-40c5-91ca-b573f2af36d8"
+  },
+  {
+    "department": "DVD_Varazdinbreg",
+    "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/vblcwugd_DVD_Varazdinbreg.JPG",
+    "updated_at": "2025-11-09T12:58:40.720389+00:00",
+    "updated_by": "c736000b-3e48-40c5-91ca-b573f2af36d8"
+  },
+  {
+    "department": "DVD_Luzan_Biskupecki",
+    "logo_url": "https://customer-assets.emergentagent.com/job_responderapp/artifacts/5znmbbq9_DVD_Luzan_Biskupecki.JPG",
+    "updated_at": "2025-11-09T12:58:40.720391+00:00",
+    "updated_by": "c736000b-3e48-40c5-91ca-b573f2af36d8"
+  },
+  {
+    "department": "VZO",
+    "logo_url": "https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png",
+    "updated_at": "2025-11-09T12:58:40.720394+00:00",
+    "updated_by": "c736000b-3e48-40c5-91ca-b573f2af36d8"
+  }
+]
