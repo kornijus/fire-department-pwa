@@ -155,10 +155,10 @@ class User(BaseModel):
     username: str
     email: str
     full_name: str
-    department: str  # DVD society or VZO
-    role: str = "clan_bez_funkcije"
-    is_vzo_member: bool = False  # NEW: VZO membership flag
-    is_operational: bool = False  # NEW: Da li je član operativac (za uzbune, intervencije)
+    department: str  # DVD society (matični DVD)
+    role: str = "clan_bez_funkcije"  # DVD funkcija
+    vzo_role: Optional[str] = None  # NEW: VZO funkcija (predsjednik_vzo, tajnik_vzo, itd.)
+    is_operational: bool = False  # Da li je član operativac (za uzbune, intervencije)
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -169,8 +169,8 @@ class UserCreate(BaseModel):
     full_name: str
     department: str
     role: str = "clan_bez_funkcije"
-    is_vzo_member: bool = False  # NEW: VZO membership
-    is_operational: bool = False  # NEW: Da li je član operativac
+    vzo_role: Optional[str] = None  # NEW: VZO funkcija
+    is_operational: bool = False
 
 class UserLogin(BaseModel):
     username: str
