@@ -1082,8 +1082,8 @@ async def initialize_logos(current_user: User = Depends(get_current_user)):
     return {"message": "Logos initialized successfully", "count": len(default_logos)}
 
 @api_router.get("/dvd-logos")
-async def get_all_logos(current_user: User = Depends(get_current_user)):
-    """Get all DVD logos"""
+async def get_all_logos():
+    """Get all DVD logos - PUBLIC endpoint"""
     logos = await db.dvd_logos.find({}).to_list(length=None)
     return logos
 
