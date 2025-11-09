@@ -425,6 +425,7 @@ const Dashboard = () => {
   const [selectedChatUser, setSelectedChatUser] = useState(null); // Za privatni chat
   const [selectedChatType, setSelectedChatType] = useState('group_all'); // 'private', 'group_operational', ili 'group_all'
   const [unreadCount, setUnreadCount] = useState(0);
+  const [dvdAreas, setDvdAreas] = useState(null); // GeoJSON data for DVD areas
   const watchId = useRef(null);
 
   useEffect(() => {
