@@ -159,6 +159,7 @@ class User(BaseModel):
     role: str = "clan_bez_funkcije"  # DVD funkcija
     vzo_role: Optional[str] = None  # NEW: VZO funkcija (predsjednik_vzo, tajnik_vzo, itd.)
     is_operational: bool = False  # Da li je član operativac (za uzbune, intervencije)
+    is_super_admin: bool = False  # NEW: Super admin - siva eminencija, može sve!
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
