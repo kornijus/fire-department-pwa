@@ -1897,8 +1897,10 @@ const Dashboard = () => {
                                     <Badge className={member.is_active ? 'bg-green-500' : 'bg-red-500'}>
                                       {member.is_active ? 'Aktivan' : 'Neaktivan'}
                                     </Badge>
-                                    {member.is_vzo_member && (
-                                      <Badge className="bg-yellow-500 text-black">VZO</Badge>
+                                    {member.vzo_role && (
+                                      <Badge className="bg-yellow-500 text-black">
+                                        {formatRoleName(member.vzo_role)}
+                                      </Badge>
                                     )}
                                     {member.is_operational && (
                                       <Badge className="bg-red-600">🚒 Operativac</Badge>
