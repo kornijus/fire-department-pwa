@@ -389,8 +389,8 @@ async def register(user: UserCreate):
         print(f"❌ User already exists: {existing}")
         raise HTTPException(status_code=400, detail="User already exists")
     
-    # Validate VZO role uniqueness - samo 1 osoba po VZO funkciji
-    if user.vzo_role and user.vzo_role in VZO_ROLES:
+    # Validate VZO role uniqueness - samo 1 osoba po VZO funkciji (osim super admina)
+    if user.vzo_role and user.vzo_role in VZO_ROLES and not user.is_super_admin:
         existing_vzo_role = await db.users.find_one({"vzo_role": user.vzo_role})
         if existing_vzo_role:
             role_name = user.vzo_role.replace('_', ' ').title()
