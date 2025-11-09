@@ -55,13 +55,23 @@ const DVD_COLORS = {
   'DVD Lužan Biškupečki': '#ef4444',      // Red
   'DVD Gornji Kneginec': '#3b82f6',       // Blue
   'DVD Donji Kneginec': '#22c55e',        // Green
-  'DVD Halić': '#f59e0b',                 // Orange
+  'DVD Halić': '#a855f7',                 // Purple (isto kao Varaždinbreg)
   'DVD Varaždinbreg': '#a855f7'           // Purple
+};
+
+// DVD name mapping (GeoJSON names -> Display names)
+const DVD_NAME_MAPPING = {
+  'DVD Halić': 'DVD Varaždinbreg'
 };
 
 // Function to get color for DVD
 const getDvdColor = (dvdName) => {
   return DVD_COLORS[dvdName] || '#999999';
+};
+
+// Function to get display name for DVD
+const getDvdDisplayName = (dvdName) => {
+  return DVD_NAME_MAPPING[dvdName] || dvdName;
 };
 
 // Custom icons
