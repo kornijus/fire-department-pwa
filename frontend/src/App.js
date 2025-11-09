@@ -1687,6 +1687,22 @@ const Dashboard = () => {
                     ))}
                   </MapContainer>
                 </div>
+                
+                {/* DVD Areas Legend */}
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
+                  <h4 className="font-semibold mb-2 text-sm">Područja nadležnosti DVD-ova:</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    {Object.entries(DVD_COLORS).map(([dvdName, color]) => (
+                      <div key={dvdName} className="flex items-center space-x-2">
+                        <div 
+                          className="w-4 h-4 rounded border border-gray-400" 
+                          style={{ backgroundColor: color, opacity: 0.6 }}
+                        />
+                        <span className="text-xs">{dvdName.replace('DVD ', '')}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
