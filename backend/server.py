@@ -1086,8 +1086,8 @@ async def delete_hydrant(hydrant_id: str, current_user: User = Depends(get_curre
 @api_router.post("/init-logos")
 async def initialize_logos(current_user: User = Depends(get_current_user)):
     """Initialize DVD logos with default URLs - only for VZO admins"""
-    if not current_user.is_vzo_member:
-        raise HTTPException(status_code=403, detail="Only VZO members can initialize logos")
+    if not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Only VZO officials can initialize logos")
     
     default_logos = [
         {
