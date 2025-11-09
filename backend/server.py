@@ -646,9 +646,8 @@ async def get_dvd_stations(current_user: User = Depends(get_current_user)):
 
 @api_router.post("/dvd-stations", response_model=DVDStation)
 async def create_dvd_station(station: DVDStation, current_user: User = Depends(get_current_user)):
-    # VZO can add any, DVD presidents can add their own
-    if not (has_vzo_full_access(current_user) or 
-            (current_user.role == "predsjednik" and not current_user.is_vzo_member)):
+    # VZO dužnosnici mogu dodavati bilo koje, DVD predsjednici samo svoje
+    if not (has_vzo_full_access(current_user) or has_dvd_management_access(current_user)):
         raise HTTPException(status_code=403, detail="Access denied")
     
     await db.dvd_stations.insert_one(station.dict())
