@@ -1842,7 +1842,7 @@ const Dashboard = () => {
                         {hasManagementPermission(user?.role, user?.vzo_role) && (
                           <Button 
                             onClick={() => {
-                              const dept = user.is_vzo_member ? 'VZO' : user.department;
+                              const dept = user.vzo_role ? 'VZO' : user.department;
                               window.open(`${API}/pdf/evidencijski-list/${dept}`, '_blank');
                             }}
                             className="bg-red-600 hover:bg-red-700"
@@ -2006,7 +2006,7 @@ const Dashboard = () => {
                     {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <Button 
                         onClick={() => {
-                          const dept = user.is_vzo_member ? 'VZO' : user.department;
+                          const dept = user.vzo_role ? 'VZO' : user.department;
                           window.open(`${API}/pdf/oprema-vozilo/${dept}`, '_blank');
                         }}
                         className="bg-blue-600 hover:bg-blue-700"
@@ -2080,7 +2080,7 @@ const Dashboard = () => {
                     {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <Button 
                         onClick={() => {
-                          const dept = user.is_vzo_member ? 'VZO' : user.department;
+                          const dept = user.vzo_role ? 'VZO' : user.department;
                           window.open(`${API}/pdf/oprema-spremiste/${dept}`, '_blank');
                         }}
                         className="bg-amber-600 hover:bg-amber-700"
