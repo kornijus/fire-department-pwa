@@ -1134,10 +1134,16 @@ async def initialize_logos(current_user: User = Depends(get_current_user)):
 @api_router.get("/dvd-logos")
 async def get_all_logos():
     """Get all DVD logos - PUBLIC endpoint"""
-    print("🎨 Getting all DVD logos...")
-    logos = await db.dvd_logos.find({}, {'_id': 0}).to_list(length=None)
-    print(f"✅ Found {len(logos)} logos")
-    return logos
+    try:
+        print("🎨 Getting all DVD logos...")
+        logos = await db.dvd_logos.find({}, {'_id': 0}).to_list(length=None)
+        print(f"✅ Found {len(logos)} logos: {logos}")
+        return JSONResponse(content=logos)
+    except Exception as e:
+        print(f"❌ Error in get_all_logos: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/dvd-logos/{department}")
 async def get_logo_by_department(department: str):
