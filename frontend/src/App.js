@@ -1295,6 +1295,9 @@ const Dashboard = () => {
               {user?.is_operational && (
                 <Badge className="bg-red-700 text-xs mt-1 ml-1">🚒 Operativac</Badge>
               )}
+              {user?.is_super_admin && (
+                <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs mt-1 ml-1">👑 Super Admin</Badge>
+              )}
             </div>
             <Button variant="outline" size="sm" onClick={() => {
               logout();
