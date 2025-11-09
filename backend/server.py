@@ -226,21 +226,40 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-# NEW: VZO permission system
+# DVD and VZO role enums
+DVD_ROLES = [
+    "clan_bez_funkcije",
+    "predsjednik",
+    "tajnik",  # NEW: Tajnik DVD-a
+    "zapovjednik",
+    "zamjenik_zapovjednika",
+    "zapovjednistvo",
+    "spremistar",
+    "blagajnik",
+    "upravni_odbor",
+    "nadzorni_odbor"
+]
+
+VZO_ROLES = [
+    "predsjednik_vzo",
+    "zamjenik_predsjednika_vzo",  # NEW
+    "tajnik_vzo",
+    "zapovjednik_vzo",
+    "zamjenik_zapovjednika_vzo"
+]
+
+# NEW: VZO and DVD permission system
 def has_vzo_full_access(user: User) -> bool:
-    """VZO members with full access to everything"""
-    if not user.is_vzo_member:
-        return False
-    vzo_full_roles = ["predsjednik_vzo", "tajnik_vzo", "zapovjednik_vzo", "zamjenik_zapovjednika_vzo"]
-    return user.role in vzo_full_roles
+    """VZO dužnosnici imaju pristup svim DVD-ovima"""
+    return user.vzo_role is not None and user.vzo_role in VZO_ROLES
 
 def has_dvd_management_access(user: User) -> bool:
-    """DVD presidents and commanders - access to their own DVD only"""
-    dvd_management_roles = ["predsjednik", "zapovjednik", "zamjenik_zapovjednika"]
-    return user.role in dvd_management_roles and not user.is_vzo_member
+    """DVD dužnosnici (predsjednik, tajnik, zapovjednik, zamjenik) - pristup samo svom DVD-u"""
+    dvd_management_roles = ["predsjednik", "tajnik", "zapovjednik", "zamjenik_zapovjednika"]
+    return user.role in dvd_management_roles
 
 def has_hydrant_management_permission(user: User) -> bool:
-    """All operational members can manage hydrants"""
+    """All operational members and officials can manage hydrants"""
     if has_vzo_full_access(user) or has_dvd_management_access(user):
         return True
     
