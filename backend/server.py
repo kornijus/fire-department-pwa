@@ -470,7 +470,8 @@ class UserExtended(BaseModel):
     full_name: str
     department: str
     role: str = "clan_bez_funkcije"
-    is_vzo_member: bool = False
+    vzo_role: Optional[str] = None
+    is_operational: bool = False
     is_active: bool = True
     
     # NEW: Additional personal data
