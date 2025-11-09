@@ -4231,11 +4231,29 @@ const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
             </div>
 
             {assignmentType === 'location' && (
-              <Input
-                type="text"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              />
+              <div className="space-y-3">
+                <Input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                />
+                <div>
+                  <label className="text-sm font-medium">Točna lokacija (spremište)</label>
+                  <Select value={formData.storage_location} onValueChange={(value) => setFormData({ ...formData, storage_location: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Odaberi spremište" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="spremiste_1">Spremište 1</SelectItem>
+                      <SelectItem value="spremiste_2">Spremište 2</SelectItem>
+                      <SelectItem value="spremiste_3">Spremište 3</SelectItem>
+                      <SelectItem value="ormar_1">Ormar 1</SelectItem>
+                      <SelectItem value="ormar_2">Ormar 2</SelectItem>
+                      <SelectItem value="ostalo">Ostalo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             )}
 
             {assignmentType === 'user' && (
@@ -4254,10 +4272,11 @@ const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
             )}
 
             {assignmentType === 'vehicle' && (
-              <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Odaberi vozilo" />
-                </SelectTrigger>
+              <div className="space-y-3">
+                <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Odaberi vozilo" />
+                  </SelectTrigger>
                 <SelectContent>
                   {vehicles.map(vehicle => (
                     <SelectItem key={vehicle.id} value={vehicle.id}>
