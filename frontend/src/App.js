@@ -28,6 +28,11 @@ L.Icon.Default.mergeOptions({
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Create a public axios instance without auth headers for Landing page
+const publicAxios = axios.create({
+  baseURL: BACKEND_URL
+});
+
 // Custom icons
 // Zelena točka za online korisnike
 const activeUserIcon = new L.Icon({
