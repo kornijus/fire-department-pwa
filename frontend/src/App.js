@@ -1733,14 +1733,15 @@ const Dashboard = () => {
                     <h4 className="font-semibold mb-2 text-sm">Područja nadležnosti DVD-ova:</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {availableDvds.map((dvdName) => {
+                        const displayName = getDvdDisplayName(dvdName);
                         const color = getDvdColor(dvdName);
                         return (
                           <div key={dvdName} className="flex items-center space-x-2">
                             <div 
-                              className="w-5 h-5 rounded border-2 border-gray-400" 
-                              style={{ backgroundColor: color, opacity: 0.7 }}
+                              className="w-5 h-5 rounded border-2 border-gray-600" 
+                              style={{ backgroundColor: color, opacity: 0.8 }}
                             />
-                            <span className="text-xs font-medium">{dvdName.replace('DVD ', '')}</span>
+                            <span className="text-xs font-medium">{displayName.replace('DVD ', '')}</span>
                           </div>
                         );
                       })}
