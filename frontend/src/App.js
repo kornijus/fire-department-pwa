@@ -1540,6 +1540,51 @@ const Dashboard = () => {
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     
+                    {/* DVD Areas - Područja nadležnosti */}
+                    {dvdAreas && (
+                      <GeoJSON
+                        data={dvdAreas}
+                        style={(feature) => {
+                          const dvdName = feature.properties['vlastita oznaka naziv'];
+                          const color = DVD_COLORS[dvdName] || '#999999';
+                          return {
+                            fillColor: color,
+                            fillOpacity: 0.2,
+                            color: color,
+                            weight: 2,
+                            opacity: 0.8
+                          };
+                        }}
+                        onEachFeature={(feature, layer) => {
+                          const dvdName = feature.properties['vlastita oznaka naziv'];
+                          const area = (feature.properties['m²'] / 1000000).toFixed(2); // Convert to km²
+                          
+                          layer.bindPopup(`
+                            <div class="p-2">
+                              <h3 class="font-bold text-lg">${dvdName}</h3>
+                              <p><strong>Površina:</strong> ${area} km²</p>
+                              <p><strong>Opseg:</strong> ${(feature.properties['m'] / 1000).toFixed(2)} km</p>
+                            </div>
+                          `);
+                          
+                          // Hover effect
+                          layer.on('mouseover', function() {
+                            this.setStyle({
+                              fillOpacity: 0.4,
+                              weight: 3
+                            });
+                          });
+                          
+                          layer.on('mouseout', function() {
+                            this.setStyle({
+                              fillOpacity: 0.2,
+                              weight: 2
+                            });
+                          });
+                        }}
+                      />
+                    )}
+                    
                     {/* Map click handler for adding hydrants */}
                     <MapClickHandler onMapClick={handleMapClick} />
                     
