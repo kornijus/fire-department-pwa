@@ -59,6 +59,11 @@ const DVD_COLORS = {
   'DVD Varaždinbreg': '#a855f7'           // Purple
 };
 
+// Function to get color for DVD
+const getDvdColor = (dvdName) => {
+  return DVD_COLORS[dvdName] || '#999999';
+};
+
 // Custom icons
 // Zelena točka za online korisnike
 const activeUserIcon = new L.Icon({
