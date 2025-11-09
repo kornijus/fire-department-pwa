@@ -377,6 +377,7 @@ const MapClickHandler = ({ onMapClick }) => {
 // Main Dashboard Component
 const Dashboard = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [activeUsers, setActiveUsers] = useState([]);
   const [hydrants, setHydrants] = useState([]);
   const [gpsEnabled, setGpsEnabled] = useState(true); // Default: GPS uključen
