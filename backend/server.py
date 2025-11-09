@@ -657,16 +657,33 @@ class UserUpdate(BaseModel):
 
 @api_router.put("/users/{user_id}")
 async def update_user(user_id: str, user_update: UserUpdate, current_user: User = Depends(get_current_user)):
-    # Only VZO members with full access can update users
-    if not has_vzo_full_access(current_user):
+    # Super admin može sve, VZO members can update all users, DVD management can update their own department
+    if not (is_super_admin(current_user) or has_vzo_full_access(current_user) or has_dvd_management_access(current_user)):
         raise HTTPException(status_code=403, detail="Access denied")
     
     update_data = {k: v for k, v in user_update.dict().items() if v is not None}
     
-    result = await db.users.update_one({"id": user_id}, {"$set": update_data})
-    if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="User not found")
+    # Super admin može mijenjati VZO role bez validacije
+    if 'vzo_role' in update_data and update_data['vzo_role'] and not is_super_admin(current_user):
+        # Provjeri je li VZO rola već zauzeta
+        existing = await db.users.find_one({
+            "vzo_role": update_data['vzo_role'],
+            "id": {"$ne": user_id}  # Exclude current user
+        })
+        if existing:
+            role_name = update_data['vzo_role'].replace('_', ' ').title()
+            raise HTTPException(
+                status_code=400,
+                detail=f"Funkcija '{role_name}' je već zauzeta."
+            )
     
+    # Convert datetime to ISO string if present
+    if 'medical_exam_date' in update_data and update_data['medical_exam_date']:
+        update_data['medical_exam_date'] = update_data['medical_exam_date'].isoformat()
+    if 'medical_exam_valid_until' in update_data and update_data['medical_exam_valid_until']:
+        update_data['medical_exam_valid_until'] = update_data['medical_exam_valid_until'].isoformat()
+    
+    await db.users.update_one({"id": user_id}, {"$set": update_data})
     return {"message": "User updated successfully"}
 
 # NEW: DVD Stations endpoints
