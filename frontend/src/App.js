@@ -1561,18 +1561,19 @@ const Dashboard = () => {
                         data={dvdAreas}
                         style={(feature) => {
                           const dvdName = feature.properties['vlastita oznaka naziv'];
-                          const color = DVD_COLORS[dvdName] || '#999999';
+                          const color = getDvdColor(dvdName);
                           return {
                             fillColor: color,
-                            fillOpacity: 0.2,
+                            fillOpacity: 0.25,
                             color: color,
-                            weight: 2,
-                            opacity: 0.8
+                            weight: 2.5,
+                            opacity: 0.9
                           };
                         }}
                         onEachFeature={(feature, layer) => {
                           const dvdName = feature.properties['vlastita oznaka naziv'];
                           const area = (feature.properties['m²'] / 1000000).toFixed(2); // Convert to km²
+                          const color = getDvdColor(dvdName);
                           
                           layer.bindPopup(`
                             <div class="p-2">
@@ -1582,18 +1583,29 @@ const Dashboard = () => {
                             </div>
                           `);
                           
-                          // Hover effect
-                          layer.on('mouseover', function() {
-                            this.setStyle({
-                              fillOpacity: 0.4,
-                              weight: 3
+                          // Enhanced hover effect
+                          layer.on('mouseover', function(e) {
+                            const layer = e.target;
+                            layer.setStyle({
+                              fillColor: color,
+                              fillOpacity: 0.6,
+                              weight: 4,
+                              opacity: 1,
+                              color: '#ffffff'
                             });
+                            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                              layer.bringToFront();
+                            }
                           });
                           
-                          layer.on('mouseout', function() {
-                            this.setStyle({
-                              fillOpacity: 0.2,
-                              weight: 2
+                          layer.on('mouseout', function(e) {
+                            const layer = e.target;
+                            layer.setStyle({
+                              fillColor: color,
+                              fillOpacity: 0.25,
+                              weight: 2.5,
+                              opacity: 0.9,
+                              color: color
                             });
                           });
                         }}
