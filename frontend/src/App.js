@@ -5175,14 +5175,166 @@ const ChatInput = ({ onSend }) => {
   );
 };
 
+// Landing Page Component with DVD Logos
+const LandingPage = () => {
+  const navigate = useNavigate();
+  const [logos, setLogos] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLogos();
+  }, []);
+
+  const fetchLogos = async () => {
+    try {
+      const response = await axios.get(`${API}/dvd-logos`);
+      const logosMap = {};
+      response.data.forEach(logo => {
+        logosMap[logo.department] = logo.logo_url;
+      });
+      setLogos(logosMap);
+    } catch (error) {
+      console.error('Error fetching logos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const dvdData = [
+    { 
+      department: 'DVD_Kneginec_Gornji', 
+      name: 'DVD Kneginec Gornji',
+      position: 'top-0 left-1/2 -translate-x-1/2',
+      color: 'red'
+    },
+    { 
+      department: 'DVD_Varazdinbreg', 
+      name: 'DVD Varaždinbreg',
+      position: 'top-1/2 left-0 -translate-y-1/2',
+      color: 'green'
+    },
+    { 
+      department: 'DVD_Donji_Kneginec', 
+      name: 'DVD Donji Kneginec',
+      position: 'top-1/2 right-0 -translate-y-1/2',
+      color: 'blue'
+    },
+    { 
+      department: 'DVD_Luzan_Biskupecki', 
+      name: 'DVD Lužan Biškupečki',
+      position: 'bottom-0 left-1/2 -translate-x-1/2',
+      color: 'yellow'
+    },
+  ];
+
+  const handleDvdClick = (department) => {
+    navigate(`/login?department=${department}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-900 via-gray-900 to-red-950 flex items-center justify-center">
+        <div className="text-white text-2xl">Učitavanje...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-900 via-gray-900 to-red-950 flex flex-col items-center justify-center p-8 overflow-hidden">
+      {/* Title */}
+      <div className="text-center mb-16 z-10">
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-2xl">
+          Vatrogasna Zajednica Općine
+        </h1>
+        <h2 className="text-3xl md:text-4xl font-semibold text-red-300 drop-shadow-lg">
+          Gornji Kneginec
+        </h2>
+        <p className="text-white/80 mt-4 text-lg">Odaberite svoje vatrogasno društvo</p>
+      </div>
+
+      {/* Circular Logo Layout */}
+      <div className="relative w-full max-w-4xl aspect-square">
+        {/* Center VZO Logo */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          <div 
+            className="group cursor-pointer transform transition-all duration-500 hover:scale-110"
+            onClick={() => navigate('/login?department=VZO')}
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+              <div className="relative bg-white rounded-full p-4 shadow-2xl border-4 border-yellow-400">
+                <img 
+                  src={logos['VZO'] || 'https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png'}
+                  alt="VZO Gornji Kneginec"
+                  className="w-40 h-40 md:w-48 md:h-48 object-contain"
+                  onError={(e) => e.target.src = 'https://via.placeholder.com/200?text=VZO'}
+                />
+              </div>
+            </div>
+            <p className="text-center text-white font-bold text-xl mt-4 drop-shadow-lg">
+              VZO Gornji Kneginec
+            </p>
+          </div>
+        </div>
+
+        {/* DVD Logos in Circle */}
+        {dvdData.map((dvd, index) => {
+          const angle = (index * 90) - 90; // Start from top, go clockwise
+          const radius = 45; // percentage from center
+          const x = 50 + radius * Math.cos((angle * Math.PI) / 180);
+          const y = 50 + radius * Math.sin((angle * Math.PI) / 180);
+          
+          return (
+            <div 
+              key={dvd.department}
+              className="absolute z-10"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                transform: 'translate(-50%, -50%)'
+              }}
+            >
+              <div 
+                className="group cursor-pointer transform transition-all duration-500 hover:scale-125 hover:z-30"
+                onClick={() => handleDvdClick(dvd.department)}
+              >
+                <div className="relative">
+                  <div className={`absolute inset-0 bg-${dvd.color}-500 rounded-full blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-500`}></div>
+                  <div className="relative bg-white rounded-full p-3 shadow-2xl border-4 border-red-600 group-hover:border-yellow-400 transition-colors duration-300">
+                    <img 
+                      src={logos[dvd.department] || `https://via.placeholder.com/150?text=${dvd.name}`}
+                      alt={dvd.name}
+                      className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                      onError={(e) => e.target.src = `https://via.placeholder.com/150?text=${dvd.name}`}
+                    />
+                  </div>
+                </div>
+                <p className="text-center text-white font-semibold text-sm md:text-base mt-2 drop-shadow-lg max-w-[120px] mx-auto">
+                  {dvd.name}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="text-center mt-16 text-white/70 text-sm z-10">
+        <p>© 2025 Vatrogasna Zajednica Općine Gornji Kneginec</p>
+      </div>
+    </div>
+  );
+};
+
 // Main App Component
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
