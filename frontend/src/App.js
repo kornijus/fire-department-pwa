@@ -3049,6 +3049,7 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
   const [vzoRole, setVzoRole] = useState(adminUser.vzo_role || null);
   const [isActive, setIsActive] = useState(adminUser.is_active);
   const [isOperational, setIsOperational] = useState(adminUser.is_operational || false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(adminUser.is_super_admin || false);
   const [open, setOpen] = useState(false);
 
   const handleUpdate = () => {
@@ -3057,7 +3058,8 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
       department,
       vzo_role: vzoRole,
       is_active: isActive,
-      is_operational: isOperational
+      is_operational: isOperational,
+      is_super_admin: isSuperAdmin
     };
     onUpdate(adminUser.id, updates);
     setOpen(false);
