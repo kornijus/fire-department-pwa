@@ -1090,7 +1090,7 @@ async def get_all_logos():
 @api_router.get("/dvd-logos/{department}")
 async def get_logo_by_department(department: str):
     """Get logo for specific department - public endpoint"""
-    logo = await db.dvd_logos.find_one({"department": department})
+    logo = await db.dvd_logos.find_one({"department": department}, {'_id': 0})
     if not logo:
         # Return default VZO logo if department logo not found
         return {"department": department, "logo_url": "https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png"}
