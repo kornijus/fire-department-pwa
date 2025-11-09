@@ -1311,21 +1311,21 @@ const Dashboard = () => {
 
       <div className="container mx-auto p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-11">
-            <TabsTrigger value="dashboard">Pregled</TabsTrigger>
-            <TabsTrigger value="map">Karta</TabsTrigger>
-            <TabsTrigger value="members">Članovi</TabsTrigger>
-            <TabsTrigger value="hydrants">Hidranti</TabsTrigger>
-            <TabsTrigger value="vehicles">Vozila</TabsTrigger>
-            <TabsTrigger value="equipment">Oprema</TabsTrigger>
-            <TabsTrigger value="interventions">🚒 Intervencije</TabsTrigger>
-            <TabsTrigger value="events">Događaji</TabsTrigger>
-            <TabsTrigger value="communication">Komunikacija</TabsTrigger>
+          <TabsList className="flex flex-wrap w-full gap-1 h-auto p-2">
+            <TabsTrigger value="dashboard" className="flex-1 min-w-[100px]">Pregled</TabsTrigger>
+            <TabsTrigger value="map" className="flex-1 min-w-[80px]">Karta</TabsTrigger>
+            <TabsTrigger value="members" className="flex-1 min-w-[90px]">Članovi</TabsTrigger>
+            <TabsTrigger value="hydrants" className="flex-1 min-w-[90px]">Hidranti</TabsTrigger>
+            <TabsTrigger value="vehicles" className="flex-1 min-w-[80px]">Vozila</TabsTrigger>
+            <TabsTrigger value="equipment" className="flex-1 min-w-[80px]">Oprema</TabsTrigger>
+            <TabsTrigger value="interventions" className="flex-1 min-w-[120px]">🚒 Intervencije</TabsTrigger>
+            <TabsTrigger value="events" className="flex-1 min-w-[100px]">Događaji</TabsTrigger>
+            <TabsTrigger value="communication" className="flex-1 min-w-[120px]">Komunikacija</TabsTrigger>
             {hasManagementPermission(user?.role, user?.vzo_role) && (
-              <TabsTrigger value="stations">DVD Stanice</TabsTrigger>
+              <TabsTrigger value="stations" className="flex-1 min-w-[110px]">DVD Stanice</TabsTrigger>
             )}
             {((user?.vzo_role && hasManagementPermission(user?.role, user?.vzo_role)) || user?.is_super_admin) && (
-              <TabsTrigger value="admin">Administracija</TabsTrigger>
+              <TabsTrigger value="admin" className="flex-1 min-w-[130px]">Administracija</TabsTrigger>
             )}
           </TabsList>
 
