@@ -1321,7 +1321,7 @@ const Dashboard = () => {
             {hasManagementPermission(user?.role, user?.vzo_role) && (
               <TabsTrigger value="stations">DVD Stanice</TabsTrigger>
             )}
-            {(user?.vzo_role && hasManagementPermission(user?.role, user?.vzo_role)) && (
+            {((user?.vzo_role && hasManagementPermission(user?.role, user?.vzo_role)) || user?.is_super_admin) && (
               <TabsTrigger value="admin">Administracija</TabsTrigger>
             )}
           </TabsList>
