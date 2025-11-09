@@ -1908,6 +1908,27 @@ const Dashboard = () => {
                             {item.serial_number && <p><strong>Serijski broj:</strong> {item.serial_number}</p>}
                             <p><strong>Društvo:</strong> {formatDepartmentName(item.department)}</p>
                             <p><strong>Lokacija:</strong> {item.location}</p>
+                            
+                            {item.storage_location && (
+                              <p><strong>📦 Točna lokacija:</strong> {item.storage_location.replace('_', ' ')}</p>
+                            )}
+                            
+                            {item.assigned_to_vehicle && (
+                              <>
+                                <p><strong>🚒 Dodijeljeno vozilu:</strong> {vehicles.find(v => v.id === item.assigned_to_vehicle)?.name || item.assigned_to_vehicle}</p>
+                                {item.vehicle_location && (
+                                  <p className="ml-4 text-sm"><strong>└ Pozicija:</strong> {item.vehicle_location.replace(/_/g, ' ')}</p>
+                                )}
+                                {item.container_number && (
+                                  <p className="ml-4 text-sm"><strong>└ Spremnik:</strong> {item.container_number} {item.container_name && `(${item.container_name})`}</p>
+                                )}
+                              </>
+                            )}
+                            
+                            {item.assigned_to_user && (
+                              <p><strong>👤 Dodijeljeno članu:</strong> {allUsers.find(u => u.id === item.assigned_to_user)?.full_name || item.assigned_to_user}</p>
+                            )}
+                            
                             <p><strong>Stanje:</strong> 
                               <Badge className={item.condition === 'good' ? 'bg-green-500 ml-2' : 'bg-orange-500 ml-2'}>
                                 {item.condition}
@@ -1915,12 +1936,6 @@ const Dashboard = () => {
                             </p>
                             {item.next_inspection_due && (
                               <p><strong>Sljedeća provjera:</strong> {new Date(item.next_inspection_due).toLocaleDateString()}</p>
-                            )}
-                            {item.assigned_to_user && (
-                              <p><strong>Dodijeljeno članu:</strong> {allUsers.find(u => u.id === item.assigned_to_user)?.full_name || item.assigned_to_user}</p>
-                            )}
-                            {item.assigned_to_vehicle && (
-                              <p><strong>Dodijeljeno vozilu:</strong> {vehicles.find(v => v.id === item.assigned_to_vehicle)?.name || item.assigned_to_vehicle}</p>
                             )}
                             {item.notes && <p><strong>Napomene:</strong> {item.notes}</p>}
                           </div>
