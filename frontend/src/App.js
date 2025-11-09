@@ -5544,11 +5544,11 @@ const LandingPage = () => {
               >
                 <div className="relative">
                   <div className={`absolute inset-0 bg-${dvd.color}-500 rounded-full blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-500`}></div>
-                  <div className="relative bg-white rounded-full p-3 shadow-2xl border-4 border-red-600 group-hover:border-yellow-400 transition-colors duration-300">
+                  <div className="relative bg-white rounded-full p-3 shadow-2xl border-4 border-red-600 group-hover:border-yellow-400 transition-colors duration-300 overflow-hidden">
                     <img 
                       src={logos[dvd.department] || `https://via.placeholder.com/150?text=${dvd.name}`}
                       alt={dvd.name}
-                      className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                      className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-full"
                       onError={(e) => e.target.src = `https://via.placeholder.com/150?text=${dvd.name}`}
                     />
                   </div>
