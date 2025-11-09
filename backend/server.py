@@ -664,9 +664,8 @@ class DVDStationUpdate(BaseModel):
 
 @api_router.put("/dvd-stations/{station_id}")
 async def update_dvd_station(station_id: str, station_update: DVDStationUpdate, current_user: User = Depends(get_current_user)):
-    # VZO can update any, DVD presidents can update their own
-    if not (has_vzo_full_access(current_user) or 
-            (current_user.role == "predsjednik" and not current_user.is_vzo_member)):
+    # VZO dužnosnici mogu ažurirati bilo koje, DVD dužnosnici samo svoje
+    if not (has_vzo_full_access(current_user) or has_dvd_management_access(current_user)):
         raise HTTPException(status_code=403, detail="Access denied")
     
     update_data = {k: v for k, v in station_update.dict().items() if v is not None}
