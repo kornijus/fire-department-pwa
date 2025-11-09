@@ -5506,11 +5506,11 @@ const LandingPage = () => {
           >
             <div className="relative">
               <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-              <div className="relative bg-white rounded-full p-4 shadow-2xl border-4 border-yellow-400">
+              <div className="relative bg-white rounded-full p-4 shadow-2xl border-4 border-yellow-400 overflow-hidden">
                 <img 
                   src={logos['VZO'] || 'https://customer-assets.emergentagent.com/job_fire-community/artifacts/mafhx4an_image.png'}
                   alt="VZO Gornji Kneginec"
-                  className="w-40 h-40 md:w-48 md:h-48 object-contain"
+                  className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full"
                   onError={(e) => e.target.src = 'https://via.placeholder.com/200?text=VZO'}
                 />
               </div>
