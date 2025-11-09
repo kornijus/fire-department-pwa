@@ -1151,9 +1151,9 @@ async def update_logo(
     logo_url: str,
     current_user: User = Depends(get_current_user)
 ):
-    """Update logo URL for a department - only VZO members"""
-    if not current_user.is_vzo_member:
-        raise HTTPException(status_code=403, detail="Only VZO members can update logos")
+    """Update logo URL for a department - only VZO officials"""
+    if not has_vzo_full_access(current_user):
+        raise HTTPException(status_code=403, detail="Only VZO officials can update logos")
     
     update_data = {
         "logo_url": logo_url,
