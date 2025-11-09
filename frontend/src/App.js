@@ -434,6 +434,7 @@ const Dashboard = () => {
   const [selectedChatType, setSelectedChatType] = useState('group_all'); // 'private', 'group_operational', ili 'group_all'
   const [unreadCount, setUnreadCount] = useState(0);
   const [dvdAreas, setDvdAreas] = useState(null); // GeoJSON data for DVD areas
+  const [availableDvds, setAvailableDvds] = useState([]); // List of DVDs actually in GeoJSON
   const watchId = useRef(null);
 
   useEffect(() => {
