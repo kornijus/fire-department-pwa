@@ -38,12 +38,15 @@ const publicAxios = axios.create({
 proj4.defs('EPSG:3765', '+proj=tmerc +lat_0=0 +lon_0=16.5 +k=0.9999 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 
 // Transform coordinates from EPSG:3765 to EPSG:4326 (WGS84)
+// Note: GeoJSON uses [lng, lat] format, Leaflet uses [lat, lng]
 const transformCoordinates = (coords) => {
   if (Array.isArray(coords[0])) {
     return coords.map(transformCoordinates);
   }
   const [x, y] = coords;
+  // Transform from HTRS96/TM to WGS84
   const [lng, lat] = proj4('EPSG:3765', 'EPSG:4326', [x, y]);
+  // GeoJSON uses [lng, lat] format
   return [lng, lat];
 };
 
