@@ -5038,6 +5038,157 @@ const App = () => {
   );
 };
 
+// Logo Management Panel Component
+const LogoManagementPanel = () => {
+  const [logos, setLogos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [editingDept, setEditingDept] = useState(null);
+  const [newLogoUrl, setNewLogoUrl] = useState('');
+
+  useEffect(() => {
+    fetchLogos();
+  }, []);
+
+  const fetchLogos = async () => {
+    try {
+      const response = await axios.get(`${API}/dvd-logos`);
+      setLogos(response.data);
+    } catch (error) {
+      console.error('Error fetching logos:', error);
+    }
+  };
+
+  const initializeLogos = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/init-logos`);
+      fetchLogos();
+      alert('✅ Grbovi uspješno inicijalizirani!');
+    } catch (error) {
+      console.error('Error initializing logos:', error);
+      alert('❌ Greška pri inicijalizaciji grbova');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateLogo = async (department) => {
+    if (!newLogoUrl) {
+      alert('Molimo unesite URL grba');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.put(`${API}/dvd-logos/${department}?logo_url=${encodeURIComponent(newLogoUrl)}`);
+      fetchLogos();
+      setEditingDept(null);
+      setNewLogoUrl('');
+      alert('✅ Grb uspješno ažuriran!');
+    } catch (error) {
+      console.error('Error updating logo:', error);
+      alert('❌ Greška pri ažuriranju grba');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deptNames = {
+    'DVD_Kneginec_Gornji': 'DVD Kneginec Gornji',
+    'DVD_Donji_Kneginec': 'DVD Donji Kneginec',
+    'DVD_Varazdinbreg': 'DVD Varaždinbreg',
+    'DVD_Luzan_Biskupecki': 'DVD Lužan Biškupečki',
+    'VZO': 'VZO Gornji Kneginec'
+  };
+
+  return (
+    <div className="space-y-4">
+      {logos.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-gray-600 mb-4">Grbovi još nisu inicijalizirani</p>
+          <Button onClick={initializeLogos} disabled={loading} className="bg-red-600">
+            {loading ? 'Inicijalizacija...' : '🎨 Inicijaliziraj Grbove'}
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-gray-600">Upravljajte grbovima svih DVD-ova</p>
+            <Button onClick={fetchLogos} variant="outline" size="sm">
+              Osvježi
+            </Button>
+          </div>
+
+          <div className="grid gap-4">
+            {logos.map((logo) => (
+              <div key={logo.department} className="p-4 border rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-4">
+                    <img 
+                      src={logo.logo_url} 
+                      alt={deptNames[logo.department]}
+                      className="w-20 h-20 object-contain border rounded"
+                      onError={(e) => e.target.src = 'https://via.placeholder.com/80?text=Logo'}
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg">{deptNames[logo.department]}</h3>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Zadnje ažurirano: {new Date(logo.updated_at).toLocaleString()}
+                      </p>
+                      {editingDept === logo.department ? (
+                        <div className="mt-2 space-y-2">
+                          <Input
+                            type="url"
+                            placeholder="Novi URL grba"
+                            value={newLogoUrl}
+                            onChange={(e) => setNewLogoUrl(e.target.value)}
+                            className="w-96"
+                          />
+                          <div className="flex space-x-2">
+                            <Button 
+                              size="sm" 
+                              onClick={() => updateLogo(logo.department)}
+                              disabled={loading}
+                            >
+                              💾 Spremi
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                setEditingDept(null);
+                                setNewLogoUrl('');
+                              }}
+                            >
+                              Odustani
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="mt-2"
+                          onClick={() => {
+                            setEditingDept(logo.department);
+                            setNewLogoUrl(logo.logo_url);
+                          }}
+                        >
+                          ✏️ Promijeni Grb
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 // Route Guards
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
