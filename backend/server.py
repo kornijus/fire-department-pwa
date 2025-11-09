@@ -374,7 +374,9 @@ async def get_active_locations(current_user: User = Depends(get_current_user)):
 async def register(user: UserCreate):
     # Check if user exists
     existing = await db.users.find_one({"$or": [{"username": user.username}, {"email": user.email}]})
+    print(f"🔍 Registration check - Username: {user.username}, Email: {user.email}, Existing: {existing}")
     if existing:
+        print(f"❌ User already exists: {existing}")
         raise HTTPException(status_code=400, detail="User already exists")
     
     # Validate VZO role uniqueness - samo 1 osoba po VZO funkciji
