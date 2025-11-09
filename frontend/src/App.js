@@ -208,14 +208,30 @@ const LoginPage = () => {
     email: '',
     full_name: '',
     department: departmentFromUrl || '',
-    role: '',
-    is_vzo_member: departmentFromUrl === 'VZO',
+    role: 'clan_bez_funkcije',
+    vzo_role: null,
     is_operational: false
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [availableVzoRoles, setAvailableVzoRoles] = useState([]);
   const { login, register } = useAuth();
   const navigate = useNavigate();
+
+  // Fetch available VZO roles
+  useEffect(() => {
+    const fetchVzoRoles = async () => {
+      try {
+        const response = await axios.get(`${API}/vzo-roles/available`);
+        setAvailableVzoRoles(response.data);
+      } catch (error) {
+        console.error('Error fetching VZO roles:', error);
+      }
+    };
+    if (!isLogin) {
+      fetchVzoRoles();
+    }
+  }, [isLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
