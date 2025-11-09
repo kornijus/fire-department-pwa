@@ -3938,12 +3938,30 @@ const AddEquipmentDialog = ({ onAdd, userDepartment, allUsers, vehicles }) => {
             </div>
 
             {assignmentType === 'location' && (
-              <Input
-                type="text"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="Npr. Skladište, Garaža, DVD Stanica..."
-              />
+              <div className="space-y-3">
+                <Input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="Npr. Garaža, DVD Stanica..."
+                />
+                <div>
+                  <label className="text-sm font-medium">Točna lokacija (spremište)</label>
+                  <Select value={formData.storage_location} onValueChange={(value) => setFormData({ ...formData, storage_location: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Odaberi spremište" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="spremiste_1">Spremište 1</SelectItem>
+                      <SelectItem value="spremiste_2">Spremište 2</SelectItem>
+                      <SelectItem value="spremiste_3">Spremište 3</SelectItem>
+                      <SelectItem value="ormar_1">Ormar 1</SelectItem>
+                      <SelectItem value="ormar_2">Ormar 2</SelectItem>
+                      <SelectItem value="ostalo">Ostalo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             )}
 
             {assignmentType === 'user' && (
@@ -3962,18 +3980,58 @@ const AddEquipmentDialog = ({ onAdd, userDepartment, allUsers, vehicles }) => {
             )}
 
             {assignmentType === 'vehicle' && (
-              <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Odaberi vozilo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vehicles.map(vehicle => (
-                    <SelectItem key={vehicle.id} value={vehicle.id}>
-                      {vehicle.name} ({vehicle.license_plate})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-3">
+                <Select value={formData.assigned_to_vehicle} onValueChange={(value) => setFormData({ ...formData, assigned_to_vehicle: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Odaberi vozilo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vehicles.map(vehicle => (
+                      <SelectItem key={vehicle.id} value={vehicle.id}>
+                        {vehicle.name} ({vehicle.license_plate})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <div>
+                  <label className="text-sm font-medium">Lokacija na vozilu</label>
+                  <Select value={formData.vehicle_location} onValueChange={(value) => setFormData({ ...formData, vehicle_location: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Gdje na vozilu?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="momcadska_kabina">Momčadska kabina</SelectItem>
+                      <SelectItem value="teretni_dio">Teretni dio</SelectItem>
+                      <SelectItem value="na_krovu">Na krovu vozila</SelectItem>
+                      <SelectItem value="prednji_spremnik">Prednji spremnik</SelectItem>
+                      <SelectItem value="straznji_spremnik">Stražnji spremnik</SelectItem>
+                      <SelectItem value="bocni_spremnik">Bočni spremnik</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-sm font-medium">Broj spremnika</label>
+                    <Input
+                      type="text"
+                      value={formData.container_number}
+                      onChange={(e) => setFormData({ ...formData, container_number: e.target.value })}
+                      placeholder="Npr. S1, S2, B1..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Naziv spremnika</label>
+                    <Input
+                      type="text"
+                      value={formData.container_name}
+                      onChange={(e) => setFormData({ ...formData, container_name: e.target.value })}
+                      placeholder="Npr. Glavni alat..."
+                    />
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
