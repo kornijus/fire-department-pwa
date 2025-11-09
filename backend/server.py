@@ -594,9 +594,9 @@ class Intervention(BaseModel):
 class UserUpdate(BaseModel):
     role: Optional[str] = None
     department: Optional[str] = None
+    vzo_role: Optional[str] = None  # NEW: VZO funkcija
     is_active: Optional[bool] = None
-    is_vzo_member: Optional[bool] = None
-    is_operational: Optional[bool] = None  # NEW: Da li je član operativac
+    is_operational: Optional[bool] = None
     phone: Optional[str] = None
     address: Optional[str] = None
     medical_exam_date: Optional[datetime] = None
