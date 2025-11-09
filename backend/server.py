@@ -622,6 +622,7 @@ class UserUpdate(BaseModel):
     vzo_role: Optional[str] = None  # NEW: VZO funkcija
     is_active: Optional[bool] = None
     is_operational: Optional[bool] = None
+    is_super_admin: Optional[bool] = None  # NEW: Super admin
     phone: Optional[str] = None
     address: Optional[str] = None
     medical_exam_date: Optional[datetime] = None
