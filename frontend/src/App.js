@@ -3175,6 +3175,18 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
             </label>
           </div>
 
+          {/* Super Admin */}
+          <div className="flex items-center space-x-2 bg-purple-50 p-2 rounded">
+            <Checkbox
+              id="is_super_admin_edit"
+              checked={isSuperAdmin}
+              onCheckedChange={setIsSuperAdmin}
+            />
+            <label htmlFor="is_super_admin_edit" className="text-sm font-medium text-purple-700">
+              👑 Super Admin (Puna kontrola)
+            </label>
+          </div>
+
           <div className="flex space-x-2">
             <Button onClick={handleUpdate} className="flex-1">
               Spremi promjene
