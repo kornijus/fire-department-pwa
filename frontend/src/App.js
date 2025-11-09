@@ -871,7 +871,7 @@ const Dashboard = () => {
 
   // NEW: Handle map click for adding hydrants
   const handleMapClick = (latlng) => {
-    if (isAddingHydrant && hasManagementPermission(user?.role, user?.is_vzo_member)) {
+    if (isAddingHydrant && hasManagementPermission(user?.role, user?.vzo_role)) {
       const confirmed = window.confirm(
         `Dodati hidrant na poziciju:\nŠirina: ${latlng.lat.toFixed(6)}\nDužina: ${latlng.lng.toFixed(6)}?`
       );
@@ -883,7 +883,7 @@ const Dashboard = () => {
       setIsAddingHydrant(false);
     }
     
-    if (isAddingDvdStation && hasManagementPermission(user?.role, user?.is_vzo_member)) {
+    if (isAddingDvdStation && hasManagementPermission(user?.role, user?.vzo_role)) {
       const confirmed = window.confirm(
         `Postaviti DVD stanicu na poziciju:\nŠirina: ${latlng.lat.toFixed(6)}\nDužina: ${latlng.lng.toFixed(6)}?`
       );
@@ -1318,10 +1318,10 @@ const Dashboard = () => {
             <TabsTrigger value="interventions">🚒 Intervencije</TabsTrigger>
             <TabsTrigger value="events">Događaji</TabsTrigger>
             <TabsTrigger value="communication">Komunikacija</TabsTrigger>
-            {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+            {hasManagementPermission(user?.role, user?.vzo_role) && (
               <TabsTrigger value="stations">DVD Stanice</TabsTrigger>
             )}
-            {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
+            {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.vzo_role)) && (
               <TabsTrigger value="admin">Administracija</TabsTrigger>
             )}
           </TabsList>
@@ -1550,7 +1550,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-center">
                   <CardTitle>Live Mapa Hidrantske Mreže</CardTitle>
                   <div className="flex items-center space-x-4">
-                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <>
                         <Button
                           onClick={() => {
@@ -1748,7 +1748,7 @@ const Dashboard = () => {
                                 ))}
                               </div>
                             )}
-                            {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                            {hasManagementPermission(user?.role, user?.vzo_role) && (
                               <div className="flex space-x-2 mt-2">
                                 <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
                                 <Button 
@@ -1839,7 +1839,7 @@ const Dashboard = () => {
                     <div className="flex justify-between items-center">
                       <CardTitle>Svi Članovi Zajednice</CardTitle>
                       <div className="flex space-x-2">
-                        {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                        {hasManagementPermission(user?.role, user?.vzo_role) && (
                           <Button 
                             onClick={() => {
                               const dept = user.is_vzo_member ? 'VZO' : user.department;
@@ -1906,7 +1906,7 @@ const Dashboard = () => {
                                   </div>
                                 </div>
                                 
-                                {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                                {hasManagementPermission(user?.role, user?.vzo_role) && (
                                   <div className="flex flex-col space-y-2">
                                     <MemberDetailDialog member={member} onUpdate={updateUser} />
                                     <Button 
@@ -1939,7 +1939,7 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Hidrantska Mreža</CardTitle>
-                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                  {hasManagementPermission(user?.role, user?.vzo_role) && (
                     <AddHydrantDialog onAdd={addHydrant} />
                   )}
                 </div>
@@ -1977,7 +1977,7 @@ const Dashboard = () => {
                             </div>
                           )}
                         </div>
-                        {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                        {hasManagementPermission(user?.role, user?.vzo_role) && (
                           <div className="flex space-x-2">
                             <HydrantUpdateDialog hydrant={hydrant} onUpdate={updateHydrant} />
                             <Button 
@@ -2003,7 +2003,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-center">
                   <CardTitle>Vozila</CardTitle>
                   <div className="flex space-x-2">
-                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <Button 
                         onClick={() => {
                           const dept = user.is_vzo_member ? 'VZO' : user.department;
@@ -2017,7 +2017,7 @@ const Dashboard = () => {
                     <Button onClick={fetchVehicles} variant="outline">
                       Osvježi popis
                     </Button>
-                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <AddVehicleDialog onAdd={addVehicle} userDepartment={user?.department} />
                     )}
                   </div>
@@ -2050,7 +2050,7 @@ const Dashboard = () => {
                             )}
                             {vehicle.notes && <p><strong>Napomene:</strong> {vehicle.notes}</p>}
                           </div>
-                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                          {hasManagementPermission(user?.role, user?.vzo_role) && (
                             <div className="flex space-x-2">
                               <VehicleUpdateDialog vehicle={vehicle} onUpdate={updateVehicle} />
                               <Button 
@@ -2077,7 +2077,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-center">
                   <CardTitle>Oprema</CardTitle>
                   <div className="flex space-x-2">
-                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <Button 
                         onClick={() => {
                           const dept = user.is_vzo_member ? 'VZO' : user.department;
@@ -2091,7 +2091,7 @@ const Dashboard = () => {
                     <Button onClick={fetchEquipment} variant="outline">
                       Osvježi popis
                     </Button>
-                    {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                    {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <AddEquipmentDialog 
                         onAdd={addEquipment} 
                         userDepartment={user?.department}
@@ -2147,7 +2147,7 @@ const Dashboard = () => {
                             )}
                             {item.notes && <p><strong>Napomene:</strong> {item.notes}</p>}
                           </div>
-                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                          {hasManagementPermission(user?.role, user?.vzo_role) && (
                             <div className="flex space-x-2">
                               <EquipmentUpdateDialog 
                                 equipment={item} 
@@ -2178,7 +2178,7 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Događaji (Školovanja, Osiguranja, Provjere)</CardTitle>
-                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                  {hasManagementPermission(user?.role, user?.vzo_role) && (
                     <AddEventDialog onAdd={addEvent} userDepartment={user?.department} allUsers={allUsers} />
                   )}
                 </div>
@@ -2212,7 +2212,7 @@ const Dashboard = () => {
                               </div>
                             )}
                           </div>
-                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                          {hasManagementPermission(user?.role, user?.vzo_role) && (
                             <div className="flex space-x-2">
                               <EventUpdateDialog event={event} onUpdate={updateEvent} allUsers={allUsers} />
                               <Button 
@@ -2389,7 +2389,7 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>📢 Obavijesti i Uzbune</CardTitle>
-                  {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                  {hasManagementPermission(user?.role, user?.vzo_role) && (
                     <SendMessageDialog onSend={sendMessage} />
                   )}
                 </div>
@@ -2481,7 +2481,7 @@ const Dashboard = () => {
                               Evidentirao: {intervention.created_by_name}
                             </p>
                           </div>
-                          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+                          {hasManagementPermission(user?.role, user?.vzo_role) && (
                             <div className="flex space-x-2">
                               <InterventionUpdateDialog 
                                 intervention={intervention} 
@@ -2566,7 +2566,7 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
-          {hasManagementPermission(user?.role, user?.is_vzo_member) && (
+          {hasManagementPermission(user?.role, user?.vzo_role) && (
             <TabsContent value="stations">
               <Card>
                 <CardHeader>
@@ -2630,7 +2630,7 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.is_vzo_member)) && (
+          {(user?.is_vzo_member && hasManagementPermission(user?.role, user?.vzo_role)) && (
             <TabsContent value="admin">
               <Tabs defaultValue="users" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
