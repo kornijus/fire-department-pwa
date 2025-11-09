@@ -1179,7 +1179,7 @@ const Dashboard = () => {
             </div>
             <Button variant="outline" size="sm" onClick={() => {
               logout();
-              navigate('/');
+              window.location.href = '/';
             }}>
               Odjava
             </Button>
