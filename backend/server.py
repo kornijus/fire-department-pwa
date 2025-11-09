@@ -251,12 +251,20 @@ VZO_ROLES = [
 ]
 
 # NEW: VZO and DVD permission system
+def is_super_admin(user: User) -> bool:
+    """Super admin - siva eminencija, može sve!"""
+    return user.is_super_admin == True
+
 def has_vzo_full_access(user: User) -> bool:
     """VZO dužnosnici imaju pristup svim DVD-ovima"""
+    if is_super_admin(user):
+        return True
     return user.vzo_role is not None and user.vzo_role in VZO_ROLES
 
 def has_dvd_management_access(user: User) -> bool:
     """DVD dužnosnici (predsjednik, tajnik, zapovjednik, zamjenik) - pristup samo svom DVD-u"""
+    if is_super_admin(user):
+        return True
     dvd_management_roles = ["predsjednik", "tajnik", "zapovjednik", "zamjenik_zapovjednika"]
     return user.role in dvd_management_roles
 
