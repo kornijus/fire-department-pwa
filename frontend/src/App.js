@@ -2684,6 +2684,13 @@ const Dashboard = () => {
                                         {adminUser.is_active ? 'Aktivan' : 'Neaktivan'}
                                       </Badge>
                                     </p>
+                                    {adminUser.is_super_admin && (
+                                      <p><strong>Privilegije:</strong> 
+                                        <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-2">
+                                          👑 Super Admin
+                                        </Badge>
+                                      </p>
+                                    )}
                                     <p><strong>Registriran:</strong> {new Date(adminUser.created_at).toLocaleDateString()}</p>
                                   </div>
                                   <UserUpdateDialog user={adminUser} onUpdate={updateUser} />
