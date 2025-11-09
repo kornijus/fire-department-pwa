@@ -475,6 +475,14 @@ class Equipment(BaseModel):
     department: str
     location: str  # vehicle_id or station location
     
+    # NEW: Detailed storage location (for equipment in storage/dom)
+    storage_location: Optional[str] = None  # spremiste_1, spremiste_2, etc.
+    
+    # NEW: Vehicle storage details (for equipment on vehicles)
+    vehicle_location: Optional[str] = None  # momcadska_kabina, teretni_dio, na_krovu
+    container_number: Optional[str] = None  # Number of container/compartment
+    container_name: Optional[str] = None  # Name/description of container
+    
     # Maintenance
     last_inspection_date: Optional[datetime] = None
     next_inspection_due: Optional[datetime] = None
