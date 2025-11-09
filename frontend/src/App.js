@@ -34,6 +34,28 @@ const publicAxios = axios.create({
   baseURL: BACKEND_URL
 });
 
+// Define EPSG:3765 (HTRS96/TM - Croatian coordinate system)
+proj4.defs('EPSG:3765', '+proj=tmerc +lat_0=0 +lon_0=16.5 +k=0.9999 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+
+// Transform coordinates from EPSG:3765 to EPSG:4326 (WGS84)
+const transformCoordinates = (coords) => {
+  if (Array.isArray(coords[0])) {
+    return coords.map(transformCoordinates);
+  }
+  const [x, y] = coords;
+  const [lng, lat] = proj4('EPSG:3765', 'EPSG:4326', [x, y]);
+  return [lng, lat];
+};
+
+// DVD colors for different areas
+const DVD_COLORS = {
+  'DVD Lužan Biškupečki': '#ef4444',      // Red
+  'DVD Gornji Kneginec': '#3b82f6',       // Blue
+  'DVD Donji Kneginec': '#22c55e',        // Green
+  'DVD Halić': '#f59e0b',                 // Orange
+  'DVD Varaždinbreg': '#a855f7'           // Purple
+};
+
 // Custom icons
 // Zelena točka za online korisnike
 const activeUserIcon = new L.Icon({
