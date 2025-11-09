@@ -427,6 +427,23 @@ async def login(user_login: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.post("/make-me-super-admin")
+async def make_me_super_admin(current_user: User = Depends(get_current_user)):
+    """Endpoint za postaviti sebe kao super admin - samo za developere!"""
+    # Omogući samo određenim korisnicima (email ili username)
+    allowed_users = ["Medo", "geric.kornelio@live.com"]
+    
+    if current_user.username not in allowed_users and current_user.email not in allowed_users:
+        raise HTTPException(status_code=403, detail="Access denied - not authorized for super admin")
+    
+    # Postavi current usera kao super admin
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"is_super_admin": True}}
+    )
+    
+    return {"message": "✅ Super admin status activated! You are now the Siva Eminencija! 🔑", "user_id": current_user.id}
+
 @api_router.get("/vzo-roles/available")
 async def get_available_vzo_roles():
     """Get list of available VZO roles (not yet assigned)"""
