@@ -579,6 +579,30 @@ const Dashboard = () => {
     }
   };
 
+  const fetchDvdAreas = async () => {
+    try {
+      const response = await fetch('/dvd-podrucja.geojson');
+      const geojson = await response.json();
+      
+      // Transform coordinates from EPSG:3765 to EPSG:4326
+      const transformedGeojson = {
+        ...geojson,
+        features: geojson.features.map(feature => ({
+          ...feature,
+          geometry: {
+            ...feature.geometry,
+            coordinates: transformCoordinates(feature.geometry.coordinates)
+          }
+        }))
+      };
+      
+      setDvdAreas(transformedGeojson);
+      console.log('✅ DVD područja učitana i transformirana:', transformedGeojson);
+    } catch (error) {
+      console.error('Error loading DVD areas:', error);
+    }
+  };
+
   const startLocationTracking = () => {
     console.log('🚀 Pokretanje GPS praćenja...');
     
