@@ -846,16 +846,16 @@ const Dashboard = () => {
   };
 
   // Helper function to check if user has management permissions
-  const hasManagementPermission = (userRole, isVzoMember) => {
-    // Ako je VZO član, automatski ima pristup
-    if (isVzoMember) {
+  const hasManagementPermission = (userRole, vzoRole) => {
+    // VZO dužnosnici imaju puni pristup
+    if (vzoRole) {
       return true;
     }
     
-    // DVD članovi s management rolama
+    // DVD dužnosnici (predsjednik, tajnik, zapovjednik, zamjenik)
     const managementRoles = [
-      "zapovjednik", "zamjenik_zapovjednika", "zapovjednistvo", "predsjednik",
-      "tajnik", "spremistar", "blagajnik", "upravni_odbor", "nadzorni_odbor"
+      "predsjednik", "tajnik", "zapovjednik", "zamjenik_zapovjednika",
+      "zapovjednistvo", "spremistar", "blagajnik", "upravni_odbor", "nadzorni_odbor"
     ];
     return managementRoles.includes(userRole);
   };
