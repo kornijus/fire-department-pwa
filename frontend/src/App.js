@@ -1572,22 +1572,24 @@ const Dashboard = () => {
                         style={(feature) => {
                           const dvdName = feature.properties['vlastita oznaka naziv'];
                           const color = getDvdColor(dvdName);
+                          console.log('🎨 DVD styling:', dvdName, '→', color);
                           return {
                             fillColor: color,
-                            fillOpacity: 0.25,
+                            fillOpacity: 0.3,
                             color: color,
-                            weight: 2.5,
-                            opacity: 0.9
+                            weight: 1.5,
+                            opacity: 0.8
                           };
                         }}
                         onEachFeature={(feature, layer) => {
                           const dvdName = feature.properties['vlastita oznaka naziv'];
+                          const displayName = getDvdDisplayName(dvdName);
                           const area = (feature.properties['m²'] / 1000000).toFixed(2); // Convert to km²
                           const color = getDvdColor(dvdName);
                           
                           layer.bindPopup(`
                             <div class="p-2">
-                              <h3 class="font-bold text-lg">${dvdName}</h3>
+                              <h3 class="font-bold text-lg">${displayName}</h3>
                               <p><strong>Površina:</strong> ${area} km²</p>
                               <p><strong>Opseg:</strong> ${(feature.properties['m'] / 1000).toFixed(2)} km</p>
                             </div>
@@ -1599,7 +1601,7 @@ const Dashboard = () => {
                             layer.setStyle({
                               fillColor: color,
                               fillOpacity: 0.6,
-                              weight: 4,
+                              weight: 3,
                               opacity: 1,
                               color: '#ffffff'
                             });
@@ -1612,9 +1614,9 @@ const Dashboard = () => {
                             const layer = e.target;
                             layer.setStyle({
                               fillColor: color,
-                              fillOpacity: 0.25,
-                              weight: 2.5,
-                              opacity: 0.9,
+                              fillOpacity: 0.3,
+                              weight: 1.5,
+                              opacity: 0.8,
                               color: color
                             });
                           });
