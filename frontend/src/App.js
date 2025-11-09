@@ -2655,13 +2655,15 @@ const Dashboard = () => {
                                     <p><strong>Ime:</strong> {adminUser.full_name}</p>
                                     <p><strong>Korisničko ime:</strong> {adminUser.username}</p>
                                     <p><strong>Email:</strong> {adminUser.email}</p>
-                                    <p><strong>Društvo:</strong> {formatDepartmentName(adminUser.department)}</p>
-                                    <p><strong>Uloga:</strong> {formatRoleName(adminUser.role)}</p>
-                                    <p><strong>VZO član:</strong> 
-                                      <Badge className={adminUser.is_vzo_member ? 'bg-yellow-500 ml-2' : 'bg-gray-500 ml-2'}>
-                                        {adminUser.is_vzo_member ? 'Da' : 'Ne'}
-                                      </Badge>
-                                    </p>
+                                    <p><strong>Matično društvo:</strong> {formatDepartmentName(adminUser.department)}</p>
+                                    <p><strong>DVD funkcija:</strong> {formatRoleName(adminUser.role)}</p>
+                                    {adminUser.vzo_role && (
+                                      <p><strong>VZO funkcija:</strong> 
+                                        <Badge className="bg-yellow-500 ml-2">
+                                          {formatRoleName(adminUser.vzo_role)}
+                                        </Badge>
+                                      </p>
+                                    )}
                                     <p><strong>Operativni član:</strong> 
                                       <Badge className={adminUser.is_operational ? 'bg-red-600 ml-2' : 'bg-gray-500 ml-2'}>
                                         {adminUser.is_operational ? '🚒 Da' : 'Ne'}
