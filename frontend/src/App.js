@@ -3087,46 +3087,31 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
           <DialogTitle>Uređivanje korisnika: {adminUser.full_name}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="vzo_member_edit"
-              checked={isVzoMember}
-              onCheckedChange={(checked) => {
-                setIsVzoMember(checked);
-                setDepartment(checked ? 'VZO' : '');
-                setRole('');
-              }}
-            />
-            <label htmlFor="vzo_member_edit" className="text-sm font-medium">
-              VZO član
-            </label>
+          {/* Matični DVD */}
+          <div>
+            <label className="text-sm font-medium">Matično društvo</label>
+            <Select value={department} onValueChange={setDepartment}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {!isVzoMember && (
-            <div>
-              <label className="text-sm font-medium">Društvo</label>
-              <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
-                  <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
-                  <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
-                  <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
+          {/* DVD funkcija */}
           <div>
-            <label className="text-sm font-medium">Uloga</label>
+            <label className="text-sm font-medium">Funkcija u DVD-u</label>
             <Select value={role} onValueChange={setRole}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {getAvailableRoles().map((roleOption) => (
+                {getDvdRoles().map((roleOption) => (
                   <SelectItem key={roleOption.value} value={roleOption.value}>
                     {roleOption.label}
                   </SelectItem>
@@ -3135,6 +3120,24 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
             </Select>
           </div>
 
+          {/* VZO funkcija */}
+          <div>
+            <label className="text-sm font-medium">VZO funkcija</label>
+            <Select value={vzoRole || 'none'} onValueChange={(value) => setVzoRole(value === 'none' ? null : value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {getVzoRoles().map((roleOption) => (
+                  <SelectItem key={roleOption.value || 'none'} value={roleOption.value || 'none'}>
+                    {roleOption.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Active status */}
           <div className="flex items-center space-x-2">
             <Checkbox
               id="is_active_edit"
@@ -3146,6 +3149,7 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
             </label>
           </div>
 
+          {/* Operational member */}
           <div className="flex items-center space-x-2">
             <Checkbox
               id="is_operational_edit"
