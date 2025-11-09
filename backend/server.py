@@ -417,18 +417,18 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 @api_router.get("/users")
 async def get_users(current_user: User = Depends(get_current_user)):
-    # VZO members with full access can see all users
+    # VZO dužnosnici vide sve članove iz svih DVD-ova
     if has_vzo_full_access(current_user):
         users = await db.users.find().to_list(1000)
         return [User(**user).dict() for user in users]
     
-    # DVD management can see only their department
+    # DVD dužnosnici (predsjednik, tajnik, zapovjednik, zamjenik) vide samo svoj DVD
     elif has_dvd_management_access(current_user):
         users = await db.users.find({"department": current_user.department}).to_list(1000)
         return [User(**user).dict() for user in users]
     
     else:
-        raise HTTPException(status_code=403, detail="Access denied")
+        raise HTTPException(status_code=403, detail="Pristup odbijen - samo dužnosnici imaju pristup")
 
 # NEW: DVD Station model
 class DVDStation(BaseModel):
