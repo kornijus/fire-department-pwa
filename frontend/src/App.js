@@ -5404,12 +5404,15 @@ const LandingPage = () => {
 
   const fetchLogos = async () => {
     try {
-      const response = await publicAxios.get('/api/dvd-logos');
+      // Fallback to static JSON file due to ingress routing issues with /api/dvd-logos
+      const response = await fetch('/dvd-logos.json');
+      const data = await response.json();
       const logosMap = {};
-      response.data.forEach(logo => {
+      data.forEach(logo => {
         logosMap[logo.department] = logo.logo_url;
       });
       setLogos(logosMap);
+      console.log('✅ Logos loaded from static file:', logosMap);
     } catch (error) {
       console.error('Error fetching logos:', error);
     } finally {
