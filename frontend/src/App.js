@@ -5195,7 +5195,7 @@ const LandingPage = () => {
 
   const fetchLogos = async () => {
     try {
-      const response = await axios.get(`${API}/dvd-logos`);
+      const response = await axios.get('/api/dvd-logos');
       const logosMap = {};
       response.data.forEach(logo => {
         logosMap[logo.department] = logo.logo_url;
