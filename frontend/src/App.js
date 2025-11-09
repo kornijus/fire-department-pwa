@@ -4285,6 +4285,45 @@ const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
                   ))}
                 </SelectContent>
               </Select>
+              
+              <div>
+                <label className="text-sm font-medium">Lokacija na vozilu</label>
+                <Select value={formData.vehicle_location} onValueChange={(value) => setFormData({ ...formData, vehicle_location: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Gdje na vozilu?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="momcadska_kabina">Momčadska kabina</SelectItem>
+                    <SelectItem value="teretni_dio">Teretni dio</SelectItem>
+                    <SelectItem value="na_krovu">Na krovu vozila</SelectItem>
+                    <SelectItem value="prednji_spremnik">Prednji spremnik</SelectItem>
+                    <SelectItem value="straznji_spremnik">Stražnji spremnik</SelectItem>
+                    <SelectItem value="bocni_spremnik">Bočni spremnik</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Broj spremnika</label>
+                  <Input
+                    type="text"
+                    value={formData.container_number}
+                    onChange={(e) => setFormData({ ...formData, container_number: e.target.value })}
+                    placeholder="Npr. S1, S2, B1..."
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Naziv spremnika</label>
+                  <Input
+                    type="text"
+                    value={formData.container_name}
+                    onChange={(e) => setFormData({ ...formData, container_name: e.target.value })}
+                    placeholder="Npr. Glavni alat..."
+                  />
+                </div>
+              </div>
+            </div>
             )}
           </div>
 
