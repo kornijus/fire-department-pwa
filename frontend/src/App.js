@@ -5504,7 +5504,7 @@ const ProtectedRoute = ({ children }) => {
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  return !isAuthenticated ? children : <Navigate to="/" />;
+  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
 };
 
 export default App;
