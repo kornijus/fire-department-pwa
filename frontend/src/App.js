@@ -606,8 +606,14 @@ const Dashboard = () => {
         }))
       };
       
+      // Extract available DVD names from GeoJSON
+      const dvdNames = transformedGeojson.features.map(
+        feature => feature.properties['vlastita oznaka naziv']
+      );
+      setAvailableDvds(dvdNames);
       setDvdAreas(transformedGeojson);
       console.log('✅ DVD područja učitana i transformirana:', transformedGeojson);
+      console.log('✅ Dostupni DVD-ovi:', dvdNames);
     } catch (error) {
       console.error('Error loading DVD areas:', error);
     }
