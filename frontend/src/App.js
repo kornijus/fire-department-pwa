@@ -555,6 +555,7 @@ const Dashboard = () => {
       fetchMessages(); // Fetch messages
       fetchInterventions(); // Fetch interventions
       fetchUnreadCount(); // Fetch unread chat count
+      fetchDvdAreas(); // Load DVD areas
       
       // Start polling for active locations every 3 seconds
       const locationInterval = setInterval(fetchActiveLocations, 3000);
