@@ -313,19 +313,80 @@ const LoginPage = () => {
                     required
                   />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="vzo_member"
-                    checked={formData.is_vzo_member}
-                    onCheckedChange={(checked) => {
-                      setFormData({ ...formData, is_vzo_member: checked, role: '', department: checked ? 'VZO' : '' });
-                    }}
-                  />
-                  <label htmlFor="vzo_member" className="text-sm font-medium">
-                    Član VZO-a
-                  </label>
+                {/* Matični DVD - SVI članovi moraju biti dio nekog DVD-a */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Matično društvo</label>
+                  <Select 
+                    value={formData.department}
+                    onValueChange={(value) => setFormData({ ...formData, department: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Odaberite matično DVD" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
+                      <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
+                      <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
+                      <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
+                {/* DVD Uloga */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Funkcija u DVD-u</label>
+                  <Select 
+                    value={formData.role}
+                    onValueChange={(value) => setFormData({ ...formData, role: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Odaberite funkciju" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="clan_bez_funkcije">Član bez funkcije</SelectItem>
+                      <SelectItem value="predsjednik">Predsjednik</SelectItem>
+                      <SelectItem value="tajnik">Tajnik</SelectItem>
+                      <SelectItem value="zapovjednik">Zapovjednik</SelectItem>
+                      <SelectItem value="zamjenik_zapovjednika">Zamjenik zapovjednika</SelectItem>
+                      <SelectItem value="spremistar">Spremistar</SelectItem>
+                      <SelectItem value="blagajnik">Blagajnik</SelectItem>
+                      <SelectItem value="upravni_odbor">Upravni odbor</SelectItem>
+                      <SelectItem value="nadzorni_odbor">Nadzorni odbor</SelectItem>
+                      <SelectItem value="zapovjednistvo">Zapovjedništvo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* VZO Funkcija (opciono) */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">VZO funkcija (opciono)</label>
+                  <Select 
+                    value={formData.vzo_role || 'none'}
+                    onValueChange={(value) => setFormData({ ...formData, vzo_role: value === 'none' ? null : value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Bez VZO funkcije" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Bez VZO funkcije</SelectItem>
+                      {availableVzoRoles.map((roleInfo) => (
+                        <SelectItem 
+                          key={roleInfo.role} 
+                          value={roleInfo.role}
+                          disabled={!roleInfo.available}
+                        >
+                          {roleInfo.role.replace(/_/g, ' ').replace('vzo', 'VZO').replace(/\b\w/g, l => l.toUpperCase())}
+                          {!roleInfo.available && ` (zauzeto - ${roleInfo.occupied_by})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    *Samo jedna osoba može biti na svakoj VZO funkciji
+                  </p>
+                </div>
+                
+                {/* Operativni član */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="operational_member"
@@ -341,54 +402,6 @@ const LoginPage = () => {
                 <p className="text-xs text-gray-600 -mt-2">
                   *Operativni članovi sudjeluju u intervencijama i imaju pristup operativnom chatu
                 </p>
-                
-                {!formData.is_vzo_member && (
-                  <div>
-                    <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Vatrogasno društvo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="DVD_Kneginec_Gornji">DVD Kneginec Gornji</SelectItem>
-                        <SelectItem value="DVD_Donji_Kneginec">DVD Donji Kneginec</SelectItem>
-                        <SelectItem value="DVD_Varazdinbreg">DVD Varaždinbreg</SelectItem>
-                        <SelectItem value="DVD_Luzan_Biskupecki">DVD Lužan Biškupečki</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-                
-                <div>
-                  <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Uloga" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {formData.is_vzo_member ? (
-                        <>
-                          <SelectItem value="predsjednik_vzo">Predsjednik VZO-a</SelectItem>
-                          <SelectItem value="zamjenik_predsjednika_vzo">Zamjenik predsjednika VZO-a</SelectItem>
-                          <SelectItem value="tajnik_vzo">Tajnik VZO-a</SelectItem>
-                          <SelectItem value="zapovjednik_vzo">Zapovjednik VZO-a</SelectItem>
-                          <SelectItem value="zamjenik_zapovjednika_vzo">Zamjenik zapovjednika VZO-a</SelectItem>
-                        </>
-                      ) : (
-                        <>
-                          <SelectItem value="clan_bez_funkcije">Član bez funkcije</SelectItem>
-                          <SelectItem value="predsjednik">Predsjednik</SelectItem>
-                          <SelectItem value="tajnik">Tajnik</SelectItem>
-                          <SelectItem value="zapovjednik">Zapovjednik</SelectItem>
-                          <SelectItem value="zamjenik_zapovjednika">Zamjenik zapovjednika</SelectItem>
-                          <SelectItem value="spremistar">Spremistar</SelectItem>
-                          <SelectItem value="blagajnik">Blagajnik</SelectItem>
-                          <SelectItem value="upravni_odbor">Upravni odbor</SelectItem>
-                          <SelectItem value="nadzorni_odbor">Nadzorni odbor</SelectItem>
-                          <SelectItem value="zapovjednistvo">Zapovjedništvo</SelectItem>
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
               </>
             )}
             
