@@ -377,6 +377,16 @@ async def register(user: UserCreate):
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
     
+    # Validate VZO role uniqueness - samo 1 osoba po VZO funkciji
+    if user.vzo_role and user.vzo_role in VZO_ROLES:
+        existing_vzo_role = await db.users.find_one({"vzo_role": user.vzo_role})
+        if existing_vzo_role:
+            role_name = user.vzo_role.replace('_', ' ').title()
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Funkcija '{role_name}' je već zauzeta. Samo jedna osoba može imati ovu VZO funkciju."
+            )
+    
     # Hash password
     hashed_password = get_password_hash(user.password)
     
