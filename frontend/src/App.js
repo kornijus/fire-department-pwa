@@ -1177,7 +1177,10 @@ const Dashboard = () => {
                 <Badge className="bg-yellow-500 text-black text-xs mt-1">VZO</Badge>
               )}
             </div>
-            <Button variant="outline" size="sm" onClick={logout}>
+            <Button variant="outline" size="sm" onClick={() => {
+              logout();
+              navigate('/');
+            }}>
               Odjava
             </Button>
           </div>
