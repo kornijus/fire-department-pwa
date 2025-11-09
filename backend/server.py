@@ -720,6 +720,10 @@ class EquipmentUpdate(BaseModel):
     serial_number: Optional[str] = None
     department: Optional[str] = None
     location: Optional[str] = None
+    storage_location: Optional[str] = None
+    vehicle_location: Optional[str] = None
+    container_number: Optional[str] = None
+    container_name: Optional[str] = None
     last_inspection_date: Optional[datetime] = None
     next_inspection_due: Optional[datetime] = None
     condition: Optional[str] = None
