@@ -4120,6 +4120,10 @@ const EquipmentUpdateDialog = ({ equipment, onUpdate, allUsers, vehicles }) => {
       assigned_to_user: assignmentType === 'user' ? formData.assigned_to_user : null,
       assigned_to_vehicle: assignmentType === 'vehicle' ? formData.assigned_to_vehicle : null,
       location: assignmentType === 'location' ? formData.location : (assignmentType === 'user' ? 'Dodijeljeno članu' : 'Dodijeljeno vozilu'),
+      storage_location: assignmentType === 'location' ? formData.storage_location : null,
+      vehicle_location: assignmentType === 'vehicle' ? formData.vehicle_location : null,
+      container_number: assignmentType === 'vehicle' ? formData.container_number : null,
+      container_name: assignmentType === 'vehicle' ? formData.container_name : null,
       last_inspection_date: formData.last_inspection_date || null,
       next_inspection_due: formData.next_inspection_due || null,
     };
