@@ -37,7 +37,7 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Security
-SECRET_KEY = "vatrogasci_secret_key_2024"
+SECRET_KEY = os.environ.get('SECRET_KEY', 'vatrogasci_secret_key_2024')  # Za produkciju, SECRET_KEY MORA biti u .env!
 ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
