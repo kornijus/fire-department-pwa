@@ -1700,20 +1700,35 @@ const Dashboard = () => {
                       >
                         <Popup>
                           <div className="p-2">
-                            <p><strong>Vatrogasac ID:</strong> {activeUser.user_id}</p>
-                            <p><strong>Status:</strong> 
-                              <Badge className={activeUser.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                                {activeUser.status === 'active' ? 'Aktivan' : 'Neaktivan'}
-                              </Badge>
-                            </p>
-                            <p><strong>Vrijeme:</strong> {new Date(activeUser.timestamp).toLocaleTimeString()}</p>
-                            <Button 
-                              size="sm" 
-                              onClick={() => pingUser(activeUser.user_id)}
-                              className="mt-2"
-                            >
-                              Ping
-                            </Button>
+                            {(() => {
+                              const userInfo = allUsers.find(u => u.id === activeUser.user_id);
+                              return (
+                                <>
+                                  <p className="font-bold text-lg mb-2">
+                                    🚒 {userInfo?.full_name || 'Nepoznat'}
+                                  </p>
+                                  {userInfo && (
+                                    <>
+                                      <p><strong>DVD:</strong> {formatDepartmentName(userInfo.department)}</p>
+                                      <p><strong>Funkcija:</strong> {formatRoleName(userInfo.role)}</p>
+                                    </>
+                                  )}
+                                  <p><strong>Status:</strong> 
+                                    <Badge className={activeUser.status === 'active' ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
+                                      {activeUser.status === 'active' ? 'Aktivan' : 'Neaktivan'}
+                                    </Badge>
+                                  </p>
+                                  <p><strong>Vrijeme:</strong> {new Date(activeUser.timestamp).toLocaleTimeString()}</p>
+                                  <Button 
+                                    size="sm" 
+                                    onClick={() => pingUser(activeUser.user_id)}
+                                    className="mt-2 w-full"
+                                  >
+                                    📍 Ping Lokaciju
+                                  </Button>
+                                </>
+                              );
+                            })()}
                           </div>
                         </Popup>
                       </Marker>
