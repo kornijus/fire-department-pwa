@@ -627,6 +627,13 @@ class ChatMessage(BaseModel):
     read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# Chat message creation model (without sender_id/sender_name - set by backend)
+class ChatMessageCreate(BaseModel):
+    chat_type: str  # private or group
+    recipient_id: Optional[str] = None  # for private messages
+    group_id: Optional[str] = None  # DVD department name for group chat
+    content: str
+
 # NEW: DVD Logo model (for managing department logos)
 class DvdLogo(BaseModel):
     department: str  # DVD_Kneginec_Gornji, DVD_Donji_Kneginec, DVD_Varazdinbreg, DVD_Luzan_Biskupecki, VZO
