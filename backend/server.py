@@ -127,12 +127,14 @@ async def location_update(sid, data):
 async def ping_user(sid, data):
     target_user_id = data.get('target_user_id')
     from_user_id = data.get('from_user_id')
+    from_user_name = data.get('from_user_name', 'Nepoznat korisnik')
     message = data.get('message', 'Ping!')
     
     for conn_sid, conn_data in active_connections.items():
         if conn_data.get('user_id') == target_user_id:
             await sio.emit('ping_received', {
                 'from_user_id': from_user_id,
+                'from_user_name': from_user_name,
                 'message': message
             }, room=conn_sid)
             break
