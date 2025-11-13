@@ -595,6 +595,10 @@ const Dashboard = () => {
       alert(`📍 Ping od: ${fromName}\n${data.message}`);
     });
 
+    newSocket.on('ping_failed', (data) => {
+      alert(`⚠️ Korisnik nije online i ne može primiti ping.`);
+    });
+
     newSocket.on('new_message', (message) => {
       // Refresh messages when new message is received
       fetchMessages();
