@@ -721,13 +721,13 @@ async def reset_user_password(user_id: str, new_password: dict, current_user: Us
     if not password or len(password) < 6:
         raise HTTPException(status_code=400, detail="Lozinka mora imati minimalno 6 znakova")
     
-    # Hash the new password
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    # Hash the new password using pwd_context
+    hashed_password = get_password_hash(password)
     
     # Update user password
     result = await db.users.update_one(
         {"id": user_id},
-        {"$set": {"password": hashed_password.decode('utf-8')}}
+        {"$set": {"password": hashed_password}}
     )
     
     if result.modified_count == 0:
