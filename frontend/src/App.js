@@ -1790,6 +1790,9 @@ const Dashboard = () => {
                     {console.log('🗺️ Rendering active users on map:', activeUsers.length, activeUsers)}
                     {activeUsers.map((activeUser, index) => {
                       const userInfo = allUsers.find(u => u.id === activeUser.user_id);
+                      if (!userInfo) {
+                        console.warn('⚠️ User not found in allUsers:', activeUser.user_id, 'allUsers count:', allUsers.length);
+                      }
                       const dvdColor = getDepartmentColor(userInfo?.department);
                       const userIcon = userInfo ? createGpsMarkerIcon(userInfo.role, dvdColor) : activeUserIcon;
                       
