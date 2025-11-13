@@ -1873,7 +1873,7 @@ const Dashboard = () => {
                 </div>
                 
                 {/* DVD Areas Legend */}
-                {availableDvds.length > 0 && (
+                {availableDvds.length > 0 && showDvdAreas && (
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
                     <h4 className="font-semibold mb-2 text-sm">Područja nadležnosti DVD-ova:</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
