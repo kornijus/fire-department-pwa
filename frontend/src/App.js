@@ -1931,13 +1931,25 @@ const Dashboard = () => {
                   <Marker
                     key={hydrant.id}
                     position={[hydrant.latitude, hydrant.longitude]}
-                    icon={hydrantIcon}
+                    icon={hydrant.tip_hidranta === 'nadzemni' ? nadzemniHydrantIcon : podzemniHydrantIcon}
                   >
                     <Popup>
-                      <div className="p-2 min-w-[200px]">
-                        <p className="font-bold">{hydrant.name || 'Hidrant'}</p>
-                        <p><strong>Status:</strong> {hydrant.status || 'Nepoznat'}</p>
-                        {hydrant.notes && <p><strong>Napomena:</strong> {hydrant.notes}</p>}
+                      <div className="p-2">
+                        {hydrant.address && <p><strong>Adresa:</strong> {hydrant.address}</p>}
+                        <p><strong>Tip:</strong> 
+                          <Badge className={hydrant.tip_hidranta === 'podzemni' ? 'bg-red-500' : 'bg-blue-500'}>
+                            {hydrant.tip_hidranta === 'podzemni' ? '🔴 Podzemni' : '🔵 Nadzemni'}
+                          </Badge>
+                        </p>
+                        <p><strong>Status:</strong> 
+                          <Badge className={hydrant.status === 'working' ? 'bg-green-500' : 'bg-red-500'}>
+                            {hydrant.status === 'working' ? 'Ispravan' : 'Neispravan'}
+                          </Badge>
+                        </p>
+                        {hydrant.notes && <p><strong>Napomene:</strong> {hydrant.notes}</p>}
+                        {hydrant.last_check && (
+                          <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
+                        )}
                       </div>
                     </Popup>
                   </Marker>
