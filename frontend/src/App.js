@@ -1765,11 +1765,16 @@ const Dashboard = () => {
                     
                     {/* Active Users */}
                     {console.log('🗺️ Rendering active users on map:', activeUsers.length, activeUsers)}
-                    {activeUsers.map((activeUser, index) => (
+                    {activeUsers.map((activeUser, index) => {
+                      const userInfo = allUsers.find(u => u.id === activeUser.user_id);
+                      const dvdColor = getDepartmentColor(userInfo?.department);
+                      const userIcon = userInfo ? createGpsMarkerIcon(userInfo.role, dvdColor) : activeUserIcon;
+                      
+                      return (
                       <Marker
                         key={index}
                         position={[activeUser.latitude, activeUser.longitude]}
-                        icon={activeUserIcon}
+                        icon={userIcon}
                       >
                         <Popup>
                           <div className="p-2">
