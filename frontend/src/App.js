@@ -919,10 +919,19 @@ const Dashboard = () => {
 
   const pingUser = (targetUserId) => {
     if (socket && user) {
+      const targetUser = allUsers.find(u => u.id === targetUserId);
+      const targetName = targetUser?.full_name || 'Korisnik';
+      
       socket.emit('ping_user', {
         target_user_id: targetUserId,
-        from_user_id: user.id
+        from_user_id: user.id,
+        from_user_name: user.full_name
       });
+      
+      // Show feedback to sender
+      alert(`📍 Ping poslan korisniku: ${targetName}`);
+    } else if (!socket) {
+      alert('⚠️ WebSocket veza nije uspostavljena. Pokušaj ponovno učitati stranicu.');
     }
   };
 
