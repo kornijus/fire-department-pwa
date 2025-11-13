@@ -1810,7 +1810,8 @@ const Dashboard = () => {
                           </div>
                         </Popup>
                       </Marker>
-                    ))}
+                      );
+                    })}
 
                     {/* Hydrants */}
                     {hydrants.map((hydrant) => (
