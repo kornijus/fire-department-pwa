@@ -1657,6 +1657,13 @@ const Dashboard = () => {
                         onCheckedChange={setGpsEnabled}
                       />
                     </div>
+                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded">
+                      <label className="text-xs font-medium whitespace-nowrap">Područja:</label>
+                      <Switch
+                        checked={showDvdAreas}
+                        onCheckedChange={setShowDvdAreas}
+                      />
+                    </div>
                   </div>
                 </div>
                 {isAddingHydrant && (
