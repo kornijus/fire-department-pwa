@@ -80,6 +80,61 @@ const getDvdDisplayName = (dvdName) => {
   return DVD_NAME_MAPPING[dvdName] || dvdName;
 };
 
+// Department code to color mapping (for user markers)
+const DEPARTMENT_COLORS = {
+  'DVD_Luzan_Biskupecki': '#ef4444',    // Red
+  'DVD_Kneginec_Gornji': '#3b82f6',     // Blue  
+  'DVD_Donji_Kneginec': '#22c55e',      // Green
+  'DVD_Varazdinbreg': '#a855f7',        // Purple
+  'VZO': '#fbbf24'                       // Yellow/Gold for VZO
+};
+
+// Function to get department color
+const getDepartmentColor = (department) => {
+  return DEPARTMENT_COLORS[department] || '#999999'; // Gray fallback
+};
+
+// Function to create custom GPS marker icon
+const createGpsMarkerIcon = (role, dvdColor) => {
+  const isCommander = role === 'zapovjednik' || role === 'zamjenik_zapovjednika';
+  
+  if (isCommander) {
+    // Two-color marker: Orange top + DVD color bottom
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <defs>
+          <linearGradient id="split-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="50%" style="stop-color:#fb923c;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:${dvdColor};stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="12" cy="12" r="10" fill="url(#split-gradient)" stroke="#000" stroke-width="2"/>
+        <circle cx="12" cy="12" r="6" fill="rgba(255,255,255,0.3)"/>
+      </svg>
+    `;
+    return new L.Icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(svg),
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -12]
+    });
+  } else {
+    // Single color marker: DVD color only
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="${dvdColor}" stroke="#000" stroke-width="2"/>
+        <circle cx="12" cy="12" r="6" fill="rgba(255,255,255,0.3)"/>
+      </svg>
+    `;
+    return new L.Icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(svg),
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+      popupAnchor: [0, -11]
+    });
+  }
+};
+
 // Custom icons
 // Zelena točka za online korisnike
 const activeUserIcon = new L.Icon({
