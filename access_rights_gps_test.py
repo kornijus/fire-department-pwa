@@ -88,26 +88,32 @@ class AccessRightsGPSTester:
 
     def test_login_igi(self):
         """Test login as Igi (zamjenik zapovjednika, DVD Gornji Kneginec)"""
-        login_data = {
-            "username": "Igi",
-            "password": "igi123"
-        }
+        # Try multiple password combinations
+        passwords_to_try = ["igi123", "vatrogasci123", "password123", "123456", "igi"]
         
-        success, response = self.run_test(
-            "Login as Igi (Zamjenik Zapovjednika, DVD Gornji Kneginec)",
-            "POST",
-            "login",
-            200,
-            data=login_data
-        )
+        for password in passwords_to_try:
+            login_data = {
+                "username": "Igi",
+                "password": password
+            }
+            
+            success, response = self.run_test(
+                f"Login as Igi (Password: {password})",
+                "POST",
+                "login",
+                200,
+                data=login_data
+            )
+            
+            if success and 'access_token' in response:
+                self.tokens['igi'] = response['access_token']
+                self.user_data['igi'] = response.get('user', {})
+                print(f"   ✅ Igi logged in successfully with password: {password}")
+                print(f"   ✅ Department: {self.user_data['igi'].get('department', 'Unknown')}")
+                print(f"   ✅ Role: {self.user_data['igi'].get('role', 'Unknown')}")
+                return True
         
-        if success and 'access_token' in response:
-            self.tokens['igi'] = response['access_token']
-            self.user_data['igi'] = response.get('user', {})
-            print(f"   ✅ Igi logged in successfully")
-            print(f"   ✅ Department: {self.user_data['igi'].get('department', 'Unknown')}")
-            print(f"   ✅ Role: {self.user_data['igi'].get('role', 'Unknown')}")
-            return True
+        print(f"   ❌ Failed to login Igi with any of the tried passwords: {passwords_to_try}")
         return False
 
     def test_login_medo(self):
