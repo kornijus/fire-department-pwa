@@ -1942,7 +1942,7 @@ const Dashboard = () => {
                 <MapClickHandler onMapClick={handleMapClick} />
 
                 {/* DVD Areas */}
-                {dvdAreas && (
+                {dvdAreas && showDvdAreas && (
                   <GeoJSON
                     data={dvdAreas}
                     style={(feature) => {
