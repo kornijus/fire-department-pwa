@@ -1009,11 +1009,19 @@ async def delete_intervention(intervention_id: str, current_user: User = Depends
 
 # NEW: Chat/Communication endpoints
 @api_router.post("/chat/send", response_model=ChatMessage)
-async def send_chat_message(message: ChatMessage, current_user: User = Depends(get_current_user)):
+async def send_chat_message(message_create: ChatMessageCreate, current_user: User = Depends(get_current_user)):
     """Send a private or group chat message"""
-    message.sender_id = current_user.id
-    message.sender_name = current_user.full_name
-    message.created_at = datetime.now(timezone.utc)
+    # Create full message with sender info
+    message = ChatMessage(
+        chat_type=message_create.chat_type,
+        sender_id=current_user.id,
+        sender_name=current_user.full_name,
+        recipient_id=message_create.recipient_id,
+        group_id=message_create.group_id,
+        content=message_create.content,
+        read=False,
+        created_at=datetime.now(timezone.utc)
+    )
     
     await db.chat_messages.insert_one(message.dict())
     
