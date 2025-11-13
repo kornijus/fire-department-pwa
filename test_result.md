@@ -236,6 +236,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Fullscreen Map Functionality"
     - "Vehicle Management Dialogs"
     - "Equipment Management Dialogs"
     - "Vehicle/Equipment CRUD Operations"
