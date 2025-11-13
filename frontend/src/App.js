@@ -1550,34 +1550,41 @@ const Dashboard = () => {
           <TabsContent value="map" className="space-y-4">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Live Mapa Hidrantske Mreže</CardTitle>
-                  <div className="flex items-center space-x-4">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+                  <div className="flex justify-between items-center">
+                    <CardTitle>Live Mapa Hidrantske Mreže</CardTitle>
+                    {/* Fullscreen button - dodati ćemo kasnije */}
+                  </div>
+                  
+                  {/* Controls - responsive layout */}
+                  <div className="flex flex-wrap items-center gap-2">
                     {hasManagementPermission(user?.role, user?.vzo_role) && (
                       <>
                         <Button
                           onClick={() => {
                             setIsAddingHydrant(!isAddingHydrant);
-                            if (!isAddingHydrant) setIsAddingDvdStation(false); // Close DVD mode
+                            if (!isAddingHydrant) setIsAddingDvdStation(false);
                           }}
                           className={isAddingHydrant ? 'bg-green-600' : 'bg-blue-600'}
+                          size="sm"
                         >
                           {isAddingHydrant ? 'Odustani' : 'Dodaj Hidrant'}
                         </Button>
                         <Button
                           onClick={() => {
                             setIsAddingDvdStation(!isAddingDvdStation);
-                            if (!isAddingDvdStation) setIsAddingHydrant(false); // Close Hydrant mode
+                            if (!isAddingDvdStation) setIsAddingHydrant(false);
                           }}
                           className={isAddingDvdStation ? 'bg-green-600' : 'bg-red-600'}
+                          size="sm"
                         >
-                          {isAddingDvdStation ? 'Odustani' : '🏠 Dodaj DVD Stanicu'}
+                          {isAddingDvdStation ? 'Odustani' : '🏠 DVD Stanica'}
                         </Button>
                         <AddHydrantDialog onAdd={addHydrant} />
                       </>
                     )}
-                    <div className="flex items-center space-x-2">
-                      <label className="text-sm">GPS Praćenje:</label>
+                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded">
+                      <label className="text-xs font-medium whitespace-nowrap">GPS:</label>
                       <Switch
                         checked={gpsEnabled}
                         onCheckedChange={setGpsEnabled}
