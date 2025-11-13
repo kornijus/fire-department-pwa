@@ -3371,6 +3371,30 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
     setOpen(false);
   };
 
+  const handleResetPassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      alert('Lozinka mora imati minimalno 6 znakova');
+      return;
+    }
+
+    if (!window.confirm(`Resetirati lozinku za ${adminUser.full_name}?`)) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/users/${adminUser.id}/reset-password`,
+        { password: newPassword },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
+      alert('✅ Lozinka uspješno resetirana!\n\nObavijesti korisnika o novoj lozinci.');
+      setNewPassword('');
+    } catch (error) {
+      console.error('Reset password error:', error);
+      alert(error.response?.data?.detail || 'Greška prilikom resetiranja lozinke');
+    }
+  };
+
   const getDvdRoles = () => {
     return [
       { value: 'clan_bez_funkcije', label: 'Član bez funkcije' },
