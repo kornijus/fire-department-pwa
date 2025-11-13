@@ -216,6 +216,18 @@ frontend:
         agent: "main"
         comment: "Implemented operational vs. general member communication. Two group chat types: 'Operativni Članovi' (is_operational=true only) and 'Svi Članovi' (all members). Private chat shows only operational members. Added 'is_operational' checkbox to registration, badges to member profiles, and admin panel updates. Group chats use backend format: {department}_operational or {department}_all"
 
+  - task: "Fullscreen Map Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Fullscreen map was crashing with 'hydrantIcon is not defined' error. Fixed by changing line 1934 from icon={hydrantIcon} to icon={hydrant.tip_hidranta === 'nadzemni' ? nadzemniHydrantIcon : podzemniHydrantIcon}. Need to test that fullscreen map opens without crash and displays all elements correctly (hydrants, DVD areas, GPS markers)."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
