@@ -130,6 +130,10 @@ async def ping_user(sid, data):
     from_user_name = data.get('from_user_name', 'Nepoznat korisnik')
     message = data.get('message', 'Ping!')
     
+    print(f"📍 Ping zahtjev: {from_user_name} ({from_user_id}) -> {target_user_id}")
+    print(f"   Aktivne konekcije: {len(active_connections)}")
+    
+    found = False
     for conn_sid, conn_data in active_connections.items():
         if conn_data.get('user_id') == target_user_id:
             await sio.emit('ping_received', {
@@ -137,7 +141,17 @@ async def ping_user(sid, data):
                 'from_user_name': from_user_name,
                 'message': message
             }, room=conn_sid)
+            print(f"✅ Ping poslan korisniku {target_user_id} na socket {conn_sid}")
+            found = True
             break
+    
+    if not found:
+        print(f"⚠️ Korisnik {target_user_id} nije online (nema aktivne WebSocket konekcije)")
+        # Send response back to sender that user is not online
+        await sio.emit('ping_failed', {
+            'target_user_id': target_user_id,
+            'reason': 'User not online'
+        }, room=sid)
 
 print("✅ Socket.IO event handlers registered!")
 # ===== END OF SOCKET.IO EVENT HANDLERS =====
