@@ -3355,6 +3355,7 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
   const [isActive, setIsActive] = useState(adminUser.is_active);
   const [isOperational, setIsOperational] = useState(adminUser.is_operational || false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(adminUser.is_super_admin || false);
+  const [newPassword, setNewPassword] = useState('');
   const [open, setOpen] = useState(false);
 
   const handleUpdate = () => {
