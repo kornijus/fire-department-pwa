@@ -517,6 +517,7 @@ const Dashboard = () => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [hydrants, setHydrants] = useState([]);
   const [gpsEnabled, setGpsEnabled] = useState(true); // Default: GPS uključen
+  const [showDvdAreas, setShowDvdAreas] = useState(true); // Default: DVD područja prikazana
   const [userLocation, setUserLocation] = useState(null);
   const [socket, setSocket] = useState(null);
   const [isAddingHydrant, setIsAddingHydrant] = useState(false);
