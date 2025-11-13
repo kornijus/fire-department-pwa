@@ -493,8 +493,10 @@ async def get_users(current_user: User = Depends(get_current_user)):
         users = await db.users.find({"department": current_user.department}).to_list(1000)
         return [User(**user).dict() for user in users]
     
+    # Obični članovi vide sve kolege iz svog DVD-a
     else:
-        raise HTTPException(status_code=403, detail="Pristup odbijen - samo dužnosnici imaju pristup")
+        users = await db.users.find({"department": current_user.department}).to_list(1000)
+        return [User(**user).dict() for user in users]
 
 # NEW: DVD Station model
 class DVDStation(BaseModel):
