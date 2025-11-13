@@ -1690,7 +1690,7 @@ const Dashboard = () => {
                     />
                     
                     {/* DVD Areas - Područja nadležnosti */}
-                    {dvdAreas && (
+                    {dvdAreas && showDvdAreas && (
                       <GeoJSON
                         data={dvdAreas}
                         style={(feature) => {
