@@ -1018,9 +1018,10 @@ const Dashboard = () => {
   const fetchAllUsers = async () => {
     try {
       const response = await axios.get(`${API}/users`);
+      console.log('👥 Fetched all users:', response.data.length, response.data);
       setAllUsers(response.data);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('❌ Error fetching users:', error);
     }
   };
 
