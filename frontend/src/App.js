@@ -2080,11 +2080,22 @@ const Dashboard = () => {
                       {activeUsers.length === 0 ? (
                         <p className="text-gray-500">Nema aktivnih članova s GPS-om</p>
                       ) : (
-                        activeUsers.map((activeUser, index) => (
+                        activeUsers.map((activeUser, index) => {
+                          const userInfo = allUsers.find(u => u.id === activeUser.user_id);
+                          const userName = userInfo?.full_name || 'Nepoznat član';
+                          const userDepartment = userInfo ? formatDepartmentName(userInfo.department) : '';
+                          const userRole = userInfo ? formatRoleName(userInfo.role) : '';
+                          
+                          return (
                           <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
                             <div>
-                              <p className="font-semibold">Član ID: {activeUser.user_id}</p>
-                              <p className="text-sm text-gray-600">
+                              <p className="font-semibold text-lg">🚒 {userName}</p>
+                              {userInfo && (
+                                <p className="text-sm text-gray-600">
+                                  {userDepartment} • {userRole}
+                                </p>
+                              )}
+                              <p className="text-xs text-gray-500 mt-1">
                                 Zadnje ažuriranje: {new Date(activeUser.timestamp).toLocaleString()}
                               </p>
                             </div>
@@ -2097,7 +2108,8 @@ const Dashboard = () => {
                               </Button>
                             </div>
                           </div>
-                        ))
+                          );
+                        })
                       )}
                     </div>
                   </CardContent>
