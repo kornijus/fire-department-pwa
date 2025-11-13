@@ -1828,6 +1828,140 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Fullscreen Map Modal */}
+          {isMapFullscreen && (
+            <div className="fixed inset-0 z-50 bg-black">
+              {/* Header with close button */}
+              <div className="absolute top-0 left-0 right-0 bg-black/80 backdrop-blur-sm z-10 p-4 flex justify-between items-center">
+                <h2 className="text-white text-xl font-bold">🗺️ Live Mapa - Puni Ekran</h2>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded text-white">
+                    <span className="text-xs font-medium">GPS:</span>
+                    <Switch
+                      checked={gpsEnabled}
+                      onCheckedChange={setGpsEnabled}
+                    />
+                  </div>
+                  <Button
+                    onClick={() => setIsMapFullscreen(false)}
+                    variant="destructive"
+                    size="sm"
+                  >
+                    ✕ Zatvori
+                  </Button>
+                </div>
+              </div>
+
+              {/* Fullscreen Map */}
+              <MapContainer 
+                center={[46.1631, 16.2058]} 
+                zoom={13} 
+                style={{ height: '100vh', width: '100vw' }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; OpenStreetMap contributors'
+                />
+                
+                <MapClickHandler onMapClick={handleMapClick} />
+
+                {/* DVD Areas */}
+                {dvdAreas && (
+                  <GeoJSON
+                    data={dvdAreas}
+                    style={(feature) => {
+                      const dvdName = feature.properties['vlastita oznaka naziv'];
+                      const color = getDvdColor(dvdName);
+                      return {
+                        fillColor: color,
+                        fillOpacity: 0.3,
+                        color: color,
+                        weight: 1.5,
+                        opacity: 0.8
+                      };
+                    }}
+                  />
+                )}
+
+                {/* Active Users GPS */}
+                {activeUsers.map((activeUser) => (
+                  <Marker
+                    key={activeUser.user_id}
+                    position={[activeUser.latitude, activeUser.longitude]}
+                    icon={L.icon({
+                      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41],
+                      popupAnchor: [1, -34],
+                      shadowSize: [41, 41]
+                    })}
+                  >
+                    <Popup>
+                      <div className="p-2">
+                        {(() => {
+                          const userInfo = allUsers.find(u => u.id === activeUser.user_id);
+                          return (
+                            <>
+                              <p className="font-bold text-lg mb-2">
+                                🚒 {userInfo?.full_name || 'Nepoznat'}
+                              </p>
+                              {userInfo && (
+                                <>
+                                  <p><strong>DVD:</strong> {formatDepartmentName(userInfo.department)}</p>
+                                  <p><strong>Funkcija:</strong> {formatRoleName(userInfo.role)}</p>
+                                </>
+                              )}
+                              <p><strong>Status:</strong> 
+                                <Badge className={activeUser.status === 'active' ? 'bg-green-500 ml-2' : 'bg-red-500 ml-2'}>
+                                  {activeUser.status === 'active' ? 'Aktivan' : 'Neaktivan'}
+                                </Badge>
+                              </p>
+                              <p><strong>Vrijeme:</strong> {new Date(activeUser.timestamp).toLocaleTimeString()}</p>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+
+                {/* Hydrants */}
+                {hydrants.map((hydrant) => (
+                  <Marker
+                    key={hydrant.id}
+                    position={[hydrant.latitude, hydrant.longitude]}
+                    icon={hydrantIcon}
+                  >
+                    <Popup>
+                      <div className="p-2 min-w-[200px]">
+                        <p className="font-bold">{hydrant.name || 'Hidrant'}</p>
+                        <p><strong>Status:</strong> {hydrant.status || 'Nepoznat'}</p>
+                        {hydrant.notes && <p><strong>Napomena:</strong> {hydrant.notes}</p>}
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+
+                {/* DVD Stations */}
+                {dvdStations.map((station) => (
+                  <Marker
+                    key={station.id}
+                    position={[station.latitude, station.longitude]}
+                    icon={dvdStationIcon}
+                  >
+                    <Popup>
+                      <div className="p-2">
+                        <p className="font-bold">🏠 {station.name}</p>
+                        <p><strong>DVD:</strong> {formatDepartmentName(station.department)}</p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </div>
+          )}
+
           <TabsContent value="members">
             <Tabs defaultValue="active" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
