@@ -2045,6 +2045,12 @@ const Dashboard = () => {
                         {hydrant.last_check && (
                           <p><strong>Zadnja provjera:</strong> {new Date(hydrant.last_check).toLocaleDateString()}</p>
                         )}
+                        {hydrant.checked_by && (() => {
+                          const checker = allUsers.find(u => u.id === hydrant.checked_by);
+                          return checker ? (
+                            <p><strong>Provjerio/la:</strong> {checker.full_name}</p>
+                          ) : null;
+                        })()}
                       </div>
                     </Popup>
                   </Marker>
