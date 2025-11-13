@@ -231,6 +231,7 @@ class HydrantUpdate(BaseModel):
     address: Optional[str] = None  # NEW: Address field
     notes: Optional[str] = None
     images: Optional[List[str]] = None
+    checked_by: Optional[str] = None  # User ID who last checked
 
 # Helper functions
 def create_access_token(data: dict):
