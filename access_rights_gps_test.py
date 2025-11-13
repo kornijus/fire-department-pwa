@@ -189,6 +189,35 @@ class AccessRightsGPSTester:
         
         return False
 
+    def test_login_luka_alternative(self):
+        """Test login as Luka (zapovjednik, DVD Luzan) as alternative to Igi"""
+        passwords_to_try = ["luka123", "vatrogasci123", "password123", "123456", "luka"]
+        
+        for password in passwords_to_try:
+            login_data = {
+                "username": "Luka",
+                "password": password
+            }
+            
+            success, response = self.run_test(
+                f"Login as Luka (Password: {password})",
+                "POST",
+                "login",
+                200,
+                data=login_data
+            )
+            
+            if success and 'access_token' in response:
+                self.tokens['luka'] = response['access_token']
+                self.user_data['luka'] = response.get('user', {})
+                print(f"   ✅ Luka logged in successfully with password: {password}")
+                print(f"   ✅ Department: {self.user_data['luka'].get('department', 'Unknown')}")
+                print(f"   ✅ Role: {self.user_data['luka'].get('role', 'Unknown')}")
+                return True
+        
+        print(f"   ❌ Failed to login Luka with any of the tried passwords")
+        return False
+
     def test_igi_users_access(self):
         """Test Igi can access /api/users and sees only his DVD members"""
         if 'igi' not in self.tokens:
