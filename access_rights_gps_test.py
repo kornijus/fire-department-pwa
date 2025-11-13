@@ -466,11 +466,13 @@ def main():
         # Scenario 1: Access Rights Test
         ("Login Ranac (Ordinary Member)", tester.test_login_ranac),
         ("Login Igi (Zamjenik Zapovjednika)", tester.test_login_igi),
+        ("Login Luka Alternative (Zapovjednik)", tester.test_login_luka_alternative),
         ("Login Medo (Super Admin)", tester.test_login_medo),
         
         # Test access patterns
         ("Ranac Users Access (DVD Colleagues Only)", tester.test_ranac_users_access),
         ("Igi Users Access (DVD Management)", tester.test_igi_users_access),
+        ("Luka Users Access (DVD Management)", tester.test_luka_users_access),
         ("Medo Users Access (Super Admin - All Users)", tester.test_medo_users_access),
         
         # Scenario 2: GPS Active Locations
