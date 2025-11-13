@@ -710,6 +710,31 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user: User 
     await db.users.update_one({"id": user_id}, {"$set": update_data})
     return {"message": "User updated successfully"}
 
+@api_router.post("/users/{user_id}/reset-password")
+async def reset_user_password(user_id: str, new_password: dict, current_user: User = Depends(get_current_user)):
+    """Reset password for a user - only Super Admin or VZO officials can do this"""
+    # Only Super Admin or VZO officials can reset passwords
+    if not (is_super_admin(current_user) or has_vzo_full_access(current_user)):
+        raise HTTPException(status_code=403, detail="Samo Super Admin ili VZO dužnosnici mogu resetirati lozinke")
+    
+    password = new_password.get('password')
+    if not password or len(password) < 6:
+        raise HTTPException(status_code=400, detail="Lozinka mora imati minimalno 6 znakova")
+    
+    # Hash the new password
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    
+    # Update user password
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password": hashed_password.decode('utf-8')}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Korisnik nije pronađen")
+    
+    return {"message": "Lozinka uspješno resetirana"}
+
 # NEW: DVD Stations endpoints
 @api_router.get("/dvd-stations", response_model=List[DVDStation])
 async def get_dvd_stations(current_user: User = Depends(get_current_user)):
