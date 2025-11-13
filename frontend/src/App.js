@@ -1911,6 +1911,13 @@ const Dashboard = () => {
                       onCheckedChange={setGpsEnabled}
                     />
                   </div>
+                  <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded text-white">
+                    <span className="text-xs font-medium">Područja:</span>
+                    <Switch
+                      checked={showDvdAreas}
+                      onCheckedChange={setShowDvdAreas}
+                    />
+                  </div>
                   <Button
                     onClick={() => setIsMapFullscreen(false)}
                     variant="destructive"
