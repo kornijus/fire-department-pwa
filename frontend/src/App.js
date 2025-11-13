@@ -3517,6 +3517,33 @@ const UserUpdateDialog = ({ user: adminUser, onUpdate }) => {
             </label>
           </div>
 
+          {/* Reset Password Section */}
+          <div className="p-4 bg-orange-50 rounded border-2 border-orange-200">
+            <label className="text-sm font-medium text-orange-700 mb-2 block">
+              🔐 Resetiraj Lozinku
+            </label>
+            <div className="flex space-x-2">
+              <input
+                type="password"
+                placeholder="Nova lozinka (min. 6 znakova)"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="flex-1 px-3 py-2 border rounded text-sm"
+              />
+              <Button 
+                size="sm"
+                variant="destructive"
+                onClick={handleResetPassword}
+                disabled={!newPassword || newPassword.length < 6}
+              >
+                Reset
+              </Button>
+            </div>
+            <p className="text-xs text-gray-600 mt-1">
+              Nova lozinka će odmah biti aktivna. Obavijesti korisnika!
+            </p>
+          </div>
+
           <div className="flex space-x-2">
             <Button onClick={handleUpdate} className="flex-1">
               Spremi promjene
