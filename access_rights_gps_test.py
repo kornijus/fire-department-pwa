@@ -256,6 +256,44 @@ class AccessRightsGPSTester:
         
         return False
 
+    def test_luka_users_access(self):
+        """Test Luka (zapovjednik) can access /api/users and sees only his DVD members"""
+        if 'luka' not in self.tokens:
+            print("❌ Luka token not available")
+            return False
+            
+        success, response = self.run_test(
+            "Luka Access to /api/users (DVD Management Access)",
+            "GET",
+            "users",
+            200,
+            token=self.tokens['luka']
+        )
+        
+        if success and isinstance(response, list):
+            print(f"   ✅ Luka can access /api/users")
+            print(f"   ✅ Returned {len(response)} users")
+            
+            # Check that all users are from his department
+            luka_department = self.user_data['luka'].get('department', 'Unknown')
+            print(f"   ✅ Luka's department: {luka_department}")
+            
+            same_department_users = []
+            for user in response:
+                if user.get('department') == luka_department:
+                    same_department_users.append(user.get('full_name', user.get('username', 'Unknown')))
+            
+            print(f"   ✅ Same department users: {same_department_users}")
+            
+            if len(same_department_users) == len(response):
+                print(f"   ✅ All users belong to Luka's department")
+                return True
+            else:
+                print(f"   ❌ Some users from different departments found")
+                return False
+        
+        return False
+
     def test_medo_users_access(self):
         """Test Medo (Super Admin) can see ALL users from ALL DVDs"""
         if 'medo' not in self.tokens:
