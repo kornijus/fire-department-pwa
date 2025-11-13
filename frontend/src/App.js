@@ -591,7 +591,8 @@ const Dashboard = () => {
     });
 
     newSocket.on('ping_received', (data) => {
-      alert(`Ping od ${data.from_user_id}: ${data.message}`);
+      const fromName = data.from_user_name || 'Nepoznat korisnik';
+      alert(`📍 Ping od: ${fromName}\n${data.message}`);
     });
 
     newSocket.on('new_message', (message) => {
