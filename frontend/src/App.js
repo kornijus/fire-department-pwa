@@ -3044,7 +3044,18 @@ const Dashboard = () => {
                                     )}
                                     <p><strong>Registriran:</strong> {new Date(adminUser.created_at).toLocaleDateString()}</p>
                                   </div>
-                                  <UserUpdateDialog user={adminUser} onUpdate={updateUser} />
+                                  <div className="flex gap-2">
+                                    <UserUpdateDialog user={adminUser} onUpdate={updateUser} />
+                                    {user?.is_super_admin && user.id !== adminUser.id && (
+                                      <Button 
+                                        size="sm" 
+                                        variant="destructive"
+                                        onClick={() => deleteUser(adminUser.id, adminUser.full_name)}
+                                      >
+                                        Obriši
+                                      </Button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             ))}
