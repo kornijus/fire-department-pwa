@@ -929,12 +929,24 @@ async def get_events(current_user: User = Depends(get_current_user)):
     return [Event(**event) for event in events]
 
 @api_router.post("/events", response_model=Event)
-async def create_event(event: Event, current_user: User = Depends(get_current_user)):
+async def create_event(event_create: EventCreate, current_user: User = Depends(get_current_user)):
     # Allow all members to create events for now (Super Admin can control later)
     # if not has_hydrant_management_permission(current_user):
     #     raise HTTPException(status_code=403, detail="Access denied")
     
-    event.created_by = current_user.id
+    # Create full event with creator info
+    event = Event(
+        title=event_create.title,
+        event_type=event_create.event_type,
+        date=event_create.date,
+        department=event_create.department,
+        participants=event_create.participants,
+        description=event_create.description,
+        location=event_create.location,
+        created_by=current_user.id,
+        created_at=datetime.now(timezone.utc)
+    )
+    
     await db.events.insert_one(event.dict())
     return event
 
