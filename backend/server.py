@@ -985,13 +985,23 @@ async def get_messages(current_user: User = Depends(get_current_user)):
     return [Message(**msg) for msg in messages]
 
 @api_router.post("/messages", response_model=Message)
-async def send_message(message: Message, current_user: User = Depends(get_current_user)):
+async def send_message(message_create: MessageCreate, current_user: User = Depends(get_current_user)):
     # Allow all members to send messages/alerts for now (Super Admin can control later)
     # if not has_hydrant_management_permission(current_user):
     #     raise HTTPException(status_code=403, detail="Access denied")
     
-    message.sent_by = current_user.id
-    message.sent_by_name = current_user.full_name
+    # Create full message with sender info
+    message = Message(
+        message_type=message_create.message_type,
+        title=message_create.title,
+        content=message_create.content,
+        sent_by=current_user.id,
+        sent_by_name=current_user.full_name,
+        sent_to_departments=message_create.sent_to_departments,
+        priority=message_create.priority,
+        created_at=datetime.now(timezone.utc)
+    )
+    
     await db.messages.insert_one(message.dict())
     
     # Broadcast message via WebSocket
