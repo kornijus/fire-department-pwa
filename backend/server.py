@@ -705,6 +705,23 @@ class UserUpdate(BaseModel):
     assigned_equipment: Optional[List[str]] = None
     certifications: Optional[List[str]] = None
 
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a user - only Super Admin can do this"""
+    if not is_super_admin(current_user):
+        raise HTTPException(status_code=403, detail="Samo Super Admin može brisati korisnike")
+    
+    # Don't allow deleting yourself
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Ne možete obrisati samog sebe")
+    
+    result = await db.users.delete_one({"id": user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Korisnik nije pronađen")
+    
+    return {"message": "Korisnik uspješno obrisan"}
+
 @api_router.put("/users/{user_id}")
 async def update_user(user_id: str, user_update: UserUpdate, current_user: User = Depends(get_current_user)):
     # Super admin može sve, VZO members can update all users, DVD management can update their own department
