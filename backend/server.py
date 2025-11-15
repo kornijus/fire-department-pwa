@@ -429,7 +429,13 @@ async def register(user: UserCreate):
 
 @api_router.post("/login")
 async def login(user_login: UserLogin):
-    user = await db.users.find_one({"username": user_login.username})
+    # Allow login with username OR email
+    user = await db.users.find_one({
+        "$or": [
+            {"username": user_login.username},
+            {"email": user_login.username}  # username field can contain email
+        ]
+    })
     if not user or not verify_password(user_login.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
