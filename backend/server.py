@@ -931,8 +931,9 @@ class EventUpdate(BaseModel):
 
 @api_router.put("/events/{event_id}")
 async def update_event(event_id: str, event_update: EventUpdate, current_user: User = Depends(get_current_user)):
-    if not has_hydrant_management_permission(current_user):
-        raise HTTPException(status_code=403, detail="Access denied")
+    # Allow all members to update events for now (Super Admin can control later)
+    # if not has_hydrant_management_permission(current_user):
+    #     raise HTTPException(status_code=403, detail="Access denied")
     
     update_data = {k: v for k, v in event_update.dict().items() if v is not None}
     
