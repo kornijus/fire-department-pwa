@@ -600,10 +600,28 @@ const Dashboard = () => {
     });
 
     newSocket.on('new_message', (message) => {
+      console.log('🚨 Nova uzbuna/obavijest:', message);
+      
+      // Play notification sound
+      try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+Hy');
+        audio.volume = 1.0; // Max volume for alerts
+        audio.play().catch(e => console.log('Audio play failed:', e));
+      } catch (e) {
+        console.log('Notification sound error:', e);
+      }
+      
+      // Strong vibration for urgent messages
+      if (navigator.vibrate) {
+        navigator.vibrate([500, 200, 500, 200, 500]); // Longer vibration for alerts
+      }
+      
       // Refresh messages when new message is received
       fetchMessages();
+      
       // Show notification
-      alert(`Nova poruka: ${message.title}\n${message.content}`);
+      const priority = message.priority === 'urgent' ? '🚨 HITNO' : '📢';
+      alert(`${priority} Nova poruka: ${message.title}\n${message.content}`);
     });
 
     newSocket.on('new_chat_message', (message) => {
