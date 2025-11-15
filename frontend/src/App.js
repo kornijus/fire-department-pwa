@@ -1068,6 +1068,21 @@ const Dashboard = () => {
     }
   };
 
+  const deleteUser = async (userId, userName) => {
+    if (!window.confirm(`Da li ste sigurni da želite obrisati korisnika: ${userName}?\n\nOva akcija se ne može poništiti!`)) {
+      return;
+    }
+    
+    try {
+      await axios.delete(`${API}/users/${userId}`);
+      alert('✅ Korisnik uspješno obrisan!');
+      fetchAllUsers(); // Refresh user list
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert(error.response?.data?.detail || 'Greška prilikom brisanja korisnika');
+    }
+  };
+
   const deleteHydrant = async (hydrantId) => {
     const confirmed = window.confirm('Jeste li sigurni da želite obrisati ovaj hidrant?');
     if (confirmed) {
