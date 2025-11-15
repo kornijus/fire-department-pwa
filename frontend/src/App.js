@@ -608,9 +608,25 @@ const Dashboard = () => {
 
     newSocket.on('new_chat_message', (message) => {
       console.log('📨 Nova chat poruka:', message);
+      
+      // Play notification sound
+      try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+HyvmshBzbJ7OScUhEOTKXh8bJqHwU0iPDu3pxTEQ5Kq+Hy');
+        audio.volume = 0.5;
+        audio.play().catch(e => console.log('Audio play failed:', e));
+      } catch (e) {
+        console.log('Notification sound error:', e);
+      }
+      
+      // Vibrate on mobile
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+      
       // Refresh unread count
       fetchUnreadCount();
-      // If viewing current chat, refresh it
+      
+      // If viewing current chat, refresh it immediately
       if (selectedChatType === 'private' && selectedChatUser && 
           (message.sender_id === selectedChatUser.id || message.recipient_id === selectedChatUser.id)) {
         fetchPrivateChat(selectedChatUser.id);
