@@ -618,6 +618,24 @@ class Message(BaseModel):
     priority: str = "normal"  # urgent, normal, low
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# Message creation model (without sent_by/sent_by_name - set by backend)
+class MessageCreate(BaseModel):
+    message_type: str  # alert, general, drill, event
+    title: str
+    content: str
+    sent_to_departments: List[str] = []  # list of departments or "all"
+    priority: str = "normal"  # urgent, normal, low
+
+# Event creation model (without created_by - set by backend)
+class EventCreate(BaseModel):
+    title: str
+    event_type: str  # training, insurance, medical_check, equipment_check, drill
+    date: datetime
+    department: str  # which DVD or VZO
+    participants: List[str] = []  # list of user IDs
+    description: Optional[str] = None
+    location: Optional[str] = None
+
 # NEW: Chat message model (for private and group communication)
 class ChatMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
